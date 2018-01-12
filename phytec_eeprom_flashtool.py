@@ -180,11 +180,7 @@ def count_eeprom_dict_bits(eeprom_dict):
 	return count
 
 def dict_to_struct(eeprom_dict):
-	kit_opt_str = ''
-	for i in eeprom_dict['kit_opt']:
-		kit_opt_str += i if i.isalpha() else chr(int(i))
-
-	print 'dict_to_struct, kit_opt_str:', kit_opt_str
+	print 'dict_to_struct, kit_opt_str:', eeprom_dict['kit_opt']
 
 	eeprom_struct = struct.pack(
 		# format: uint, 3 uchars, 6-len str, 2 uchars, 11-len str,
@@ -197,7 +193,7 @@ def dict_to_struct(eeprom_dict):
 		eeprom_dict['mac'],
 		eeprom_dict['ksp'],
 		eeprom_dict['kspno'],
-		kit_opt_str,
+		eeprom_dict['kit_opt'],
 		eeprom_dict['bs']
 	)
 	return eeprom_struct
@@ -217,10 +213,7 @@ def struct_to_dict(eeprom_struct, eeprom_dict):
 	eeprom_dict['mac'] = unpacked[4]
 	eeprom_dict['ksp'] = unpacked[5]
 	eeprom_dict['kspno'] = unpacked[6]
-	kit_opt_str = ''
-	for i in unpacked[7]:
-		kit_opt_str += i if chr(ord(i)).isalpha() else str(ord(i))
-	eeprom_dict['kit_opt'] = kit_opt_str
+	eeprom_dict['kit_opt'] = unpacked[7]
 	eeprom_dict['bs'] = unpacked[8]
 
 def read_som_config():
