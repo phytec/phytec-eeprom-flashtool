@@ -136,7 +136,7 @@ def print_eeprom_dict(eeprom_dict):
 	print '%-20s\t%-40d' % ('KSP style', eeprom_dict['ksp'])
 	print '%-20s\t%-40d' % ('KSP number', eeprom_dict['kspno'])
 	print '%-20s\t%-40d' % ('Bits set', eeprom_dict['bs'])
-	mac_str = "%x:%x:%x:%x:%x:%x" % (tuple(map(ord, eeprom_dict['mac'])))
+	mac_str = "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x" % (tuple(map(ord, eeprom_dict['mac'])))
 	print '%-20s\t%-40s' % ('MAC address', mac_str)
 	print
 	print 'Verbose kit options:'
