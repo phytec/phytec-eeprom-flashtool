@@ -19,7 +19,6 @@ yml_dir = '/configs/'
 # Global dicts for storing eeprom data and i2c settings
 ep = {
 	'api_version': None,
-	'mod_version': None,
 	'som_pcb_rev': None,
 	'mac': None,
 	'ksp': None,
@@ -81,7 +80,6 @@ def open_som_config():
 
 def load_som_config(eeprom_dict):
 	eeprom_dict['api_version'] = api_version
-	eeprom_dict['mod_version'] = yml_parser['PHYTEC']['mod_version']
 	eeprom_dict['som_pcb_rev'] = args.som_pcb_rev
 	eeprom_dict['mac'] = get_mac_addr()
 	eeprom_dict['kit_opt'] = args.options
@@ -128,7 +126,6 @@ def print_eeprom_dict(eeprom_dict):
 		args.command))
 	print()
 	print('%-20s\t%-40d' % ('API version', eeprom_dict['api_version']))
-	print('%-20s\t%-40d' % ('Mod version', eeprom_dict['mod_version']))
 	print('%-20s\t%-40d' % ('SOM PCB revision', eeprom_dict['som_pcb_rev']))
 	print('%-20s\t%-40d' % ('KSP style', eeprom_dict['ksp']))
 	print('%-20s\t%-40d' % ('KSP number', eeprom_dict['kspno']))
@@ -161,7 +158,6 @@ def get_mac_addr():
 def count_eeprom_dict_bits(eeprom_dict):
 	count = 0
 	count += bin(eeprom_dict['api_version']).count('1')
-	count += bin(eeprom_dict['mod_version']).count('1')
 	count += bin(eeprom_dict['som_pcb_rev']).count('1')
 	count += sum([bin(x).count('1') for x in eeprom_dict['mac']])
 	count += bin(eeprom_dict['ksp']).count('1')
@@ -176,11 +172,10 @@ def count_eeprom_dict_bits(eeprom_dict):
 
 def dict_to_struct(eeprom_dict):
 	eeprom_struct = struct.pack(
-		# format: 3 uchars, 6-len str, 2 uchars, 11-len str,
-		# 6-len pad, 1 uchar
-		'3B6s2B11s6x1B',
+		# format: 2 uchars, 6-len str, 2 uchars, 11-len str,
+		# 7-len pad, 1 uchar
+		'2B6s2B11s7x1B',
 		eeprom_dict['api_version'],
-		eeprom_dict['mod_version'],
 		eeprom_dict['som_pcb_rev'],
 		eeprom_dict['mac'],
 		eeprom_dict['ksp'],
@@ -193,20 +188,19 @@ def dict_to_struct(eeprom_dict):
 
 def struct_to_dict(eeprom_struct, eeprom_dict):
 	unpacked = struct.unpack(
-		# format: 3 uchars, 6-len str, 2 uchars, 11-len str,
-		# 6-len pad, 1 uchar
-		'3B6s2B11s6x1B',
+		# format: 2 uchars, 6-len str, 2 uchars, 11-len str,
+		# 7-len pad, 1 uchar
+		'2B6s2B11s7x1B',
 		eeprom_struct
 	)
 
-	eeprom_dict['api_version'] = unpacked[1]
-	eeprom_dict['mod_version'] = unpacked[2]
-	eeprom_dict['som_pcb_rev'] = unpacked[3]
-	eeprom_dict['mac'] = unpacked[4]
-	eeprom_dict['ksp'] = unpacked[5]
-	eeprom_dict['kspno'] = unpacked[6]
-	eeprom_dict['kit_opt'] = unpacked[7].decode('utf-8')
-	eeprom_dict['bs'] = unpacked[8]
+	eeprom_dict['api_version'] = unpacked[0]
+	eeprom_dict['som_pcb_rev'] = unpacked[1]
+	eeprom_dict['mac'] = unpacked[2]
+	eeprom_dict['ksp'] = unpacked[3]
+	eeprom_dict['kspno'] = unpacked[4]
+	eeprom_dict['kit_opt'] = unpacked[5].decode('utf-8')
+	eeprom_dict['bs'] = unpacked[6]
 
 def read_som_config():
 	i2c_eeprom_init()
