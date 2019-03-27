@@ -86,7 +86,7 @@ def load_som_config():
 		ep['ksp'] = 0
 		ep['kspno'] = 0
 	ep['kit_opt'] += args.bom_rev
-	ep['bs'] = count_eeprom_dict_bits()
+	ep['hw8'] = count_eeprom_dict_bits()
 
 def check_eeprom_dict():
 	if ep['api_version'] != api_version:
@@ -118,7 +118,7 @@ def print_eeprom_dict():
 	print('%-20s\t%-40d' % ('SOM PCB revision', ep['som_pcb_rev']))
 	print('%-20s\t%-40d' % ('KSP style', ep['ksp']))
 	print('%-20s\t%-40d' % ('KSP number', ep['kspno']))
-	print('%-20s\t%-40d' % ('Bits set', ep['bs']))
+	print('%-20s\t%-40d' % ('Bits set', ep['hw8']))
 	mac_str = "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x" % (tuple(map(ord, ep['mac'])))
 	print('%-20s\t%-40s' % ('MAC address', mac_str))
 	print()
@@ -170,7 +170,7 @@ def dict_to_struct():
 		ep['ksp'],
 		ep['kspno'],
 		bytes(ep['kit_opt'],'utf-8'),
-		ep['bs']
+		ep['hw8']
 	)
 
 	return eeprom_struct
@@ -189,7 +189,7 @@ def struct_to_dict(eeprom_struct, eeprom_dict):
 	ep['ksp'] = unpacked[3]
 	ep['kspno'] = unpacked[4]
 	ep['kit_opt'] = unpacked[5].decode('utf-8')
-	ep['bs'] = unpacked[6]
+	ep['hw8'] = unpacked[6]
 
 def read_som_config():
 	i2c_eeprom_init()

@@ -64,7 +64,7 @@ Temp:
 
 ep:
   api_version: None
-  bs: None
+  hw8: None
   kit_opt: None
   ksp: None
   kspno: None
