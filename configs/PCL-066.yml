@@ -8,6 +8,8 @@ PHYTEC:
   i2c_bus: 0
   i2c_dev: 5a
   kit_options: 6
+  ep_encoding: '4B8s13x6xB'
+#ep_encoding-format: 4 uchars, 8-len str, 13-len pad, 6-len pad/str, 1 uchar
 
 Kit:
   0: Controller
@@ -64,8 +66,8 @@ Temp:
 
 ep:
   api_version: None
-  hw8: None
-  kit_opt: None
+  som_pcb_rev: None
   ksp: None
   kspno: None
-  som_pcb_rev: None
+  kit_opt: None
+  hw8: None

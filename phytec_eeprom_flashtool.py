@@ -16,26 +16,19 @@ min_bom_rev = 'A0'
 
 yml_dir = '/configs/'
 
-# Global dicts for i2c settings
-i2c_yml = {
-	'i2c_bus': None,
-	'i2c_dev': None,
-	'eeprom_offset': None,
-	'eeprom_sysfs': None,
-}
-
 def i2c_eeprom_init():
-	i2c_yml['i2c_bus'] = yml_parser['PHYTEC']['i2c_bus']
-	i2c_yml['i2c_dev'] = yml_parser['PHYTEC']['i2c_dev']
-	i2c_yml['eeprom_offset'] = yml_parser['PHYTEC']['eeprom_offset']
-	i2c_yml['eeprom_sysfs'] = \
-		'/sys/class/i2c-dev/i2c-%d/device/%d-%s/eeprom' \
-		% (i2c_yml['i2c_bus'], i2c_yml['i2c_bus'],
-			i2c_yml['i2c_dev'].zfill(4))
+	global eeprom_sysfs
+	try:
+		eeprom_sysfs = \
+			'/sys/class/i2c-dev/i2c-%d/device/%d-%s/eeprom' \
+			% (yml_parser['PHYTEC']['i2c_bus'], yml_parser['PHYTEC']['i2c_bus'],
+				yml_parser['PHYTEC']['i2c_dev'].zfill(4))
+	except IOError as err:
+		sys.exit(err)
 
 def eeprom_read(i2c_bus, i2c_dev, addr, num_bytes):
 	try:
-		eeprom_file = open(i2c_yml['eeprom_sysfs'], 'rb')
+		eeprom_file = open(eeprom_sysfs, 'rb')
 		eeprom_file.seek(addr)
 		read_eeprom = eeprom_file.read(num_bytes)
 		eeprom_file.close()
@@ -45,7 +38,7 @@ def eeprom_read(i2c_bus, i2c_dev, addr, num_bytes):
 
 def eeprom_write(i2c_bus, i2c_dev, addr, string):
 	try:
-		eeprom_file = open(i2c_yml['eeprom_sysfs'], 'wb')
+		eeprom_file = open(eeprom_sysfs, 'wb')
 		eeprom_file.seek(addr)
 		eeprom_file.write(string)
 		eeprom_file.flush()
@@ -69,70 +62,88 @@ def open_som_config():
 		sys.exit(err)
 
 def load_som_config():
-	ep['api_version'] = api_version
-	ep['som_pcb_rev'] = args.som_pcb_rev
-	ep['kit_opt'] = args.options
-	if ep['kit_opt'][:3] == 'KSP':
-		ep['ksp'] = int(1)
-		ep['kspno'] = int(ep['kit_opt'].split('KSP')[1])
-		ep['kit_opt'] = \
-			yml_parser['KSP'][ep['kit_opt']]
-	elif ep['kit_opt'][:3] == 'KSM':
-		ep['ksp'] = int(2)
-		ep['kspno'] = int(ep['kit_opt'].split('KSM')[1])
-		ep['kit_opt'] = \
-			yml_parser['KSP'][ep['kit_opt']]
-	else:
-		ep['ksp'] = 0
-		ep['kspno'] = 0
-	ep['kit_opt'] += args.bom_rev
-	ep['hw8'] = count_eeprom_dict_bits()
+	try:
+		ep['api_version'] = api_version
+		ep['som_pcb_rev'] = args.som_pcb_rev
+		ep['kit_opt'] = args.options
+		if ep['kit_opt'][:3] == 'KSP':
+			ep['ksp'] = 1
+			ep['kspno'] = int(ep['kit_opt'].split('KSP')[1])
+			ep['kit_opt'] = \
+				yml_parser['KSP'][ep['kit_opt']]
+		elif ep['kit_opt'][:3] == 'KSM':
+			ep['ksp'] = 2
+			ep['kspno'] = int(ep['kit_opt'].split('KSM')[1])
+			ep['kit_opt'] = \
+				yml_parser['KSP'][ep['kit_opt']]
+		else:
+			ep['ksp'] = 0
+			ep['kspno'] = 0
+		ep['kit_opt'] += args.bom_rev
+		if 'mac' in ep:
+			ep['mac'] = get_mac_addr()
+		ep['hw8'] = count_eeprom_dict_bits()
+	except IOError as err:
+		sys.exit()
 
 def check_eeprom_dict():
-	if ep['api_version'] != api_version:
-		sys.exit('PHYTEC EEPROM API Version does not match script version!')
-	if ep['som_pcb_rev'] < 0 or ep['som_pcb_rev'] > 9:
-		sys.exit('Read PHYTEC EEPROM PCB Revision is out of bounds!')
-	if ep['ksp'] < 0 or ep['ksp'] > 2:
-		sys.exit('Read PHYTEC EEPROM KSP identifier is out of bounds!')
-	if not yml_parser['Known'][ep['kit_opt'][:-2]]:
-		sys.exit('PHYTEC EEPROM kit options not valid within '
-			'configuration file!')
-	if ep['ksp'] != 0:
-		ksp_str = 'KSP' if ep['ksp'] == 1 else 'KSM'
-		ksp_str += '%02d' % (ep['kspno'])
-		max_bom_rev = yml_parser['Known'][ksp_str]
-	else:
-		max_bom_rev = yml_parser['Known'][ep['kit_opt'][:-2]]
-	if ep['kit_opt'][-2:] < min_bom_rev \
-			or ep['kit_opt'][-2:] > max_bom_rev:
-		sys.exit('Read PHYTEC EEPROM SOM revision is out of bounds!')
+	try:
+		if ep['api_version'] != api_version:
+			sys.exit('PHYTEC EEPROM API Version does not match script version!')
+		if ep['som_pcb_rev'] < 0 or ep['som_pcb_rev'] > 9:
+			sys.exit('Read PHYTEC EEPROM PCB Revision is out of bounds!')
+		if ep['ksp'] < 0 or ep['ksp'] > 2:
+			sys.exit('Read PHYTEC EEPROM KSP identifier is out of bounds!')
+		if len(ep['kit_opt']) != yml_parser['PHYTEC']['kit_options']+2:
+			sys.exit('Kit option has not the proper length!')
+		if ep['kit_opt'][:-2] not in yml_parser['Known']:
+			sys.exit('PHYTEC EEPROM kit options not valid within '
+				'configuration file!')
+		if ep['ksp'] != 0:
+			ksp_str = 'KSP' if ep['ksp'] == 1 else 'KSM'
+			ksp_str += '%02d' % (ep['kspno'])
+			max_bom_rev = yml_parser['Known'][ksp_str]
+		else:
+			max_bom_rev = yml_parser['Known'][ep['kit_opt'][:-2]]
+		if ep['kit_opt'][-2:] < min_bom_rev \
+				or ep['kit_opt'][-2:] > max_bom_rev:
+			sys.exit('Read PHYTEC EEPROM SOM revision is out of bounds!')
+	except IOError as err:
+		sys.exit(err)
 
 def print_eeprom_dict():
-	print()
-	print('%s-%s.%s EEPROM contents and configuration [%s]:' % (args.som,
-		ep['kit_opt'][:-2], ep['kit_opt'][-2:],
-		args.command))
-	print()
-	print('%-20s\t%-40d' % ('API version', ep['api_version']))
-	print('%-20s\t%-40d' % ('SOM PCB revision', ep['som_pcb_rev']))
-	print('%-20s\t%-40d' % ('KSP style', ep['ksp']))
-	print('%-20s\t%-40d' % ('KSP number', ep['kspno']))
-	print('%-20s\t%-40d' % ('Bits set', ep['hw8']))
-	mac_str = "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x" % (tuple(map(ord, ep['mac'])))
-	print('%-20s\t%-40s' % ('MAC address', mac_str))
-	print()
-	print('Verbose kit options:')
-	for i in range(0, len(ep['kit_opt'][:-2])):
-		kit_opt = yml_parser['Kit'][i]
-		opt_str = str(ep['kit_opt'][i])
-		print('%-20s\t%-40s' % (kit_opt, opt_str))
-	print()
+	try:
+		print()
+		print('%s-%s.%s EEPROM contents and configuration [%s]:' % (args.som,
+			ep['kit_opt'][:-2], ep['kit_opt'][-2:],
+			args.command))
+		print()
+		print('%-20s\t%-40d' % ('API version', ep['api_version']))
+		print('%-20s\t%-40d' % ('SOM PCB revision', ep['som_pcb_rev']))
+		print('%-20s\t%-40d' % ('KSP style', ep['ksp']))
+		print('%-20s\t%-40d' % ('KSP number', ep['kspno']))
+		print('%-20s\t%-40d' % ('Bits set', ep['hw8']))
+		if 'mac' in ep:
+			mac_str = binascii.hexlify(ep['mac'])
+			mac_str = str(mac_str).split('b',1)
+			mac_str = mac_str[1]
+			mac_str = ':'.join(mac_str[i:i+2] for i in range(1,
+				len(mac_str)-2, 2))
+			print('%-20s\t%-40s' % ('MAC address', mac_str))
+		print()
+		print('Verbose kit options:')
+		for i in range(0, len(ep['kit_opt'][:-2])):
+			kit_opt = yml_parser['Kit'][i]
+			opt_str = str(ep['kit_opt'][i])
+			print('%-20s\t%-40s' % (kit_opt, opt_str))
+		print()
+	except IOError as err:
+		sys.exit(err)
 
 def get_mac_addr():
 	eth_name = yml_parser['PHYTEC']['eth_name']
-	eth_sysfs = '/sys/class/net/%s/address' % (eth_name)
 	try:
+		eth_sysfs = '/sys/class/net/%s/address' % (eth_name)
 		mac_file = open(eth_sysfs, 'r')
 		mac_read = mac_file.read()
 		mac_file.close()
@@ -148,7 +159,6 @@ def count_eeprom_dict_bits():
 	count = 0
 	count += bin(ep['api_version']).count('1')
 	count += bin(ep['som_pcb_rev']).count('1')
-	count += sum([bin(x).count('1') for x in ep['mac']])
 	count += bin(ep['ksp']).count('1')
 	count += bin(ep['kspno']).count('1')
 	for i in ep['kit_opt']:
@@ -156,45 +166,55 @@ def count_eeprom_dict_bits():
 			count += bin(ord(i)).count('1')
 		else:
 			count += bin(int(i)).count('1')
+	if 'mac' in ep:
+		count += sum([bin(x).count('1') for x in ep['mac']])
 	# reserved should always be zero padded so no more bits set
 	return count
 
 def dict_to_struct():
-	eeprom_struct = struct.pack(
-		# format: 2 uchars, 6-len str, 2 uchars, 11-len str,
-		# 7-len pad, 1 uchar
-		'2B6s2B11s7x1B',
-		ep['api_version'],
-		ep['som_pcb_rev'],
-		ep['mac'],
-		ep['ksp'],
-		ep['kspno'],
-		bytes(ep['kit_opt'],'utf-8'),
-		ep['hw8']
-	)
+	try:
+		length = len(yml_parser['PHYTEC']['ep_encoding'])
+		eeprom_struct = struct.pack(
+			yml_parser['PHYTEC']['ep_encoding'][:length-3],
+			ep['api_version'],
+			ep['som_pcb_rev'],
+			ep['ksp'],
+			ep['kspno'],
+			bytes(ep['kit_opt'],'utf-8'),
+		)
+		if 'mac' in ep:
+			eeprom_struct += struct.pack('6s', ep['mac'])
+		eeprom_struct += struct.pack('6xB', ep['hw8'])
+	except IOError as err:
+		sys.exit(err)
 
 	return eeprom_struct
 
-def struct_to_dict(eeprom_struct, eeprom_dict):
-	unpacked = struct.unpack(
-		# format: 2 uchars, 6-len str, 2 uchars, 11-len str,
-		# 7-len pad, 1 uchar
-		'2B6s2B11s7x1B',
-		eeprom_struct
-	)
+def struct_to_dict(eeprom_struct):
+	try:
+		unpacked = struct.unpack(
+			yml_parser['PHYTEC']['ep_encoding'],
+			eeprom_struct
+		)
 
-	ep['api_version'] = unpacked[0]
-	ep['som_pcb_rev'] = unpacked[1]
-	ep['mac'] = unpacked[2]
-	ep['ksp'] = unpacked[3]
-	ep['kspno'] = unpacked[4]
-	ep['kit_opt'] = unpacked[5].decode('utf-8')
-	ep['hw8'] = unpacked[6]
+		ep['api_version'] = unpacked[0]
+		ep['som_pcb_rev'] = unpacked[1]
+		ep['ksp'] = unpacked[2]
+		ep['kspno'] = unpacked[3]
+		ep['kit_opt'] = unpacked[4].decode('utf-8')
+		if 'mac' in ep:
+			ep['mac'] = unpacked[5]
+			ep['hw8'] = unpacked[6]
+		else:
+			ep['hw8'] = unpacked[5]
+	except IOError as err:
+		sys.exit(err)
 
 def read_som_config():
 	i2c_eeprom_init()
-	read_eeprom = eeprom_read(i2c_yml['i2c_bus'], i2c_yml['i2c_dev'],
-		i2c_yml['eeprom_offset'], eeprom_size)
+	read_eeprom = eeprom_read(yml_parser['PHYTEC']['i2c_bus'],
+		yml_parser['PHYTEC']['i2c_dev'],
+		yml_parser['PHYTEC']['eeprom_offset'], eeprom_size)
 	struct_to_dict(read_eeprom)
 	check_eeprom_dict()
 	print_eeprom_dict()
@@ -209,10 +229,10 @@ def write_som_config():
 	load_som_config()
 	check_eeprom_dict()
 	write_eeprom = dict_to_struct()
-	eeprom_write(i2c_yml['i2c_bus'], i2c_yml['i2c_dev'],
-		i2c_yml['eeprom_offset'], write_eeprom)
-	read_eeprom = eeprom_read(i2c_yml['i2c_bus'], i2c_yml['i2c_dev'],
-		i2c_yml['eeprom_offset'], eeprom_size)
+	eeprom_write(yml_parser['PHYTEC']['i2c_bus'], yml_parser['PHYTEC']['i2c_dev'],
+		yml_parser['PHYTEC']['eeprom_offset'], write_eeprom)
+	read_eeprom = eeprom_read(yml_parser['PHYTEC']['i2c_bus'], yml_parser['PHYTEC']['i2c_dev'],
+		yml_parser['PHYTEC']['eeprom_offset'], len(write_eeprom))
 	if write_eeprom == read_eeprom:
 		print('EEPROM flash successful!')
 	else:
@@ -225,7 +245,7 @@ def format_args():
 		args.som = '%s-%s' % (bom_split[0], bom_split[1])
 		args.options = kit_opt_split[0]
 		args.bom_rev = kit_opt_split[1]
-	except IndexError:
+	except:
 		sys.exit('BOM argument is malformed. Exiting.')
 
 def main():
