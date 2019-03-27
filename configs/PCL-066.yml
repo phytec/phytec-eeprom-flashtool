@@ -1,0 +1,71 @@
+# PCL-066 PHYTEC EEPROM Flashtool Config File
+# board: imx8mq phyboard polaris
+# Copyright (C) 2019 PHYTEC
+
+PHYTEC:
+  eeprom_offset: 0
+  eth_name: eth0
+  i2c_bus: 0
+  i2c_dev: 5a
+  kit_options: 6
+
+Kit:
+  0: Controller
+  1: DDR
+  2: eMMC/NAND
+  3: Ethernet
+  4: WLAN
+  5: Temp
+
+Known:
+  01600C: A0
+  01600I: A0
+  01601C: A0
+  01601I: A0
+
+Controller:
+  '0': Quad Lite (GPU, No VPU)
+  '1': Dual (VPU decode + HDR10 + GPU)
+  '2': Dual (VPU decode + Dolby Vision + HDR10 + GPU)
+  '3': Quad (VPU decode + HDR10 + GPU)
+  '4': Quad (VPU decode + Dolby Vision + HDR10 + GPU)
+
+DDR:
+  '0': 512MB DDR3 RAM 1 Bank
+  '1': 1GB DDR3 RAM 1 Bank
+  '2': 1GB DDR3 RAM 1 Bank
+  '3': 2GB DDR3 RAM 1 Bank
+  '4': 4GB DDR3 RAM 1 Bank
+  '5': 6GB DDR3 RAM 1 Bank
+  '6': 8GB DDR3 RAM 1 Bank
+
+eMMC/NAND:
+  '0': No eMMC
+  '1': 512MB Nand
+  '2': 1GB Nand
+  '3': 4GB eMMC
+  '4': 8GB eMMC
+  '5': 16GB eMMC
+  '6': 32GB eMMC
+  '7': 64GB eMMC (only Commercial)
+
+Ethernet:
+  '0': RGMII
+  '1': 10/100/1000 ethernet PHY
+
+WLAN:
+  '0': No WLAN
+  '1': WLAN/Bluetooth Sterling Module
+  '2': WLAN/Bluetooth QCA Module
+
+Temp:
+  C: Commercial 0C to +70C
+  I: Industrial -40C to +85C
+
+ep:
+  api_version: None
+  bs: None
+  kit_opt: None
+  ksp: None
+  kspno: None
+  som_pcb_rev: None
