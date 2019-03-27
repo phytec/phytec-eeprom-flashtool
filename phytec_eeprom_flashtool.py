@@ -10,7 +10,6 @@ import binascii
 
 # Defaults defined by the PHYTEC EEPROM API version
 api_version = 0
-header = 0x07052017
 eeprom_size = 32	# bytes
 max_kit_opts = 16
 min_bom_rev = 'A0'
@@ -19,7 +18,6 @@ yml_dir = '/configs/'
 
 # Global dicts for storing eeprom data and i2c settings
 ep = {
-	'header': None,
 	'api_version': None,
 	'mod_version': None,
 	'som_pcb_rev': None,
@@ -82,7 +80,6 @@ def open_som_config():
 		sys.exit(err)
 
 def load_som_config(eeprom_dict):
-	eeprom_dict['header'] = header
 	eeprom_dict['api_version'] = api_version
 	eeprom_dict['mod_version'] = yml_parser['PHYTEC']['mod_version']
 	eeprom_dict['som_pcb_rev'] = args.som_pcb_rev
@@ -105,8 +102,6 @@ def load_som_config(eeprom_dict):
 	eeprom_dict['bs'] = count_eeprom_dict_bits(eeprom_dict)
 
 def check_eeprom_dict(eeprom_dict):
-	if eeprom_dict['header'] != header:
-		sys.exit('PHYTEC EEPROM header is invalid!')
 	if eeprom_dict['api_version'] != api_version:
 		sys.exit('PHYTEC EEPROM API Version does not match script version!')
 	if eeprom_dict['som_pcb_rev'] < 0 or eeprom_dict['som_pcb_rev'] > 9:
@@ -165,7 +160,6 @@ def get_mac_addr():
 
 def count_eeprom_dict_bits(eeprom_dict):
 	count = 0
-	count += bin(eeprom_dict['header']).count('1')
 	count += bin(eeprom_dict['api_version']).count('1')
 	count += bin(eeprom_dict['mod_version']).count('1')
 	count += bin(eeprom_dict['som_pcb_rev']).count('1')
@@ -182,10 +176,9 @@ def count_eeprom_dict_bits(eeprom_dict):
 
 def dict_to_struct(eeprom_dict):
 	eeprom_struct = struct.pack(
-		# format: uint, 3 uchars, 6-len str, 2 uchars, 11-len str,
-		# 5-len pad, 1 uchar
-		'I3B6s2B11s5x1B',
-		eeprom_dict['header'],
+		# format: 3 uchars, 6-len str, 2 uchars, 11-len str,
+		# 6-len pad, 1 uchar
+		'3B6s2B11s6x1B',
 		eeprom_dict['api_version'],
 		eeprom_dict['mod_version'],
 		eeprom_dict['som_pcb_rev'],
@@ -200,13 +193,12 @@ def dict_to_struct(eeprom_dict):
 
 def struct_to_dict(eeprom_struct, eeprom_dict):
 	unpacked = struct.unpack(
-		# format: uint, 3 uchars, 6-len str, 2 uchars, 11-len str,
-		# 5-len pad, 1 uchar
-		'I3B6s2B11s5x1B',
+		# format: 3 uchars, 6-len str, 2 uchars, 11-len str,
+		# 6-len pad, 1 uchar
+		'3B6s2B11s6x1B',
 		eeprom_struct
 	)
 
-	eeprom_dict['header'] = unpacked[0]
 	eeprom_dict['api_version'] = unpacked[1]
 	eeprom_dict['mod_version'] = unpacked[2]
 	eeprom_dict['som_pcb_rev'] = unpacked[3]
