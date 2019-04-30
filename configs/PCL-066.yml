@@ -7,49 +7,63 @@ PHYTEC:
   eth_name: eth0
   i2c_bus: 0
   i2c_dev: 5a
-  kit_options: 6
-  ep_encoding: '4B8s13x6xB'
-#ep_encoding-format: 4 uchars, 8-len str, 13-len pad, 6-len pad/str, 1 uchar
+  kit_options: 8
+  ep_encoding: '4B10s11x6xB'
+#ep_encoding-format: 4 uchars, 10-len str, 11-len pad, 6-len pad/str, 1 uchar
 
 Kit:
   0: Controller
-  1: DDR
-  2: eMMC/NAND
-  3: Ethernet
-  4: WLAN
-  5: Temp
+  1: Taktrate
+  2: DDR
+  3: eMMC
+  4: Quad SPI Nor
+  5: Ethernet
+  6: WLAN
+  7: Temp
 
 Known:
-  01600C: A0
-  01600I: A0
-  01601C: A0
-  01601I: A0
+  3022210I: A0
+  3032210I: A0
+  1112010C: A0
+  4054211I: A0
+  3112011I: A0
+  3133111I: A0
 
 Controller:
-  '0': Quad Lite (GPU, No VPU)
-  '1': Dual (VPU decode + HDR10 + GPU)
-  '2': Dual (VPU decode + Dolby Vision + HDR10 + GPU)
-  '3': Quad (VPU decode + HDR10 + GPU)
-  '4': Quad (VPU decode + Dolby Vision + HDR10 + GPU)
+  '0': Quad Lite (GPU, No VPU) IMX8MQ5
+  '1': Dual (VPU decode + HDR10 + GPU) IMX8MD6
+  '2': Dual (VPU decode + Dolby Vision + HDR10 + GPU) IMX8MD7
+  '3': Quad (VPU decode + HDR10 + GPU) IMX8MQ6
+  '4': Quad (VPU decode + Dolby Vision + HDR10 + GPU) IMX8MQ7
+
+Taktrate:
+  '0': 1.3GHz
+  '1': 1.5GHz
 
 DDR:
-  '0': 512MB DDR3 RAM 1 Bank
-  '1': 1GB DDR3 RAM 1 Bank
-  '2': 1GB DDR3 RAM 1 Bank
-  '3': 2GB DDR3 RAM 1 Bank
-  '4': 4GB DDR3 RAM 1 Bank
-  '5': 6GB DDR3 RAM 1 Bank
-  '6': 8GB DDR3 RAM 1 Bank
+  '0': 512MB DDR4 RAM 1 Bank
+  '1': 1GB DDR4 RAM 1 Bank
+  '2': 1.5GB DDR4 RAM 1 Bank
+  '3': 2GB DDR4 RAM 1 Bank
+  '4': 3GB DDR4 RAM 1 Bank
+  '5': 4GB DDR4 RAM 1 Bank
+  '6': 6GB DDR4 RAM 1 Bank
+  '7': 8GB DDR4 RAM 1 Bank
 
-eMMC/NAND:
+eMMC:
   '0': No eMMC
-  '1': 512MB Nand
-  '2': 1GB Nand
-  '3': 4GB eMMC
-  '4': 8GB eMMC
-  '5': 16GB eMMC
-  '6': 32GB eMMC
-  '7': 64GB eMMC (only Commercial)
+  '1': 4GB eMMC
+  '2': 8GB eMMC
+  '3': 16GB eMMC
+  '4': 32GB eMMC
+  '5': 64GB eMMC (only Commercial)
+
+Quad SPI Nor:
+  '0': no SPI-Nor
+  '1': 4MB
+  '2': 16MB
+  '3': 32MB
+  '4': 64MB
 
 Ethernet:
   '0': RGMII
@@ -58,7 +72,6 @@ Ethernet:
 WLAN:
   '0': No WLAN
   '1': WLAN/Bluetooth Sterling Module
-  '2': WLAN/Bluetooth QCA Module
 
 Temp:
   C: Commercial 0C to +70C
