@@ -5,41 +5,23 @@ Copyright (C) 2017 PHYTEC America, LLC
 This tool is intended for reading from and writing to PHYTEC SOM EEPROM chips.
 
 Use of this tool requires a properly-formatted configuration file for each
-target PHYTEC platform (PCM-057.ini for PCM-057 boards, for example).
+target PHYTEC platform (PCM-057.yml for PCM-057 boards, for example).
 By default, this tool looks for configuration files in a 'configs' subdirectory
 to where the script is currently located.
 
 Usage:
 
-	phytec_eeprom_flashtool.py [(-d|--dir) DIR] <command>
+	phytec_eeprom_flashtool.py [-h] [-d [DIR]] {read,display,write} ...
 
-	-d or --dir <DIR> overrides the config directory (relative or absolute)
+PHYTEC SOM EEPROM configuration tool
 
-Commands:
+optional arguments:
+	-h, --help		show this help message and exit
+	-d [DIR], --dir [DIR]	Configuration directory
 
-	read <SOM>
+PHYTEC EEPROM commands:
+	{read,display,write}
+	read		Read EEPROM
+	display		Display verbose board configuration
+	write		Write EEPROM
 
-	Description:
-	Read command reads the EEPROM and prints the EEPROM contents and kit
-	options described by the <SOM>.ini file.
-
-	display <BOM> <PCB revision>
-
-	Description:
-	Display command parses the kit options, BOM revision, and PCB revision
-	and prints the resulting EEPROM contents without writing to the EEPROM.
-	This command is intended as a "dry run" for the write command.
-
-	write <BOM> <PCB revision>
-
-	Description:
-	Write command parses the kit options, BOM revision, and PCB revision
-	and writes them to the EEPROM.
-
-Examples:
-
-	phytec_eeprom_flashtool.py read PCM-057
-
-	phytec_eeprom_flashtool.py display PCM-057-40201111I.A0 3
-
-	phytec_eeprom_flashtool.py write PCM-057-KSP01.A2 4
