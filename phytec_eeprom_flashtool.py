@@ -152,7 +152,7 @@ def get_mac_addr():
 	except IOError as err:
 		print('Failed to get MAC address. Using default of ' \
 			'00:00:00:00:00:00.')
-		return '\x00\x00\x00\x00\x00\x00'
+		return b'\x00\x00\x00\x00\x00\x00'
 	return mac_str
 
 def count_eeprom_dict_bits():
