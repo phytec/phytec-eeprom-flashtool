@@ -134,7 +134,7 @@ def print_eeprom_dict():
 		print('Verbose kit options:')
 		for i in range(0, len(ep['kit_opt'][:-2])):
 			kit_opt = yml_parser['Kit'][i]
-			opt_str = str(ep['kit_opt'][i])
+			opt_str = yml_parser[kit_opt][ep['kit_opt'][i]]
 			print('%-20s\t%-40s' % (kit_opt, opt_str))
 		print()
 	except IOError as err:
