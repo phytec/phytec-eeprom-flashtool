@@ -20,9 +20,10 @@ def i2c_eeprom_init():
 	global eeprom_sysfs
 	try:
 		eeprom_sysfs = \
-			'/sys/class/i2c-dev/i2c-%d/device/%d-%s/eeprom' \
-			% (yml_parser['PHYTEC']['i2c_bus'], yml_parser['PHYTEC']['i2c_bus'],
-				yml_parser['PHYTEC']['i2c_dev'].zfill(4))
+			'/sys/class/i2c-dev/i2c-%s/device/%s-%s/eeprom' \
+			% (yml_parser['PHYTEC']['i2c_bus'],
+			   str(yml_parser['PHYTEC']['i2c_bus']),
+			   str(yml_parser['PHYTEC']['i2c_dev']).zfill(4))
 	except IOError as err:
 		sys.exit(err)
 
