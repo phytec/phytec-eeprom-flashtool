@@ -5,9 +5,10 @@ PHYTEC:
   eeprom_offset: 0
   eth_name: eth0
   i2c_bus: 0
-  i2c_dev: '50'
+  i2c_dev: 50
   kit_options: 9
   ep_encoding: '4B11s10x6sB'
+#ep_encoding-format: 4 uchars, 11-len str, 10-len pad, 6-len str/pad, 1 uchar
 
 Kit:
   0: DDR
@@ -25,6 +26,10 @@ Known:
   10200110I: A0
   10203110C: A0
   10203111I: A0
+  11302111I: A0
+  11304111I: A0
+  11305111I: A0
+  10306111I: A0
   40200110C: A0
   40201111I: A0
   40300111I: A0
@@ -58,7 +63,7 @@ eMMC/NAND:
   '3': 8GB eMMC
   '4': 16GB eMMC
   '5': 32GB eMMC
-  A: 1GB 8-bit NAND
+  'A': 1GB 8-bit NAND
 
 SPI:
   '0': No SPI NOR Flash
@@ -67,8 +72,11 @@ SPI:
 Controller:
   '0': TI AM5728 Controller
   '1': TI AM5726 Controller
-  '2': TI AM5718 Controller
+  '2': TI AM5749 Controller
   '3': TI AM5716 Controller
+  '4': TI AM5748 Controller
+  '5': TI AM5746 Controller
+  '6': TI AM5729 Controller
 
 EEPROM:
   '0': No EEPROM
@@ -83,15 +91,15 @@ RTC:
   '1': Real-Time Clock
 
 Temp:
-  I: Industrial -40C to +85C
-  C: Commercial 0C to +85C
+  'I': Industrial -40C to +85C
+  'C': Commercial 0C to +85C
 
 ep:
   api_version: None
-  som_pcb_version: None
+  som_pcb_rev: None
   ksp: None
   kspno: None
-  ksp_opt: None
+  kit_opt: None
   mac: None
   hw8: None
 
