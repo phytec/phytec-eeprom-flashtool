@@ -1,0 +1,94 @@
+# PCL-069 PHYTEC EEPROM Flashtool Config File
+# board: imx8mm phyboard polis
+# Copyright (C) 2020 PHYTEC
+
+PHYTEC:
+  eeprom_offset: 0x0
+  eth_name: 'eth0'
+  i2c_bus: 0
+  i2c_dev: 0x59
+  kit_options: 8
+  ep_encoding: '4B10s11x6xB'
+#ep_encoding-format: 4 uchars, 10-len str, 11-len pad, 6-len pad/str, 1 uchar
+
+Kit:
+  0: Controller Mini
+  1: Controller Nano
+  2: LPDDR
+  3: eMMC
+  4: Quad SPI Nor
+  5: Ethernet
+  6: Display
+  7: Temp
+
+Known:
+  1011011I: A0
+  0611010C: A0
+  1032311I: A0
+  1032411I: A0
+
+Controller Mini:
+  '0': Nano
+  '1': Quad (VPU, GPU)  IMX8MM6
+  '2': Quad Lite (No VPU, GPU) IMX8MM5
+  '3': Dual (VPU, GPU) IMX8MM4
+  '4': Dual Lite (No VPU, GPU) IMX8MM3
+  '5': Solo (VPU, GPU) IMX8MM2
+  '6': Solo Lite (No VPU, GPU) IMX8MM1
+  '7': Quad (VPU, GPU) IMX8MM5 With Immersiv3D
+  '8': Quad (VPU, GPU) IMX8MM5 With Immersiv3D plus Dolby Atmos
+  '9': Quad (VPU, GPU) IMX8MM5 With Immersiv3D plus Dolby Atmos & DTS
+  'A':  Quad (VPU, GPU) IMX8MM5 With Immersiv3D plus Dolby Atmos & AC4
+
+Controller Nano:
+  '0': Mini
+  '1': Quad (GPU) IMX8MN6
+  '2': Quad Lite (No GPU) IMX8MN5
+  '3': Dual (GPU) IMX8MN4
+  '4': Dual Lite (No GPU) IMX8MN3
+  '5': Solo (GPU) IMX8MN2
+  '6': Solo Lite (No GPU) IMX8MN1
+  '7': Quad (GPU) IMX8MN6 With Immersiv3D plus Dolby Atmos
+
+LPDDR:
+  '0': 512MB DDR4 RAM 1 Bank
+  '1': 1GB DDR4 RAM 1 Bank
+  '2': 1.5GB DDR4 RAM 1 Bank
+  '3': 2GB DDR4 RAM 1 Bank
+  '4': 3GB DDR4 RAM 1 Bank
+  '5': 4GB DDR4 RAM 1 Bank
+
+eMMC:
+  '0': No eMMC
+  '1': 4GB eMMC
+  '2': 8GB eMMC
+  '3': 16GB eMMC
+  '4': 32GB eMMC
+  '5': 64GB eMMC (only Commercial)
+
+Quad SPI Nor:
+  '0': no SPI-Nor
+  '1': 4MB
+  '2': 16MB
+  '3': 32MB
+  '4': 64MB
+
+Ethernet:
+  '0': RGMII
+  '1': 10/100/1000 ethernet PHY
+
+Display:
+  '0': MIPI DSI
+  '1': LVDS
+
+Temp:
+  C: Commercial 0C to +70C (1.8 GHz Mini, 1.5 GHz Nano)
+  I: Industrial -40C to +85C (1.6 GHz Mini, 1.4 GHz Nano)
+
+ep:
+  api_version: None
+  som_pcb_rev: None
+  ksp: None
+  kspno: None
+  kit_opt: None
+  hw8: None
