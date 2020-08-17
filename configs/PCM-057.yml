@@ -30,6 +30,7 @@ Known:
   11304111I: A0
   11305111I: A0
   10306111I: A0
+  32302111I: A0
   40200110C: A0
   40201111I: A0
   40300111I: A0
@@ -56,6 +57,7 @@ DDR:
 ECC:
   '0': No ECC
   '1': 256MB 8-bit ECC RAM (Bank 1)
+  '2': 512MB 8-bit ECC RAM (Bank 1)
 
 eMMC/NAND:
   '0': No eMMC/NAND
@@ -102,4 +104,3 @@ ep:
   kit_opt: None
   mac: None
   hw8: None
-
