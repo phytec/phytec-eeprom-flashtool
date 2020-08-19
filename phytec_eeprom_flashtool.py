@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (C) 2017-2019 PHYTEC America, LLC
+# Copyright (C) 2017-2020 PHYTEC America, LLC
 
 import argparse
 import os
@@ -9,7 +9,7 @@ import yaml
 import binascii
 
 # Defaults defined by the PHYTEC EEPROM API version
-api_version = 0
+api_version = 1
 eeprom_size = 32	# bytes
 max_kit_opts = 16
 min_bom_rev = 'A0'
@@ -162,11 +162,7 @@ def count_eeprom_dict_bits():
 	count += bin(ep['som_pcb_rev']).count('1')
 	count += bin(ep['ksp']).count('1')
 	count += bin(ep['kspno']).count('1')
-	for i in ep['kit_opt']:
-		if i.isalpha():
-			count += bin(ord(i)).count('1')
-		else:
-			count += bin(int(i)).count('1')
+	count += sum([bin(ord(x)).count('1') for x in ep['kit_opt']])
 	if 'mac' in ep:
 		count += sum([bin(x).count('1') for x in ep['mac']])
 	# reserved should always be zero padded so no more bits set
@@ -185,7 +181,9 @@ def dict_to_struct():
 		)
 		if 'mac' in ep:
 			eeprom_struct += struct.pack('6s', ep['mac'])
-		eeprom_struct += struct.pack('6xB', ep['hw8'])
+		else:
+			eeprom_struct += struct.pack('6x')
+		eeprom_struct += struct.pack('B', ep['hw8'])
 	except IOError as err:
 		sys.exit(err)
 
