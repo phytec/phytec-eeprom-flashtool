@@ -16,7 +16,7 @@ min_bom_rev = 'A0'
 
 yml_dir = '/configs/'
 
-def i2c_eeprom_init():
+def sysfs_eeprom_init():
 	global eeprom_sysfs
 	try:
 		eeprom_sysfs = \
@@ -27,7 +27,7 @@ def i2c_eeprom_init():
 	except IOError as err:
 		sys.exit(err)
 
-def eeprom_read(i2c_bus, i2c_dev, addr, num_bytes):
+def eeprom_read(addr, num_bytes):
 	try:
 		eeprom_file = open(eeprom_sysfs, 'rb')
 		eeprom_file.seek(addr)
@@ -37,7 +37,7 @@ def eeprom_read(i2c_bus, i2c_dev, addr, num_bytes):
 	except IOError as err:
 		sys.exit(err)
 
-def eeprom_write(i2c_bus, i2c_dev, addr, string):
+def eeprom_write(addr, string):
 	try:
 		eeprom_file = open(eeprom_sysfs, 'wb')
 		eeprom_file.seek(addr)
@@ -210,10 +210,9 @@ def struct_to_dict(eeprom_struct):
 		sys.exit(err)
 
 def read_som_config():
-	i2c_eeprom_init()
-	read_eeprom = eeprom_read(yml_parser['PHYTEC']['i2c_bus'],
-		yml_parser['PHYTEC']['i2c_dev'],
-		yml_parser['PHYTEC']['eeprom_offset'], eeprom_size)
+	sysfs_eeprom_init()
+	read_eeprom = eeprom_read(yml_parser['PHYTEC']['eeprom_offset'],
+		eeprom_size)
 	struct_to_dict(read_eeprom)
 	check_eeprom_dict()
 	print_eeprom_dict()
@@ -224,14 +223,14 @@ def display_som_config():
 	print_eeprom_dict()
 
 def write_som_config():
-	i2c_eeprom_init()
+	sysfs_eeprom_init()
 	load_som_config()
 	check_eeprom_dict()
 	write_eeprom = dict_to_struct()
-	eeprom_write(yml_parser['PHYTEC']['i2c_bus'], yml_parser['PHYTEC']['i2c_dev'],
-		yml_parser['PHYTEC']['eeprom_offset'], write_eeprom)
-	read_eeprom = eeprom_read(yml_parser['PHYTEC']['i2c_bus'], yml_parser['PHYTEC']['i2c_dev'],
-		yml_parser['PHYTEC']['eeprom_offset'], len(write_eeprom))
+	eeprom_write(yml_parser['PHYTEC']['eeprom_offset'],
+		write_eeprom)
+	read_eeprom = eeprom_read(yml_parser['PHYTEC']['eeprom_offset'],
+		len(write_eeprom))
 	if write_eeprom == read_eeprom:
 		print('EEPROM flash successful!')
 	else:
