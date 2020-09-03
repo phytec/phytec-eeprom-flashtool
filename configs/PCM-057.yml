@@ -5,7 +5,7 @@ PHYTEC:
   eeprom_offset: 0
   eth_name: eth0
   i2c_bus: 0
-  i2c_dev: 50
+  i2c_dev: 0x50
   kit_options: 9
   ep_encoding: '4B11s10x6sB'
 #ep_encoding-format: 4 uchars, 11-len str, 10-len pad, 6-len str/pad, 1 uchar
