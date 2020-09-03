@@ -23,7 +23,7 @@ def i2c_eeprom_init():
 			'/sys/class/i2c-dev/i2c-%s/device/%s-%s/eeprom' \
 			% (yml_parser['PHYTEC']['i2c_bus'],
 			   str(yml_parser['PHYTEC']['i2c_bus']),
-			   str(yml_parser['PHYTEC']['i2c_dev']).zfill(4))
+			   format(yml_parser['PHYTEC']['i2c_dev'], 'x').zfill(4))
 	except IOError as err:
 		sys.exit(err)
 
