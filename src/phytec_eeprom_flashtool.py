@@ -14,7 +14,7 @@ EEPROM_SIZE = 32    # bytes
 MAX_KIT_OPTS = 16
 MIN_BOM_REV = 'A0'
 
-YML_DIR = '/../configs/'
+YML_DIR = '../configs'
 
 def sysfs_eeprom_init():
     global eeprom_sysfs
@@ -50,11 +50,12 @@ def eeprom_write(addr, string):
 def open_som_config():
     global yml_parser
     try:
-        if not args.dir:
-            yml_path = os.path.abspath(args.dir) + '/'
+        if args.dir:
+            yml_path = os.path.abspath(args.dir)
         else:
-            yml_path = os.path.dirname(os.path.realpath(sys.argv[0])) + YML_DIR
-        config_file = open(yml_path + args.som + '.yml', 'r')
+            yml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), YML_DIR)
+        yml_file = os.path.join(yml_path, "{}.yml".format(args.som))
+        config_file = open(yml_file, 'r')
         yml_parser = yaml.load(config_file)
         config_file.close()
     except IOError as err:
