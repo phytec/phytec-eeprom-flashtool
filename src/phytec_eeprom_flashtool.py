@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-# Copyright (C) 2017-2020 PHYTEC America, LLC
+# Copyright (C) 2017-2021 PHYTEC America, LLC
 
 import argparse
 import os
 import struct
 import sys
-import yaml
 import binascii
+import yaml
 
 # Defaults defined by the PHYTEC EEPROM API version
-api_version = 1
-eeprom_size = 32    # bytes
-max_kit_opts = 16
-min_bom_rev = 'A0'
+API_VERSION = 1
+EEPROM_SIZE = 32    # bytes
+MAX_KIT_OPTS = 16
+MIN_BOM_REV = 'A0'
 
-yml_dir = '/../configs/'
+YML_DIR = '/../configs/'
 
 def sysfs_eeprom_init():
     global eeprom_sysfs
@@ -50,10 +50,10 @@ def eeprom_write(addr, string):
 def open_som_config():
     global yml_parser
     try:
-        if args.dir != None:
+        if not args.dir:
             yml_path = os.path.abspath(args.dir) + '/'
         else:
-            yml_path = os.path.dirname(os.path.realpath(sys.argv[0])) + yml_dir
+            yml_path = os.path.dirname(os.path.realpath(sys.argv[0])) + YML_DIR
         config_file = open(yml_path + args.som + '.yml', 'r')
         yml_parser = yaml.load(config_file)
         config_file.close()
@@ -62,7 +62,7 @@ def open_som_config():
 
 def load_som_config():
     try:
-        ep['api_version'] = api_version
+        ep['api_version'] = API_VERSION
         ep['som_pcb_rev'] = args.som_pcb_rev
         ep['kit_opt'] = args.options
         if ep['kit_opt'][:3] == 'KSP':
@@ -81,11 +81,11 @@ def load_som_config():
             ep['mac'] = get_mac_addr()
         ep['hw8'] = count_eeprom_dict_bits()
     except IOError as err:
-        sys.exit()
+        sys.exit(err)
 
 def check_eeprom_dict():
     try:
-        if ep['api_version'] != api_version:
+        if ep['api_version'] != API_VERSION:
             sys.exit('PHYTEC EEPROM API Version does not match script version!')
         if ep['som_pcb_rev'] < 0 or ep['som_pcb_rev'] > 9:
             sys.exit('Read PHYTEC EEPROM PCB Revision is out of bounds!')
@@ -101,7 +101,7 @@ def check_eeprom_dict():
             max_bom_rev = yml_parser['Known'][ksp_str]
         else:
             max_bom_rev = yml_parser['Known'][ep['kit_opt'][:-2]]
-        if ep['kit_opt'][-2:] < min_bom_rev or ep['kit_opt'][-2:] > max_bom_rev:
+        if ep['kit_opt'][-2:] < MIN_BOM_REV or ep['kit_opt'][-2:] > max_bom_rev:
             sys.exit('Read PHYTEC EEPROM SOM revision is out of bounds!')
     except IOError as err:
         sys.exit(err)
@@ -143,7 +143,7 @@ def get_mac_addr():
         mac_file.close()
         mac_read = mac_read.replace(':', '').strip()
         mac_str = binascii.unhexlify(mac_read)
-    except IOError as err:
+    except IOError as _:
         print('Failed to get MAC address. Using default of 00:00:00:00:00:00.')
         return b'\x00\x00\x00\x00\x00\x00'
     return mac_str
@@ -200,7 +200,7 @@ def struct_to_dict(eeprom_struct):
 
 def read_som_config():
     sysfs_eeprom_init()
-    read_eeprom = eeprom_read(yml_parser['PHYTEC']['eeprom_offset'], eeprom_size)
+    read_eeprom = eeprom_read(yml_parser['PHYTEC']['eeprom_offset'], EEPROM_SIZE)
     struct_to_dict(read_eeprom)
     check_eeprom_dict()
     print_eeprom_dict()
@@ -229,7 +229,7 @@ def format_args():
         args.som = '%s-%s' % (bom_split[0], bom_split[1])
         args.options = kit_opt_split[0]
         args.bom_rev = kit_opt_split[1]
-    except:
+    except IOError as err:
         sys.exit('BOM argument is malformed. Exiting.')
 
 def main():
