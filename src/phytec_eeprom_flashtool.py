@@ -14,7 +14,7 @@ eeprom_size = 32	# bytes
 max_kit_opts = 16
 min_bom_rev = 'A0'
 
-yml_dir = '/configs/'
+yml_dir = '/../configs/'
 
 def sysfs_eeprom_init():
 	global eeprom_sysfs
