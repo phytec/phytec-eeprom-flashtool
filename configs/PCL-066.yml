@@ -1,3 +1,4 @@
+---
 # PCL-066 PHYTEC EEPROM Flashtool Config File
 # board: imx8mq phyboard polaris
 # Copyright (C) 2019-2020 PHYTEC
@@ -9,7 +10,7 @@ PHYTEC:
   i2c_dev: 0x58
   kit_options: 8
   ep_encoding: '4B10s11x6xB'
-#ep_encoding-format: 4 uchars, 10-len str, 11-len pad, 6-len pad/str, 1 uchar
+# ep_encoding-format: 4 uchars, 10-len str, 11-len pad, 6-len pad/str, 1 uchar
 
 Kit:
   0: Controller

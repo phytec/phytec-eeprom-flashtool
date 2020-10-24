@@ -1,3 +1,4 @@
+---
 # PCM-057 PHYTEC EEPROM Flashtool Config File
 # Copyright (C) 2019-2020 PHYTEC
 
@@ -8,7 +9,7 @@ PHYTEC:
   i2c_dev: 0x50
   kit_options: 9
   ep_encoding: '4B11s10x6sB'
-#ep_encoding-format: 4 uchars, 11-len str, 10-len pad, 6-len str/pad, 1 uchar
+# ep_encoding-format: 4 uchars, 11-len str, 10-len pad, 6-len str/pad, 1 uchar
 
 Kit:
   0: DDR
@@ -42,9 +43,9 @@ Known:
   # KSP example:
   # KSP99: A0
 
-  #KSP:
-  # KSP example:
-  #KSP99: 40300111I
+  # KSP:
+  #  KSP example:
+  #  KSP99: 40300111I
 
 DDR:
   '0': 512MB DDR3 RAM 1 Bank

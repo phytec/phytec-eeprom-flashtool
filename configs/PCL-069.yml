@@ -1,3 +1,4 @@
+---
 # PCL-069 PHYTEC EEPROM Flashtool Config File
 # board: imx8mm phyboard polis
 # Copyright (C) 2020 PHYTEC
@@ -9,7 +10,7 @@ PHYTEC:
   i2c_dev: 0x59
   kit_options: 8
   ep_encoding: '4B10s11x6xB'
-#ep_encoding-format: 4 uchars, 10-len str, 11-len pad, 6-len pad/str, 1 uchar
+# ep_encoding-format: 4 uchars, 10-len str, 11-len pad, 6-len pad/str, 1 uchar
 
 Kit:
   0: Controller Mini
@@ -38,7 +39,7 @@ Controller Mini:
   '7': Quad (VPU, GPU) IMX8MM5 With Immersiv3D
   '8': Quad (VPU, GPU) IMX8MM5 With Immersiv3D plus Dolby Atmos
   '9': Quad (VPU, GPU) IMX8MM5 With Immersiv3D plus Dolby Atmos & DTS
-  'A':  Quad (VPU, GPU) IMX8MM5 With Immersiv3D plus Dolby Atmos & AC4
+  'A': Quad (VPU, GPU) IMX8MM5 With Immersiv3D plus Dolby Atmos & AC4
 
 Controller Nano:
   '0': Mini
