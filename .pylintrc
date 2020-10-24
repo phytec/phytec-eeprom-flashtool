@@ -1,0 +1,8 @@
+[MASTER]
+
+[MESSAGES CONTROL]
+
+[BASICS]
+
+[TYPECHECK]
+ignored-modules=yaml
