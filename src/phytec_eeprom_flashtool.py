@@ -15,6 +15,7 @@ MAX_KIT_OPTS = 16
 MIN_BOM_REV = 'A0'
 
 YML_DIR = '../configs'
+OUTPUT_DIR = '../output'
 
 def sysfs_eeprom_init():
     global eeprom_sysfs
@@ -43,6 +44,17 @@ def eeprom_write(addr, string):
         eeprom_file.seek(addr)
         eeprom_file.write(string)
         eeprom_file.flush()
+        eeprom_file.close()
+    except IOError as err:
+        sys.exit(err)
+
+def write_binary(string):
+    try:
+        output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), OUTPUT_DIR)
+        output_file = os.path.join(output_path, '%s-%s.%s'\
+                    % (args.som, args.options, ep['kit_opt'][-2:]))
+        eeprom_file = open(output_file, 'wb')
+        eeprom_file.write(string)
         eeprom_file.close()
     except IOError as err:
         sys.exit(err)
@@ -223,6 +235,13 @@ def write_som_config():
     else:
         print('EEPROM flash failed!')
 
+def create_binary():
+    load_som_config()
+    check_eeprom_dict()
+    print_eeprom_dict()
+    data_to_write = dict_to_struct()
+    write_binary(data_to_write)
+
 def format_args():
     try:
         bom_split = args.bom.split('-')
@@ -250,6 +269,10 @@ def main():
     write_parser.add_argument('bom', help='PXX-###-####.X# (or KSX##.X#) format.')
     write_parser.add_argument('som_pcb_rev', help='PCB Revision number.',
                               type=int, choices=range(0, 10))
+    create_parser = arg_subparser.add_parser('create', help='Create binary file')
+    create_parser.add_argument('bom', help='PXX-###-####.X# (or KSX##.X#) format.')
+    create_parser.add_argument('som_pcb_rev', help='PCB Revision number.',
+                               type=int, choices=range(0, 10))
 
     global args
     args = arg_parser.parse_args()
@@ -268,6 +291,8 @@ def main():
         display_som_config()
     if args.command == 'write':
         write_som_config()
+    if args.command == 'create':
+        create_binary()
 
 if __name__ == '__main__':
     main()
