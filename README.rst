@@ -45,6 +45,22 @@ Example:
 
     phytec_eeprom_flashtool.py write PCL-066-3022210I.A0 2
 
+Create
+******
+
+Creates a binary file which can then be written to the EEPROM chip with dd or via JTAG.
+It also dumps the complete configuration on the console.
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool.py create <bom> <pcb_rev>
+
+Example:
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool.py create PCL-066-3022210I.A0 2
+
 Display
 *******
 
