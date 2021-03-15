@@ -51,6 +51,8 @@ def eeprom_write(addr, string):
 def write_binary(string):
     try:
         output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), OUTPUT_DIR)
+        if not os.path.exists(output_path):
+            os.mkdir(output_path)
         output_file = os.path.join(output_path, '%s-%s.%s'\
                     % (args.som, args.options, ep['kit_opt'][-2:]))
         eeprom_file = open(output_file, 'wb')
