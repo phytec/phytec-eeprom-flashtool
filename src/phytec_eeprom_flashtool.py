@@ -61,13 +61,18 @@ def eeprom_read(yml_parser):
     except IOError as err:
         sys.exit(err)
 
-def eeprom_write(addr, string):
+def eeprom_write(string, yml_parser):
+    """ Write data to eeprom-id page.
+
+    Args:
+        string: 32-Byte string
+    """
     try:
-        eeprom_file = open(eeprom_sysfs, 'wb')
-        eeprom_file.seek(addr)
-        eeprom_file.write(string)
-        eeprom_file.flush()
-        eeprom_file.close()
+        eeprom_bus = SMBus(yml_parser['PHYTEC']['i2c_bus'], force=True)
+        i2c_dev = yml_parser['PHYTEC']['i2c_dev']
+        eeprom_offset = yml_parser['PHYTEC']['eeprom_offset']
+        eeprom_bus.write_i2c_block_data(i2c_dev, eeprom_offset, string, force=True)
+        eeprom_exit(eeprom_bus)
     except IOError as err:
         sys.exit(err)
 
@@ -185,23 +190,24 @@ def crc8_checksum_calc(eeprom_struct):
     crc8_sum = hash.hexdigest()
     return int(crc8_sum, 16)
 
-def dict_to_struct():
-    try:
-        length = len(yml_parser['PHYTEC']['ep_encoding'])
-        eeprom_struct = struct.pack(
-            yml_parser['PHYTEC']['ep_encoding'][:length-3],
-            ep['api_version'],
-            ep['som_pcb_rev'],
-            ep['ksp'],
-            ep['kspno'],
-            bytes(ep['kit_opt'], 'utf-8'),
-        )
-        eeprom_struct += struct.pack('6x')
-        ep['crc8'] = crc8_checksum_calc(eeprom_struct)
-        eeprom_struct += struct.pack('B', ep['crc8'])
-        print('%-20s:\t%-40s' % ('CRC8-Checksum', format(ep['crc8'], 'x')))
-    except IOError as err:
-        sys.exit(err)
+def dict_to_struct(yml_parser):
+    """ Pack the ep dict to a 32-Byte string. """
+    length = len(yml_parser['PHYTEC']['ep_encoding'])
+    eeprom_struct = struct.pack(
+        yml_parser['PHYTEC']['ep_encoding'][:length-3],
+        ep['api_version'],
+        ep['som_revision'],
+        ep['sub_revision'],
+        ep['som_type'],
+        ep['base_article_number'],
+        ep['ksp_number'],
+        ep['kit_opt_full'],
+        ep['bom_rev']
+    )
+    eeprom_struct += struct.pack(yml_parser['PHYTEC']['ep_encoding'][7:9])
+    ep['crc8'] = crc8_checksum_calc(eeprom_struct)
+    eeprom_struct += struct.pack('B', ep['crc8'])
+    print('%-20s:\t%-40s' % ('CRC8-Checksum', format(ep['crc8'], 'x')))
 
     return eeprom_struct
 
@@ -243,10 +249,11 @@ def display_som_config(args, yml_parser):
     load_som_config(args)
     print_eeprom_dict(args, yml_parser)
 
-def write_som_config():
+def write_som_config(args, yml_parser):
+    format_args(args)
     load_som_config(args)
-    write_eeprom = dict_to_struct()
-    eeprom_write(yml_parser['PHYTEC']['eeprom_offset'], write_eeprom)
+    eeprom_write(dict_to_struct(yml_parser), yml_parser)
+    print_eeprom_dict(args, yml_parser)
     print('EEPROM flash successful!')
 
 def create_binary():
