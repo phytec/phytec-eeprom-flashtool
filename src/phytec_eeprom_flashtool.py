@@ -7,6 +7,7 @@ import struct
 import sys
 import binascii
 import yaml
+import crc8
 
 # Defaults defined by the PHYTEC EEPROM API version
 API_VERSION = 1
@@ -96,7 +97,6 @@ def load_som_config():
             ep['ksp'] = 0
             ep['kspno'] = 0
         ep['kit_opt'] += args.bom_rev
-        ep['hw8'] = count_eeprom_dict_bits()
     except IOError as err:
         sys.exit(err)
 
@@ -111,7 +111,6 @@ def print_eeprom_dict():
         print('%-20s\t%-40d' % ('SOM PCB revision', ep['som_pcb_rev']))
         print('%-20s\t%-40d' % ('KSP style', ep['ksp']))
         print('%-20s\t%-40d' % ('KSP number', ep['kspno']))
-        print('%-20s\t%-40d' % ('Bits set', ep['hw8']))
         print()
         print('Verbose kit options:')
         for i in range(0, len(ep['kit_opt'][:-2])):
@@ -122,14 +121,12 @@ def print_eeprom_dict():
     except IOError as err:
         sys.exit(err)
 
-def count_eeprom_dict_bits():
-    count = 0
-    count += bin(ep['api_version']).count('1')
-    count += bin(ep['som_pcb_rev']).count('1')
-    count += bin(ep['ksp']).count('1')
-    count += bin(ep['kspno']).count('1')
-    count += sum([bin(ord(x)).count('1') for x in ep['kit_opt']])
-    return count
+def crc8_checksum_calc(eeprom_struct):
+    """ Create a crc8 checksum from the packed eeprom-data. """
+    hash = crc8.crc8()
+    hash.update(eeprom_struct)
+    crc8_sum = hash.hexdigest()
+    return int(crc8_sum, 16)
 
 def dict_to_struct():
     try:
@@ -143,7 +140,9 @@ def dict_to_struct():
             bytes(ep['kit_opt'], 'utf-8'),
         )
         eeprom_struct += struct.pack('6x')
-        eeprom_struct += struct.pack('B', ep['hw8'])
+        ep['crc8'] = crc8_checksum_calc(eeprom_struct)
+        eeprom_struct += struct.pack('B', ep['crc8'])
+        print('%-20s:\t%-40s' % ('CRC8-Checksum', format(ep['crc8'], 'x')))
     except IOError as err:
         sys.exit(err)
 
@@ -158,15 +157,16 @@ def struct_to_dict(eeprom_struct):
         ep['ksp'] = unpacked[2]
         ep['kspno'] = unpacked[3]
         ep['kit_opt'] = unpacked[4].decode('utf-8')
-        ep['hw8'] = unpacked[5]
+        ep['crc8'] = unpacked[5]
     except IOError as err:
         sys.exit(err)
 
 def read_som_config():
     sysfs_eeprom_init()
-    read_eeprom = eeprom_read(yml_parser['PHYTEC']['eeprom_offset'], EEPROM_SIZE)
-    struct_to_dict(read_eeprom)
+    eeprom_data = eeprom_read(yml_parser['PHYTEC']['eeprom_offset'], EEPROM_SIZE)
+    struct_to_dict(eeprom_data)
     print_eeprom_dict()
+    print('CRC8-Checksum correct if 0:', crc8_checksum_calc(eeprom_data))
 
 def display_som_config():
     load_som_config()
