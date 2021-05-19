@@ -96,8 +96,6 @@ def load_som_config():
             ep['ksp'] = 0
             ep['kspno'] = 0
         ep['kit_opt'] += args.bom_rev
-        if 'mac' in ep:
-            ep['mac'] = get_mac_addr()
         ep['hw8'] = count_eeprom_dict_bits()
     except IOError as err:
         sys.exit(err)
@@ -114,12 +112,6 @@ def print_eeprom_dict():
         print('%-20s\t%-40d' % ('KSP style', ep['ksp']))
         print('%-20s\t%-40d' % ('KSP number', ep['kspno']))
         print('%-20s\t%-40d' % ('Bits set', ep['hw8']))
-        if 'mac' in ep:
-            mac_str = binascii.hexlify(ep['mac'])
-            mac_str = str(mac_str).split('b', 1)
-            mac_str = mac_str[1]
-            mac_str = ':'.join(mac_str[i:i+2] for i in range(1, len(mac_str)-2, 2))
-            print('%-20s\t%-40s' % ('MAC address', mac_str))
         print()
         print('Verbose kit options:')
         for i in range(0, len(ep['kit_opt'][:-2])):
@@ -130,20 +122,6 @@ def print_eeprom_dict():
     except IOError as err:
         sys.exit(err)
 
-def get_mac_addr():
-    eth_name = yml_parser['PHYTEC']['eth_name']
-    try:
-        eth_sysfs = '/sys/class/net/%s/address' % (eth_name)
-        mac_file = open(eth_sysfs, 'r')
-        mac_read = mac_file.read()
-        mac_file.close()
-        mac_read = mac_read.replace(':', '').strip()
-        mac_str = binascii.unhexlify(mac_read)
-    except IOError as _:
-        print('Failed to get MAC address. Using default of 00:00:00:00:00:00.')
-        return b'\x00\x00\x00\x00\x00\x00'
-    return mac_str
-
 def count_eeprom_dict_bits():
     count = 0
     count += bin(ep['api_version']).count('1')
@@ -151,9 +129,6 @@ def count_eeprom_dict_bits():
     count += bin(ep['ksp']).count('1')
     count += bin(ep['kspno']).count('1')
     count += sum([bin(ord(x)).count('1') for x in ep['kit_opt']])
-    if 'mac' in ep:
-        count += sum([bin(x).count('1') for x in ep['mac']])
-    # reserved should always be zero padded so no more bits set
     return count
 
 def dict_to_struct():
@@ -167,10 +142,7 @@ def dict_to_struct():
             ep['kspno'],
             bytes(ep['kit_opt'], 'utf-8'),
         )
-        if 'mac' in ep:
-            eeprom_struct += struct.pack('6s', ep['mac'])
-        else:
-            eeprom_struct += struct.pack('6x')
+        eeprom_struct += struct.pack('6x')
         eeprom_struct += struct.pack('B', ep['hw8'])
     except IOError as err:
         sys.exit(err)
@@ -186,11 +158,7 @@ def struct_to_dict(eeprom_struct):
         ep['ksp'] = unpacked[2]
         ep['kspno'] = unpacked[3]
         ep['kit_opt'] = unpacked[4].decode('utf-8')
-        if 'mac' in ep:
-            ep['mac'] = unpacked[5]
-            ep['hw8'] = unpacked[6]
-        else:
-            ep['hw8'] = unpacked[5]
+        ep['hw8'] = unpacked[5]
     except IOError as err:
         sys.exit(err)
 
