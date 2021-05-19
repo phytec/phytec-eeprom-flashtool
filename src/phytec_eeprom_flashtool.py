@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # Copyright (C) 2017-2021 PHYTEC America, LLC
+""" PHYTEC-EEPROM-FLASHTOOL
+
+    The tool is supposed to create, write, read and display the hardware introspection
+    for our boards. The information is stored at a eeprom-id page and is necessary for
+    our bootloader to boot up with the correct configuration. It is also a way to verify
+    which board is used.
+
+"""
 
 import argparse
 import os
@@ -11,10 +19,9 @@ from smbus2 import SMBus, i2c_msg
 import crc8
 
 # Defaults defined by the PHYTEC EEPROM API version
-API_VERSION = 1
+API_VERSION = 2
 EEPROM_SIZE = 32    # bytes
-MAX_KIT_OPTS = 16
-MIN_BOM_REV = 'A0'
+MAX_KIT_OPTS = 17
 
 YML_DIR = '../configs'
 OUTPUT_DIR = '../output'
@@ -157,9 +164,9 @@ def load_som_config(args):
             sys.exit('KSX-number out of bounce.')
     ep['bom_rev'] = bytes(args.bom_rev, 'utf-8')
     ep['kit_opt'] = bytes(args.options, 'utf-8')
-    if len(ep['kit_opt']) <= 17:
+    if len(ep['kit_opt']) <= MAX_KIT_OPTS:
         ep['kit_opt_full'] = ep['kit_opt']
-        for i in range(len(ep['kit_opt']), 17):
+        for i in range(len(ep['kit_opt']), MAX_KIT_OPTS):
             ep['kit_opt_full'] += bytes('\0', 'utf-8')
 
 def print_eeprom_dict(args, yml_parser):
