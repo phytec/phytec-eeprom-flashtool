@@ -35,6 +35,17 @@ ep = {
     "crc8": None,
 }
 
+som = {
+    "PCM": 0x0,
+    "PCL": 0x1,
+    "KSP": 0x2,
+    "KSM": 0x3,
+    "PCM-KSP": 0x4,
+    "PCM-KSM": 0x5,
+    "PCL-KSP": 0x6,
+    "PCL-KSM": 0x7
+}
+
 def eeprom_read(yml_parser):
     """ Get i2c bus and i2c dev out of the config files.
         Read out the eeprom-id page.
@@ -91,25 +102,44 @@ def open_som_config(args):
     except IOError as err:
         sys.exit(err)
 
-def load_som_config():
-    try:
-        ep['api_version'] = API_VERSION
-        ep['som_pcb_rev'] = args.som_pcb_rev
-        ep['kit_opt'] = args.options
-        if ep['kit_opt'][:3] == 'KSP':
-            ep['ksp'] = 1
-            ep['kspno'] = int(ep['kit_opt'].split('KSP')[1])
-            ep['kit_opt'] = yml_parser['KSP'][ep['kit_opt']]
-        elif ep['kit_opt'][:3] == 'KSM':
-            ep['ksp'] = 2
-            ep['kspno'] = int(ep['kit_opt'].split('KSM')[1])
-            ep['kit_opt'] = yml_parser['KSP'][ep['kit_opt']]
+def load_som_config(args):
+    """ Load the argparser information to the ep dict with the correct type. """
+    ofset = ord('a') - 1
+    ep['api_version'] = API_VERSION
+    ep['som_revision'] = int(args.rev[0])
+    if args.rev[1] != '0':
+        ep['som_sub_revision'] = str(format((ord(args.rev[1]) - ofset),'04b'))
+    else:
+        ep['som_sub_revision'] = format(0, '04b')
+    ep['opttree_revision'] = format(int(args.opt), '04b')
+    ep['sub_revision'] = ep['opttree_revision'] + ep['som_sub_revision']
+    ep['sub_revision'] = int(ep['sub_revision'], 2)
+    ep['som_type'] = get_som_type(args)
+    if ep['som_type'] <= 1:
+        ep['base_article_number'] = int(args.som[4:])
+        ep['ksp_number'] = 0
+    elif ep['som_type'] <= 3:
+        if int(args.ksx[4:]) <= 255:
+            ep['base_article_number'] = int(args.ksx[4:])
+            ep['ksp_number'] = 0
         else:
-            ep['ksp'] = 0
-            ep['kspno'] = 0
-        ep['kit_opt'] += args.bom_rev
-    except IOError as err:
-        sys.exit(err)
+            ksp_bytes = '{0:{fill}16b}'.format(int(args.ksx[4:]), fill='0')
+            ksp_lower_byte = int(ksp_bytes[8:], 2)
+            ksp_higher_byte = int(ksp_bytes[:8], 2)
+            ep['base_article_number'] = int(ksp_lower_byte)
+            ep['ksp_number'] = int(ksp_higher_byte)
+    else:
+        ep['base_article_number'] = int(args.som[4:])
+        if int(args.ksx[4:]) <= 255:
+            ep['ksp_number'] = int(args.ksx[4:])
+        else:
+            sys.exit('KSX-number out of bounce.')
+    ep['bom_rev'] = bytes(args.bom_rev, 'utf-8')
+    ep['kit_opt'] = bytes(args.options, 'utf-8')
+    if len(ep['kit_opt']) <= 17:
+        ep['kit_opt_full'] = ep['kit_opt']
+        for i in range(len(ep['kit_opt']), 17):
+            ep['kit_opt_full'] += bytes('\0', 'utf-8')
 
 def print_eeprom_dict(args, yml_parser):
     """ Print out the data which the user enters. """
@@ -208,18 +238,19 @@ def read_som_config(args, yml_parser):
     print_eeprom_dict(args, yml_parser)
     print('CRC8-Checksum correct if 0:', crc8_checksum_calc(eeprom_data))
 
-def display_som_config():
-    load_som_config()
+def display_som_config(args, yml_parser):
+    format_args(args)
+    load_som_config(args)
     print_eeprom_dict(args, yml_parser)
 
 def write_som_config():
-    load_som_config()
+    load_som_config(args)
     write_eeprom = dict_to_struct()
     eeprom_write(yml_parser['PHYTEC']['eeprom_offset'], write_eeprom)
     print('EEPROM flash successful!')
 
 def create_binary():
-    load_som_config()
+    load_som_config(args)
     print_eeprom_dict(args, yml_parser)
     data_to_write = dict_to_struct()
     write_binary(data_to_write)
@@ -238,6 +269,21 @@ def format_args(args):
         args.bom_rev = kit_opt_split[1]
     except IOError as err:
         sys.exit('BOM argument is malformed. Exiting.')
+
+def get_som_type(args):
+    """ Choose the write SoM type to write it into the ep dict.
+
+    Returns:
+        hex value which will be written to the ep dict
+    """
+    if args.ksx and args.som:
+        som_type = '%s-%s' % (args.som[:3], args.ksx[:3])
+    elif args.ksx and not args.som:
+        som_type = args.ksx[:3]
+    else:
+        som_type = args.som[:3]
+
+    return som.get(som_type)
 
 operation = {
     "display": display_som_config,
