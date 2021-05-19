@@ -61,17 +61,21 @@ def write_binary(string):
     except IOError as err:
         sys.exit(err)
 
-def open_som_config():
-    global yml_parser
+def open_som_config(args):
+    """ Opens *.yml configuration files at the config dir. """
     try:
-        if args.dir:
-            yml_path = os.path.abspath(args.dir)
+        yml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), YML_DIR)
+        if args.som and not args.ksx:
+            yml_file = os.path.join(yml_path, "{}.yml".format(args.som))
+        elif not args.som and args.ksx:
+            yml_file = os.path.join(yml_path, "{}.yml".format(args.ksx))
         else:
-            yml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), YML_DIR)
-        yml_file = os.path.join(yml_path, "{}.yml".format(args.som))
+            yml_file = os.path.join(yml_path, "{}-{}.yml".format(args.som, args.ksx))
+
         config_file = open(yml_file, 'r')
-        yml_parser = yaml.load(config_file)
+        yml_parser = yaml.safe_load(config_file)
         config_file.close()
+        operation[args.operation](args, yml_parser)
     except IOError as err:
         sys.exit(err)
 
@@ -254,47 +258,30 @@ def format_args():
     except IOError as err:
         sys.exit('BOM argument is malformed. Exiting.')
 
+operation = {
+    "display": display_som_config,
+    "create": create_binary,
+    "read": read_som_config,
+    "write": write_som_config
+}
+
 def main():
-    arg_parser = argparse.ArgumentParser(description='PHYTEC SOM EEPROM configuration tool')
-    arg_parser.add_argument('-d', '--dir', help='Configuration directory',
-                            nargs='?', default=None, required=False)
-    arg_subparser = arg_parser.add_subparsers(title='PHYTEC EEPROM commands',
-                                              dest='command')
-    read_parser = arg_subparser.add_parser('read', help='Read EEPROM')
-    read_parser.add_argument('som', help='PXX-### format.')
-    display_parser = arg_subparser.add_parser('display', help='Display ' \
-                                              'verbose board configuration')
-    display_parser.add_argument('bom', help='PXX-###-####.X# (or KSX##.X#) format.')
-    display_parser.add_argument('som_pcb_rev', help='PCB Revision number.',
-                                type=int, choices=range(0, 10))
-    write_parser = arg_subparser.add_parser('write', help='Write EEPROM')
-    write_parser.add_argument('bom', help='PXX-###-####.X# (or KSX##.X#) format.')
-    write_parser.add_argument('som_pcb_rev', help='PCB Revision number.',
-                              type=int, choices=range(0, 10))
-    create_parser = arg_subparser.add_parser('create', help='Create binary file')
-    create_parser.add_argument('bom', help='PXX-###-####.X# (or KSX##.X#) format.')
-    create_parser.add_argument('som_pcb_rev', help='PCB Revision number.',
-                               type=int, choices=range(0, 10))
+    """ Set up parsing for commandline arguments. """
+    parser = argparse.ArgumentParser(description='PHYTEC SOM EEPROM configuration tool')
+    parser.add_argument('-o', '--operation', dest='operation', default='display',
+                       help='Tool operation', required=True, choices=['create', 'display',
+                       'read', 'write'])
+    parser.add_argument('-som', dest='som', nargs='?', default=None, help='PCX-### format')
+    parser.add_argument('-kit', dest='kit', help='Kitoptions from Optiontree')
+    parser.add_argument('-ksx', dest='ksx', nargs='?', default=None, help='KSX-####')
+    parser.add_argument('-rev', dest='rev', nargs='?', default='00', help='Board revision', type=str)
+    parser.add_argument('-opt', dest='opt', nargs='?', default=0, type=int, help='Optiontree revision')
+    args = parser.parse_args()
 
-    global args
-    args = arg_parser.parse_args()
+    if not (args.som or args.ksx):
+        parser.error('Either -som or -ksx or both need to be set.')
 
-    if args.command != 'read':
-        format_args()
-
-    open_som_config()
-
-    global ep
-    ep = yml_parser['ep']
-
-    if args.command == 'read':
-        read_som_config()
-    if args.command == 'display':
-        display_som_config()
-    if args.command == 'write':
-        write_som_config()
-    if args.command == 'create':
-        create_binary()
+    open_som_config(args)
 
 if __name__ == '__main__':
     main()
