@@ -102,29 +102,6 @@ def load_som_config():
     except IOError as err:
         sys.exit(err)
 
-def check_eeprom_dict():
-    try:
-        if ep['api_version'] != API_VERSION:
-            sys.exit('PHYTEC EEPROM API Version does not match script version!')
-        if ep['som_pcb_rev'] < 0 or ep['som_pcb_rev'] > 9:
-            sys.exit('Read PHYTEC EEPROM PCB Revision is out of bounds!')
-        if ep['ksp'] < 0 or ep['ksp'] > 2:
-            sys.exit('Read PHYTEC EEPROM KSP identifier is out of bounds!')
-        if len(ep['kit_opt']) != yml_parser['PHYTEC']['kit_options']+2:
-            sys.exit('Kit option has not the proper length!')
-        if ep['kit_opt'][:-2] not in yml_parser['Known']:
-            sys.exit('PHYTEC EEPROM kit options not valid within configuration file!')
-        if ep['ksp'] != 0:
-            ksp_str = 'KSP' if ep['ksp'] == 1 else 'KSM'
-            ksp_str += '%02d' % (ep['kspno'])
-            max_bom_rev = yml_parser['Known'][ksp_str]
-        else:
-            max_bom_rev = yml_parser['Known'][ep['kit_opt'][:-2]]
-        if ep['kit_opt'][-2:] < MIN_BOM_REV or ep['kit_opt'][-2:] > max_bom_rev:
-            sys.exit('Read PHYTEC EEPROM SOM revision is out of bounds!')
-    except IOError as err:
-        sys.exit(err)
-
 def print_eeprom_dict():
     try:
         print()
@@ -221,18 +198,15 @@ def read_som_config():
     sysfs_eeprom_init()
     read_eeprom = eeprom_read(yml_parser['PHYTEC']['eeprom_offset'], EEPROM_SIZE)
     struct_to_dict(read_eeprom)
-    check_eeprom_dict()
     print_eeprom_dict()
 
 def display_som_config():
     load_som_config()
-    check_eeprom_dict()
     print_eeprom_dict()
 
 def write_som_config():
     sysfs_eeprom_init()
     load_som_config()
-    check_eeprom_dict()
     write_eeprom = dict_to_struct()
     eeprom_write(yml_parser['PHYTEC']['eeprom_offset'], write_eeprom)
     read_eeprom = eeprom_read(yml_parser['PHYTEC']['eeprom_offset'], len(write_eeprom))
@@ -243,7 +217,6 @@ def write_som_config():
 
 def create_binary():
     load_som_config()
-    check_eeprom_dict()
     print_eeprom_dict()
     data_to_write = dict_to_struct()
     write_binary(data_to_write)
