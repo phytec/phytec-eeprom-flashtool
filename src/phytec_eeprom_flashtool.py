@@ -248,11 +248,16 @@ def create_binary():
     data_to_write = dict_to_struct()
     write_binary(data_to_write)
 
-def format_args():
+def format_args(args):
+    """ Bring the argparser parameters to a usable format. """
     try:
-        bom_split = args.bom.split('-')
-        kit_opt_split = bom_split[2].split('.')
-        args.som = '%s-%s' % (bom_split[0], bom_split[1])
+        if args.som:
+            som_split = args.som.split('-')
+        if len(args.rev) != 2:
+            args.rev = args.rev + '0'
+        if args.ksx:
+            ksx_split = args.ksx.split('-')
+        kit_opt_split = args.kit.split('.')
         args.options = kit_opt_split[0]
         args.bom_rev = kit_opt_split[1]
     except IOError as err:
