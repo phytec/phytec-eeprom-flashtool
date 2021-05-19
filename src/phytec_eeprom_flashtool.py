@@ -76,16 +76,32 @@ def eeprom_write(string, yml_parser):
     except IOError as err:
         sys.exit(err)
 
-def write_binary(string):
+def write_binary(string, args, yml_parser):
+    """ Creates a 32-Byte file which can be written to the eeprom-id page with dd.
+
+    Args:
+        string: 32-Byte string
+    """
     try:
         output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), OUTPUT_DIR)
         if not os.path.exists(output_path):
             os.mkdir(output_path)
-        output_file = os.path.join(output_path, '%s-%s.%s'\
-                    % (args.som, args.options, ep['kit_opt'][-2:]))
+        if ep['som_type'] <= 1:
+            output_file = os.path.join(output_path, '%s-%s.%s_%s%s_%d'\
+                    % (args.som, args.options, (ep['bom_rev']).decode('utf-8'),
+                      ep['som_revision'], args.rev[1], int(ep['opttree_revision'])))
+        elif ep['som_type'] <= 3:
+            output_file = os.path.join(output_path, '%s-%s.%s_%s%s_%d'\
+                    % (args.ksx, args.options, (ep['bom_rev']).decode('utf-8'),
+                      ep['som_revision'], args.rev[1], int(ep['opttree_revision'])))
+        else:
+            output_file = os.path.join(output_path, '%s-%s-%s.%s_%s%s_%d'\
+                     % (args.som, args.ksx, args.options, (ep['bom_rev']).decode('utf-8'),
+                       ep['som_revision'], args.rev[1], int(ep['opttree_revision'])))
+
         eeprom_file = open(output_file, 'wb')
+        eeprom_file.seek(yml_parser['PHYTEC']['eeprom_offset'])
         eeprom_file.write(string)
-        eeprom_file.close()
     except IOError as err:
         sys.exit(err)
 
@@ -256,11 +272,11 @@ def write_som_config(args, yml_parser):
     print_eeprom_dict(args, yml_parser)
     print('EEPROM flash successful!')
 
-def create_binary():
+def create_binary(args, yml_parser):
+    format_args(args)
     load_som_config(args)
+    write_binary(dict_to_struct(yml_parser), args, yml_parser)
     print_eeprom_dict(args, yml_parser)
-    data_to_write = dict_to_struct()
-    write_binary(data_to_write)
 
 def format_args(args):
     """ Bring the argparser parameters to a usable format. """
