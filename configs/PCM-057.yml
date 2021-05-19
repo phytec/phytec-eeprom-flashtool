@@ -8,8 +8,9 @@ PHYTEC:
   i2c_bus: 0
   i2c_dev: 0x50
   kit_options: 9
-  ep_encoding: '4B11s10x6sB'
-# ep_encoding-format: 4 uchars, 11-len str, 10-len pad, 6-len str/pad, 1 uchar
+  ep_encoding: '6B17s2s6xB'
+# ep_encoding_format:
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
 
 Kit:
   0: DDR
@@ -21,31 +22,6 @@ Kit:
   6: Ethernet
   7: RTC
   8: Temp
-
-Known:
-  00001100I: A0
-  10200110I: A0
-  10203110C: A0
-  10203111I: A1
-  11302111I: A0
-  11304111I: A0
-  11305111I: A0
-  10306111I: A0
-  32302111I: A0
-  40200110C: A0
-  40201111I: A0
-  40300111I: A0
-  41201111I: A1
-  41300111I: A2
-  40A00111I: A0
-  50201111I: A0
-  50500111I: A0
-  # KSP example:
-  # KSP99: A0
-
-  # KSP:
-  #  KSP example:
-  #  KSP99: 40300111I
 
 DDR:
   '0': 512MB DDR3 RAM 1 Bank
@@ -96,12 +72,3 @@ RTC:
 Temp:
   'I': Industrial -40C to +85C
   'C': Commercial 0C to +85C
-
-ep:
-  api_version: None
-  som_pcb_rev: None
-  ksp: None
-  kspno: None
-  kit_opt: None
-  mac: None
-  hw8: None

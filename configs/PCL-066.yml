@@ -9,8 +9,8 @@ PHYTEC:
   i2c_bus: 0
   i2c_dev: 0x58
   kit_options: 8
-  ep_encoding: '4B10s11x6xB'
-# ep_encoding-format: 4 uchars, 10-len str, 11-len pad, 6-len pad/str, 1 uchar
+  ep_encoding: '6B17s2s6xB'
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
 
 Kit:
   0: Controller
@@ -21,19 +21,6 @@ Kit:
   5: Ethernet
   6: WLAN
   7: Temp
-
-Known:
-  3022210I: A0
-  3032210I: A0
-  1112010C: A0
-  4054211I: A0
-  3112011I: A0
-  3133111I: A0
-  1012010I: A0
-  4054411I: A0
-  3032311I: A0
-  3112011C: A0
-  3133411C: A0
 
 Controller:
   '0': Quad Lite (GPU, No VPU) IMX8MQ5
@@ -82,11 +69,3 @@ WLAN:
 Temp:
   C: Commercial 0C to +70C
   I: Industrial -40C to +85C
-
-ep:
-  api_version: None
-  som_pcb_rev: None
-  ksp: None
-  kspno: None
-  kit_opt: None
-  hw8: None

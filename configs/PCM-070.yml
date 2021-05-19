@@ -9,8 +9,9 @@ PHYTEC:
   i2c_bus: 0
   i2c_dev: 0x59
   kit_options: 7
-  ep_encoding: '4B9s12x6xB'
-# ep_encoding-format: 4 uchars, 9-len str, 12-len pad, 6-len pad/str, 1 uchar
+  ep_encoding: '6B17s2s6xB'
+# ep_encoding_format:
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
 
 Kit:
   0: Controller
@@ -20,11 +21,6 @@ Kit:
   4: NOR-Flash
   5: Others
   6: Temp
-
-Known:
-  073243I: A0
-  0F3243I: A0
-  0F5443I: A0
 
 Controller:
   '0': Quad Core 1.6 GHz
@@ -99,11 +95,3 @@ Temp:
   C: Commercial 0C to +70C
   I: Industrial -40C to +85C
   X: Extended Consumer -20 to +70C
-
-ep:
-  api_version: None
-  som_pcb_rev: None
-  ksp: None
-  kspno: None
-  kit_opt: None
-  hw8: None

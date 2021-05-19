@@ -18,6 +18,22 @@ MIN_BOM_REV = 'A0'
 YML_DIR = '../configs'
 OUTPUT_DIR = '../output'
 
+# Buffer for eerprom data
+ep = {
+    "api_version": None,
+    "som_revision": None,
+    "sub_revision": None,
+    "som_sub_revision": None,
+    "opttree_revision": None,
+    "som_type": None,
+    "base_article_number": None,
+    "ksp_number": None,
+    "kit_opt": None,
+    "kit_opt_full": None,
+    "bom_rev": None,
+    "crc8": None,
+}
+
 def sysfs_eeprom_init():
     global eeprom_sysfs
     try:

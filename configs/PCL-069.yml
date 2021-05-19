@@ -9,8 +9,9 @@ PHYTEC:
   i2c_bus: 0
   i2c_dev: 0x59
   kit_options: 8
-  ep_encoding: '4B10s11x6xB'
-# ep_encoding-format: 4 uchars, 10-len str, 11-len pad, 6-len pad/str, 1 uchar
+  ep_encoding: '6B17s2s6xB'
+# ep_encoding_format:
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
 
 Kit:
   0: Controller Mini
@@ -21,12 +22,6 @@ Kit:
   5: Ethernet
   6: Display
   7: Temp
-
-Known:
-  1011011I: A0
-  0611010C: A0
-  1032311I: A0
-  1032411I: A0
 
 Controller Mini:
   '0': Nano
@@ -85,11 +80,3 @@ Display:
 Temp:
   C: Commercial 0C to +70C (1.8 GHz Mini, 1.5 GHz Nano)
   I: Industrial -40C to +85C (1.6 GHz Mini, 1.4 GHz Nano)
-
-ep:
-  api_version: None
-  som_pcb_rev: None
-  ksp: None
-  kspno: None
-  kit_opt: None
-  hw8: None
