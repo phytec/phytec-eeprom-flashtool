@@ -7,6 +7,7 @@ import struct
 import sys
 import binascii
 import yaml
+from smbus2 import SMBus, i2c_msg
 import crc8
 
 # Defaults defined by the PHYTEC EEPROM API version
@@ -34,24 +35,18 @@ ep = {
     "crc8": None,
 }
 
-def sysfs_eeprom_init():
-    global eeprom_sysfs
+def eeprom_read(yml_parser):
+    """ Get i2c bus and i2c dev out of the config files.
+        Read out the eeprom-id page.
+    """
     try:
-        eeprom_sysfs = \
-            '/sys/class/i2c-dev/i2c-%s/device/%s-%s/eeprom' \
-            % (yml_parser['PHYTEC']['i2c_bus'],
-               str(yml_parser['PHYTEC']['i2c_bus']),
-               format(yml_parser['PHYTEC']['i2c_dev'], 'x').zfill(4))
-    except IOError as err:
-        sys.exit(err)
-
-def eeprom_read(addr, num_bytes):
-    try:
-        eeprom_file = open(eeprom_sysfs, 'rb')
-        eeprom_file.seek(addr)
-        read_eeprom = eeprom_file.read(num_bytes)
-        eeprom_file.close()
-        return read_eeprom
+        eeprom_bus = SMBus(yml_parser['PHYTEC']['i2c_bus'], force=True)
+        i2c_dev = yml_parser['PHYTEC']['i2c_dev']
+        eeprom_offset = yml_parser['PHYTEC']['eeprom_offset']
+        eeprom_data = i2c_msg.read(i2c_dev, EEPROM_SIZE)
+        eeprom_bus.i2c_rdwr(eeprom_data)
+        eeprom_exit(eeprom_bus)
+        return bytes(eeprom_data)
     except IOError as err:
         sys.exit(err)
 
@@ -116,26 +111,42 @@ def load_som_config():
     except IOError as err:
         sys.exit(err)
 
-def print_eeprom_dict():
-    try:
-        print()
-        print('%s-%s.%s EEPROM contents and configuration [%s]:' % (args.som, ep['kit_opt'][:-2],
-                                                                    ep['kit_opt'][-2:],
-                                                                    args.command))
-        print()
-        print('%-20s\t%-40d' % ('API version', ep['api_version']))
-        print('%-20s\t%-40d' % ('SOM PCB revision', ep['som_pcb_rev']))
-        print('%-20s\t%-40d' % ('KSP style', ep['ksp']))
-        print('%-20s\t%-40d' % ('KSP number', ep['kspno']))
-        print()
-        print('Verbose kit options:')
-        for i in range(0, len(ep['kit_opt'][:-2])):
-            kit_opt = yml_parser['Kit'][i]
-            opt_str = yml_parser[kit_opt][ep['kit_opt'][i]]
-            print('%-20s\t%-40s' % (kit_opt, opt_str))
-        print()
-    except IOError as err:
-        sys.exit(err)
+def print_eeprom_dict(args, yml_parser):
+    """ Print out the data which the user enters. """
+    print()
+    if ep['som_type'] <=1:
+        print('%s-%s.%s EEPROM contents.' % (args.som, (ep['kit_opt'].decode('utf-8')),
+                                            (ep['bom_rev'].decode('utf-8'))))
+    elif ep['som_type'] <= 3:
+        print('%s-%s.%s EEPROM contents.' % (args.ksx, (ep['kit_opt'].decode('utf-8')),
+                                            (ep['bom_rev'].decode('utf-8'))))
+    else:
+        print('%s-%s-%s.%s EEPROM contents.' % (args.som, args.ksx,
+                         (ep['kit_opt'].decode('utf-8')), (ep['bom_rev'].decode('utf-8'))))
+    print()
+    print('%-20s:\t%-40d' % ('API version', ep['api_version']))
+    if args.operation == 'read':
+        print('%-20s:\t%-5d%-s' % ('SOM PCB revision', int(ep['som_revision']),
+                                  ep['som_sub_revision']))
+    else:
+        print('%-20s:\t%-5d%-s' % ('SOM PCB revision', int(ep['som_revision']),
+                                  str(args.rev[1])))
+    print('%-20s:\t%-40s' % ('Optiontree revision', args.opt))
+    if ep['som_type'] <= 1:
+        print('%-20s:\t%-40s' % ('SoM type', args.som[:3]))
+    elif ep['som_type'] <= 3:
+        print('%-20s:\t%-40s' % ('SoM type', args.ksx[:3]))
+    else:
+        print('%-20s:\t%-s-%s' % ('SoM type', args.som[:3], args.ksx[:3]))
+    print('%-20s\n%-20s:\t0x%-40s' % ('Base article number', 'KSX number low',
+                                     format(ep['base_article_number'], 'x')))
+    print('%-20s:\t0x%-40s' % ('KSX number high', format(ep['ksp_number'], 'x')))
+    print()
+    print('Verbose kit options:')
+    for i in range(0, yml_parser['PHYTEC']['kit_options']):
+        kit_opt = yml_parser['Kit'][i]
+        print('%-20s:\t%-40s' % (kit_opt, yml_parser[kit_opt][chr(ep['kit_opt'][i])]))
+    print()
 
 def crc8_checksum_calc(eeprom_struct):
     """ Create a crc8 checksum from the packed eeprom-data. """
@@ -164,44 +175,52 @@ def dict_to_struct():
 
     return eeprom_struct
 
-def struct_to_dict(eeprom_struct):
+def struct_to_dict(eeprom_struct, yml_parser):
+    """ Unpack the 32-byte string which is read out of the eeprom-id page. """
     try:
         unpacked = struct.unpack(yml_parser['PHYTEC']['ep_encoding'], eeprom_struct)
 
         ep['api_version'] = unpacked[0]
-        ep['som_pcb_rev'] = unpacked[1]
-        ep['ksp'] = unpacked[2]
-        ep['kspno'] = unpacked[3]
-        ep['kit_opt'] = unpacked[4].decode('utf-8')
-        ep['crc8'] = unpacked[5]
+        ep['som_revision'] = unpacked[1]
+        ep['sub_revision'] = unpacked[2]
+        ep['som_type'] = unpacked[3]
+        ep['base_article_number'] = unpacked[4]
+        ep['ksp_number'] = unpacked[5]
+        ep['kit_opt_full'] = unpacked[6]
+        ep['bom_rev'] = unpacked[7]
+        ep['crc8'] = unpacked[8]
+
+        ep['kit_opt'] = ep['kit_opt_full'][:yml_parser['PHYTEC']['kit_options']]
+        ep['sub_revision'] = format(ep['sub_revision'], '08b')
+        ep['som_sub_revision'] = ep['sub_revision'][4:]
+        ep['opttree_revision'] = int(ep['sub_revision'][:4])
+        ofset = ord('a') - 1
+        if int(ep['som_sub_revision']) != 0:
+            ep['som_sub_revision'] = chr(int(ep['som_sub_revision']) + ofset)
+        else:
+            ep['som_sub_revision'] = 0
     except IOError as err:
         sys.exit(err)
 
-def read_som_config():
-    sysfs_eeprom_init()
-    eeprom_data = eeprom_read(yml_parser['PHYTEC']['eeprom_offset'], EEPROM_SIZE)
-    struct_to_dict(eeprom_data)
-    print_eeprom_dict()
+def read_som_config(args, yml_parser):
+    eeprom_data = eeprom_read(yml_parser)
+    struct_to_dict(eeprom_data, yml_parser)
+    print_eeprom_dict(args, yml_parser)
     print('CRC8-Checksum correct if 0:', crc8_checksum_calc(eeprom_data))
 
 def display_som_config():
     load_som_config()
-    print_eeprom_dict()
+    print_eeprom_dict(args, yml_parser)
 
 def write_som_config():
-    sysfs_eeprom_init()
     load_som_config()
     write_eeprom = dict_to_struct()
     eeprom_write(yml_parser['PHYTEC']['eeprom_offset'], write_eeprom)
-    read_eeprom = eeprom_read(yml_parser['PHYTEC']['eeprom_offset'], len(write_eeprom))
-    if write_eeprom == read_eeprom:
-        print('EEPROM flash successful!')
-    else:
-        print('EEPROM flash failed!')
+    print('EEPROM flash successful!')
 
 def create_binary():
     load_som_config()
-    print_eeprom_dict()
+    print_eeprom_dict(args, yml_parser)
     data_to_write = dict_to_struct()
     write_binary(data_to_write)
 
@@ -226,6 +245,13 @@ operation = {
     "read": read_som_config,
     "write": write_som_config
 }
+
+def eeprom_exit(eeprom_bus):
+    """ Close i2c bus after read/write function. """
+    try:
+        eeprom_bus.close()
+    except IOError as err:
+        sys.exit(err)
 
 def main():
     """ Set up parsing for commandline arguments. """
