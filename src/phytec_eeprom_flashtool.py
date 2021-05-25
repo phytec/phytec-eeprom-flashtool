@@ -75,11 +75,15 @@ def eeprom_write(string, yml_parser):
         string: 32-Byte string
     """
     try:
-        eeprom_bus = SMBus(yml_parser['PHYTEC']['i2c_bus'], force=True)
-        i2c_dev = yml_parser['PHYTEC']['i2c_dev']
-        eeprom_offset = yml_parser['PHYTEC']['eeprom_offset']
-        eeprom_bus.write_i2c_block_data(i2c_dev, eeprom_offset, string, force=True)
-        eeprom_exit(eeprom_bus)
+        eeprom_bus = \
+            '/sys/class/i2c-dev/i2c-%s/device/%s-%s/eeprom' \
+            % (yml_parser['PHYTEC']['i2c_bus'], str(yml_parser['PHYTEC']['i2c_bus']),
+            format(yml_parser['PHYTEC']['i2c_dev'], 'x').zfill(4))
+        eeprom_file = open(eeprom_bus, 'wb')
+        eeprom_file.seek(yml_parser['PHYTEC']['eeprom_offset'])
+        eeprom_file.write(string)
+        eeprom_file.flush()
+        eeprom_file.close()
     except IOError as err:
         sys.exit(err)
 
