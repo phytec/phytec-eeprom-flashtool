@@ -11,71 +11,142 @@ to where the script is currently located.
 Usage
 #####
 
-This tool has three different modes and an optional argument to parse the config directory.
+This tool has four different modes and required/optional arguments.
 
 Read
 ****
 
-Reads the product configuration from an EEPROM chips and dumps it to the console. It takes the
-product name as parameter.
+Reads the product configuration from an EEPROM chips and dumps it to the console.
+It takes the required argument -o with the option read and the argument -som
+followed by the product name as parameter.
+Required arguments: -o read -som <som>
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py read <som>
+    phytec_eeprom_flashtool.py -o read -som <som>
+
+If the product configuration is made by a KSM/KSP or a PCM/PCL-KSM/KSP then the
+optional argument -ksx is used.
+
+For a pure KSM/KSX -ksx replaces the parameter -som.
+Required arguments: -o read -ksx <KSM/KSP>
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool.py -o read -ksx <KSP/KSX>
+
+If the product configuration is a PCM/PCL-KSM/KSP then -som is used to enter
+the PCM/PCL number and the argument -ksx is additionally specified.
+Required arguments: -o read -som <som> -ksx <KSM/KSP>
+
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool.py -o read -som <som> -ksx <KSP/KSX>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py read PCL-066
+    phytec_eeprom_flashtool.py -o read -som PCL-066
+    phytec_eeprom_flashtool.py -o read -ksx KSP-08
+    phytec_eeprom_flashtool.py -o read -som PCL-066 -ksx KSP-24
 
 Write
 *****
 
-Writes a product configuration to the EEPROM chip. This commands takes the article number and the
-PCB revision number as parameter.
+Writes a product configuration to the EEPROM chip.
+This commands takes the required argument -o write, the argument -som followed by
+the argument -kit for the article number.
+The -rev for the PCB revision and the -opt for the optiontree revision are optional
+and default 0.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py write <bom> <pcb_rev>
+    phytec_eeprom_flashtool.py -o write -som <som> -kit <bom>
+
+KSM/KSP:
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool.py -o write -ksx <KSM/KSP> -kit <bom>
+
+PCM/PCL-KSM/KSP:
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool.py -o write -som <som> -ksx <KSM/KSP> -kit <bom>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py write PCL-066-3022210I.A0 2
+    phytec_eeprom_flashtool.py -o write -som PCL-066 -kit 3022210I.A0
+    phytec_eeprom_flashtool.py -o write -ksx KSP-08 3322115I.A0
+    phytec_eeprom_flashtool.py -o write -som PCL-066 -ksx KSP-24 3022210I.A0
 
 Create
 ******
 
-Creates a binary file which can then be written to the EEPROM chip with dd or via JTAG.
+Creates a binary file at the output directory which can then be written to the
+EEPROM chip with dd or via JTAG.
 It also dumps the complete configuration on the console.
+The necessary and optional arguments are the same as for the write command.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py create <bom> <pcb_rev>
+    phytec_eeprom_flashtool.py -o create -som <som> -kit <bom>
+
+KSM/KSP:
+
+.. code-block:: bash
+
+   phytec_eeprom_flashtool.py -o create -ksx <KSM/KSP> -kit <bom>
+
+PCM/PCL-KSM/KSP:
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool.py -o create -som <som> -ksx <KSM/KSP> -kit <bom>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py create PCL-066-3022210I.A0 2
+    phytec_eeprom_flashtool.py -o create -som PCL-066 -kit 3022210I.A0
+    phytec_eeprom_flashtool.py -o create -ksx KSP-08
+    phytec_eeprom_flashtool.py -o create -som PCL-066 -ksx KSP-24 3022210I.A0
+
 
 Display
 *******
 
-Dumps the complete configuration on the console without communicating with a EEPROM chip. It takes
-the article number and the PCB revision number as paraemter.
+Dumps the complete configuration on the console without communicating with a
+EEPROM chip. It takes same arguments as for create or write.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py display <bom> <pcb_rev>
+    phytec_eeprom_flashtool.py -o display -som <som> -kit <bom>
+
+KSM/KSP:
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool.py -o display -ksx <KSM/KSP> -kit <bom>
+
+PCM/PCL-KSM/KSP:
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool.py -o display -som <som> -kit <bom> -ksx <KSM/KSP>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py display PCL-066-3022210I.A0 2
+    phytec_eeprom_flashtool.py -o display -som PCL-066 -kit 3022210I.A0
+    phytec_eeprom_flashtool.py -o display -ksx KSP-08 3322115I.A0
+    phytec_eeprom_flashtool.py -o display -som PCL-066 -ksx KSP-24 3022210I.A0
 
 License
 #######
