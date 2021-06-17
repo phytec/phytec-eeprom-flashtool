@@ -15,7 +15,6 @@ import struct
 import sys
 import binascii
 import yaml
-from smbus2 import SMBus, i2c_msg
 import crc8
 
 # Defaults defined by the PHYTEC EEPROM API version
@@ -58,12 +57,15 @@ def eeprom_read(yml_parser):
         Read out the eeprom-id page.
     """
     try:
-        eeprom_bus = SMBus(yml_parser['PHYTEC']['i2c_bus'], force=True)
-        i2c_dev = yml_parser['PHYTEC']['i2c_dev']
-        eeprom_offset = yml_parser['PHYTEC']['eeprom_offset']
-        eeprom_data = i2c_msg.read(i2c_dev, EEPROM_SIZE)
-        eeprom_bus.i2c_rdwr(eeprom_data)
-        eeprom_exit(eeprom_bus)
+        eeprom_bus = \
+                '/sys/class/i2c-dev/i2c-%s/device/%s-%s/eeprom' \
+                % (yml_parser['PHYTEC']['i2c_bus'], str(yml_parser['PHYTEC']['i2c_bus']),
+                format(yml_parser['PHYTEC']['i2c_dev'], 'x').zfill(4))
+
+        eeprom_file = open(eeprom_bus, 'rb')
+        eeprom_file.seek(yml_parser['PHYTEC']['eeprom_offset'])
+        eeprom_data = eeprom_file.read(EEPROM_SIZE)
+        eeprom_file.close()
         return bytes(eeprom_data)
     except IOError as err:
         sys.exit(err)
