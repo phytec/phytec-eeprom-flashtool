@@ -101,15 +101,15 @@ def write_binary(string, args, yml_parser):
             os.mkdir(output_path)
         if ep['som_type'] <= 1:
             output_file = os.path.join(output_path, '%s-%s.%s_%s%s_%d'\
-                    % (args.som, args.options, (ep['bom_rev']).decode('utf-8'),
+                    % (args.som, args.kit, (ep['bom_rev']).decode('utf-8'),
                       ep['som_revision'], args.rev[1], int(ep['opttree_revision'])))
         elif ep['som_type'] <= 3:
             output_file = os.path.join(output_path, '%s-%s.%s_%s%s_%d'\
-                    % (args.ksx, args.options, (ep['bom_rev']).decode('utf-8'),
+                    % (args.ksx, args.kit, (ep['bom_rev']).decode('utf-8'),
                       ep['som_revision'], args.rev[1], int(ep['opttree_revision'])))
         else:
             output_file = os.path.join(output_path, '%s-%s-%s.%s_%s%s_%d'\
-                     % (args.som, args.ksx, args.options, (ep['bom_rev']).decode('utf-8'),
+                     % (args.som, args.ksx, args.kit, (ep['bom_rev']).decode('utf-8'),
                        ep['som_revision'], args.rev[1], int(ep['opttree_revision'])))
 
         eeprom_file = open(output_file, 'wb')
@@ -168,8 +168,8 @@ def load_som_config(args):
             ep['ksp_number'] = int(args.ksx[4:])
         else:
             sys.exit('KSX-number out of bounce.')
-    ep['bom_rev'] = bytes(args.bom_rev, 'utf-8')
-    ep['kit_opt'] = bytes(args.options, 'utf-8')
+    ep['bom_rev'] = bytes(args.bom, 'utf-8')
+    ep['kit_opt'] = bytes(args.kit, 'utf-8')
     if len(ep['kit_opt']) <= MAX_KIT_OPTS:
         ep['kit_opt_full'] = ep['kit_opt']
         for i in range(len(ep['kit_opt']), MAX_KIT_OPTS):
@@ -300,9 +300,6 @@ def format_args(args):
             args.rev = args.rev + '0'
         if args.ksx:
             ksx_split = args.ksx.split('-')
-        kit_opt_split = args.kit.split('.')
-        args.options = kit_opt_split[0]
-        args.bom_rev = kit_opt_split[1]
     except IOError as err:
         sys.exit('BOM argument is malformed. Exiting.')
 
@@ -345,6 +342,7 @@ def main():
     parser.add_argument('-kit', dest='kit', help='Kitoptions from Optiontree')
     parser.add_argument('-ksx', dest='ksx', nargs='?', default=None, help='KSX-####')
     parser.add_argument('-rev', dest='rev', nargs='?', default='00', help='Board revision', type=str)
+    parser.add_argument('-bom', dest='bom', nargs='?', default='00', help='BoM revision', type=str)
     parser.add_argument('-opt', dest='opt', nargs='?', default=0, type=int, help='Optiontree revision')
     args = parser.parse_args()
 
