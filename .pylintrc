@@ -5,4 +5,4 @@
 [BASICS]
 
 [TYPECHECK]
-ignored-modules=yaml
+ignored-modules=yaml,crc8
