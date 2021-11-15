@@ -1,0 +1,33 @@
+name: Publish Repo Selectively
+on: [push, workflow_dispatch]
+env:
+  BRANCHES: "master release/v1"
+jobs:
+  publish:
+    name: "Publish Repo Selectively"
+    runs-on: [self-hosted, Linux]
+    steps:
+    - name: check out repo
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: setup ssh keys
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_SYNC_KEY }}
+    - name: setup push target
+      shell: bash
+      run: |
+        repo=${{ github.repository }}
+        pub_repo_url=git@github.com:${repo:0:-4}.git
+        git remote set-url --push origin ${pub_repo_url}
+    - name: pushing selected branches
+      shell: bash
+      run: |
+        branches=( $BRANCHES )
+        for i in "${branches[@]}"; do
+          echo "syncing branch $i"
+          git checkout -B $i origin/$i
+          git push origin HEAD:$i
+        done
+
