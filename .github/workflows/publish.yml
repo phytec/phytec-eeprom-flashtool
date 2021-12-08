@@ -28,6 +28,6 @@ jobs:
         for i in "${branches[@]}"; do
           echo "syncing branch $i"
           git checkout -B $i origin/$i
-          git push origin HEAD:$i
+          git push origin --follow-tags HEAD:$i
         done
 
