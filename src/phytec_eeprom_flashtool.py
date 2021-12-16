@@ -127,7 +127,7 @@ def open_som_config(args):
         elif not args.som and args.ksx:
             yml_file = os.path.join(yml_path, "{}.yml".format(args.ksx))
         else:
-            yml_file = os.path.join(yml_path, "{}-{}.yml".format(args.som, args.ksx))
+            yml_file = os.path.join(yml_path, "{}.yml".format(args.som))
 
         config_file = open(yml_file, 'r')
         yml_parser = yaml.safe_load(config_file)
