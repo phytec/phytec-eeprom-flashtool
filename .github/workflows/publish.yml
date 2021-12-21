@@ -27,14 +27,14 @@ jobs:
         branches=( $BRANCHES )
         for i in "${branches[@]}"; do
           # check if configured branch exists
-          ret=$(git branch | grep -w "${branches[$i]}")
+          ret=$(git branch | grep -w "^  ${i}$")
           if [ $? -gt 0 ]; then
-            echo "ERROR: expected branch ${branches[$i]} does not exist in local clone!"
+            echo "ERROR: expected branch ${i} does not exist in local clone!"
             exit 1
           fi
 
-          echo "syncing branch $i"
-          git checkout -B $i origin/$i
-          git push origin --follow-tags HEAD:$i
+          echo "syncing branch ${i}"
+          git checkout -B $i origin/${i}
+          git push origin --follow-tags HEAD:${i}
         done
 
