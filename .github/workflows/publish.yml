@@ -27,9 +27,9 @@ jobs:
         branches=( $BRANCHES )
         for i in "${branches[@]}"; do
           # check if configured branch exists
-          ret=$(git branch | grep -w "^. ${i}$")
+          ret=$(git branch -r | grep -w "origin/${i}$")
           if [ $? -gt 0 ]; then
-            echo "ERROR: expected branch ${i} does not exist in local clone!"
+            echo "ERROR: expected branch ${i} does not exist on remote!"
             exit 1
           fi
 
