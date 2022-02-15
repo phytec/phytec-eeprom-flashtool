@@ -65,7 +65,8 @@ Ethernet:
 
 WLAN:
   '0': No WLAN
-  '1': WLAN/Bluetooth Sterling Module
+  '1': WLAN/Bluetooth Sterling Module, Chip Antenna
+  '2': WLAN/Bluetooth Sterling Module, U.FL Conn.
 
 Temp:
   C: Commercial 0C to +70C
