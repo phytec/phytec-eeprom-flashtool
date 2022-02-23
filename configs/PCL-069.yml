@@ -76,8 +76,11 @@ Ethernet:
 
 Display:
   '0': MIPI DSI
-  '1': LVDS
+  '1': LVDS (TI Chip)
+  '2': no display interface
+  '3': LVDS Alternative (Toshiba Chip)
 
 Temp:
   C: Commercial 0C to +70C (1.8 GHz Mini, 1.5 GHz Nano)
   I: Industrial -40C to +85C (1.6 GHz Mini, 1.4 GHz Nano)
+  X: Extended -25C to +85C
