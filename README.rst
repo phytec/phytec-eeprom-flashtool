@@ -8,6 +8,30 @@ target PHYTEC platform (PCM-057.yml for PCM-057 boards, for example).
 By default, this tool looks for configuration files in a 'configs' subdirectory
 to where the script is currently located.
 
+Installation
+############
+
+- The packets virtualenv must be installed on your distribution::
+
+        apt install virtualenv
+
+- Clone the repository locally::
+
+        git clone git@github.com:phytec/phytec-eeprom-flashtool.git
+        cd phytec-eeprom-flashtool
+
+- Create a virtualenv::
+
+        virtualenv -p python3 venv
+        . venv/bin/activate
+
+- Install all dependencies::
+
+        pip install -r requirements.txt
+
+You can leave the virtualenv by running ``deactivate`` in the bash. Do not
+forget to source the virtualenv again next time you want to use it.
+
 Usage
 #####
 
