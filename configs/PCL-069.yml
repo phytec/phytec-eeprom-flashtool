@@ -61,7 +61,7 @@ eMMC:
   '2': 8GB eMMC
   '3': 16GB eMMC
   '4': 32GB eMMC
-  '5': 64GB eMMC (only Commercial)
+  '5': 64GB eMMC
 
 Quad SPI Nor:
   '0': no SPI-Nor
