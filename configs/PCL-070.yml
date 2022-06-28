@@ -1,0 +1,98 @@
+---
+# PCL-070 PHYTEC EEPROM Flashtool Config File
+# board: imx8mp phyboard pollux
+# Copyright (C) 2019-2022 PHYTEC
+
+PHYTEC:
+  eeprom_offset: 0x0
+  eth_name: 'eth0'
+  i2c_bus: 0
+  # i2c_dev: 0x59
+  i2c_dev: 0x51
+  kit_options: 7
+  ep_encoding: '6B17s2s6xB'
+# ep_encoding_format:
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
+
+Kit:
+  0: Controller
+  1: Processor variants
+  2: DDR
+  3: eMMC
+  4: NOR-Flash
+  5: Others
+  6: Temp
+
+Controller:
+  '0': Quad Core 1.6 GHz
+  '1': Quad Core 1.8 GHz
+  '2': Dual Core 1.6 GHz
+  '3': Dual Core 1.8 GHz
+
+Processor variants:
+  '0': CAN
+  '1': NPU/CAN
+  '2': ISP/CAN
+  '3': NPU/ISP/CAN
+  '4': VPU/CAN
+  '5': NPU/VPU/CAN
+  '6': ISP/VPU/CAN
+  '7': NPU/ISP/VPU/CAN
+  '8': CAN-FD
+  '9': NPU/CAN-FD
+  'A': ISP/CAN-FD
+  'B': NPU/ISP/CAN-FD
+  'C': VPU/CAN-FD
+  'D': NPU/VPU/CAN-FD
+  'E': ISP/VPU/CAN-FD
+  'F': NPU/ISP/VPU/CAN-FD
+
+DDR:
+  '0': 256MB DDR4 RAM
+  '1': 512MB DDR4 RAM
+  '2': 1GB DDR4 RAM
+  '3': 2GB DDR4 RAM
+  '4': 3GB DDR4 RAM
+  '5': 4GB DDR4 RAM
+  '6': 6GB DDR4 RAM
+  '7': 8GB DDR4 RAM
+
+eMMC:
+  '0': No eMMC
+  '1': 4GB eMMC
+  '2': 8GB eMMC
+  '3': 16GB eMMC
+  '4': 32GB eMMC
+  '5': 64GB eMMC
+
+NOR-Flash:
+  '0': no NOR
+  '1': 8MB
+  '2': 16MB
+  '3': 32MB
+  '4': 64MB
+  '5': 128MB
+  '6': 256MB
+
+Others:
+  '0': RTC
+  '1': Gbit Ethernet
+  '2': Opt. Connector
+  '3': Gbit Ethernet/Opt. Connector
+  '4': No RTC
+  '5': Gbit Ethernet/No RTC
+  '6': Opt. Connector/No RTC
+  '7': Gbit Ehternet/Opt. connector/No RTC
+  '8': RTC/Coated
+  '9': Gbit Ethernet/RTC/Coated
+  'A': Opt. Connector/RTC/Coated
+  'B': Gbit Ethernet/Opt. Conenctor/RTC/Coated
+  'C': No RTC/Coated
+  'D': Gbit Ethernet/No RTC/Coated
+  'E': Opt. Connector/NO RTC/Coated
+  'F': Gbit Ethernet/Opt. Connector/No RTC/Coated
+
+Temp:
+  C: Commercial 0C to +70C
+  I: Industrial -40C to +85C
+  X: Extended Consumer -20 to +70C
