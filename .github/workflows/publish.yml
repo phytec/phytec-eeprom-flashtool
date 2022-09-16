@@ -12,7 +12,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: setup ssh keys
-      uses: webfactory/ssh-agent@v0.5.3
+      uses: webfactory/ssh-agent@fc49353b67b2b7c1e0e6a600572d01a69f2672dd #v0.5.4
       with:
         ssh-private-key: ${{ secrets.SSH_SYNC_KEY }}
     - name: setup push target
