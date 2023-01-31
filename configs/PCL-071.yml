@@ -1,0 +1,76 @@
+---
+# PCL-071 PHYTEC EEPROM Flashtool Config File
+# board: am62xx phyboard lyra
+# Copyright (C) 2019-2023 PHYTEC
+
+PHYTEC:
+  eeprom_offset: 0x0
+  eth_name: 'eth0'
+  i2c_bus: 0
+  i2c_dev: 0x50
+  kit_options: 7
+  ep_encoding: '6B17s2s6xB'
+# ep_encoding_format:
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
+
+Kit:
+  0: AM62nx
+  1: AM62xn
+  2: PRU
+  3: DDR-Ram
+  4: eMMC
+  5: NOR-Flash
+  6: Ethernet
+  7: RTC
+  8: Temperature
+
+# This options defines the first digit of the SOC part number after 62
+AM62nx:
+  '3': AM623x
+  '5': AM625x
+
+# This options defines the second digit of the SOC part number after 62
+AM62xn:
+  '1': AM62x1
+  '2': AM62x2
+  '4': AM62x4
+
+PRU:
+  '0': no PRU
+  '3': 2 PRUs
+
+DDR-Ram:
+  '0': 512 MB (DDR4)
+  '1': 1 GB (DDR4)
+  '2': 2 GB (DDR4)
+  '4': 4 GB (DDR4)
+
+eMMC:
+  '0': No eMMC
+  A: 4GB eMMC
+  B: 8GB eMMC
+  C: 16GB eMMC
+  D: 32GB eMMC
+  E: 64GB eMMC
+  F: 128GB eMMC
+
+NOR-Flash:
+  '0': no NOR
+  A: 8MB
+  B: 16MB
+  C: 32MB
+  D: 64MB
+  E: 128MB
+  F: 256MB
+
+Ethernet:
+  '0': No Ethernet Phy
+  '1': 10/100/1000MBit Ethernet Phy
+
+RTC:
+  '0': No RTC
+  '1': External RTC
+
+Temperature:
+  C: Consumer Temp
+  I: Industrial Temp

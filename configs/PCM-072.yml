@@ -1,0 +1,75 @@
+---
+# PCM-072 PHYTEC EEPROM Flashtool Config File
+# board: am64xx phyboard electra
+# Copyright (C) 2019-2023 PHYTEC
+
+PHYTEC:
+  eeprom_offset: 0x0
+  eth_name: 'eth0'
+  i2c_bus: 0
+  i2c_dev: 0x50
+  kit_options: 7
+  ep_encoding: '6B17s2s6xB'
+# ep_encoding_format:
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
+
+Kit:
+  0: Processor Cortex-R5
+  1: Processor Cortex-A53
+  2: Additional Processor Features
+  3: DDR-Ram
+  4: eMMC
+  5: NOR-Flash
+  6: Ethernet
+  7: RTC
+  8: Temperature
+
+Processor Cortex-R5:
+  '1': Single Core
+  '2': Dual Core
+  '4': Dual Core (2x)
+
+Processor Cortex-A53:
+  '1': Single Core
+  '2': Dual Core
+
+Additional Processor Features:
+  A: Not Defined Yet
+  B: Not Defined Yet
+  C: Not Defined Yet
+  D: Not Defined Yet
+
+DDR-Ram:
+  '0': 512 MB (DDR4)
+  '1': 1 GB (DDR4)
+  '2': 2 GB (DDR4)
+
+eMMC:
+  '0': No eMMC
+  A: 4GB eMMC
+  B: 8GB eMMC
+  C: 16GB eMMC
+  D: 32GB eMMC
+  E: 64GB eMMC
+  F: 128GB eMMC
+
+NOR-Flash:
+  '0': no NOR
+  A: 8MB
+  B: 16MB
+  C: 32MB
+  D: 64MB
+  E: 128MB
+  F: 256MB
+
+Ethernet:
+  '0': No Ethernet Phy
+  '1': 10/100/1000MBit Ethernet Phy
+
+RTC:
+  '0': No RTC
+  '1': External RTC
+
+Temperature:
+  C: Consumer Temp
+  I: Industrial Temp
