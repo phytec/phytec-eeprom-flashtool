@@ -73,7 +73,7 @@ Example:
 .. code-block:: bash
 
     phytec_eeprom_flashtool.py -o read -som PCL-066
-    phytec_eeprom_flashtool.py -o read -ksx KSP-08
+    phytec_eeprom_flashtool.py -o read -ksx KSP08
     phytec_eeprom_flashtool.py -o read -som PCL-066 -ksx KSP-24
 
 Write
@@ -106,8 +106,8 @@ Example:
 .. code-block:: bash
 
     phytec_eeprom_flashtool.py -o write -som PCL-066 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool.py -o write -ksx KSP-08 -kit 3322115I -bom A0
-    phytec_eeprom_flashtool.py -o write -som PCL-066 -ksx KSP-24 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool.py -o write -ksx KSP08 -kit 3322115I -bom A0
+    phytec_eeprom_flashtool.py -o write -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
 
 Create
 ******
@@ -138,8 +138,8 @@ Example:
 .. code-block:: bash
 
     phytec_eeprom_flashtool.py -o create -som PCL-066 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool.py -o create -ksx KSP-08 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool.py -o create -som PCL-066 -ksx KSP-24 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool.py -o create -ksx KSP08 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool.py -o create -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
 
 
 Display
@@ -169,8 +169,8 @@ Example:
 .. code-block:: bash
 
     phytec_eeprom_flashtool.py -o display -som PCL-066 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool.py -o display -ksx KSP-08 -kit 3322115I -bom A0
-    phytec_eeprom_flashtool.py -o display -som PCL-066 -ksx KSP-24 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool.py -o display -ksx KSP08 -kit 3322115I -bom A0
+    phytec_eeprom_flashtool.py -o display -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
 
 License
 #######
