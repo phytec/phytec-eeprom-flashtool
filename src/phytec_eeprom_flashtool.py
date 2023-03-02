@@ -150,22 +150,22 @@ def load_som_config(args):
     ep['sub_revision'] = int(ep['sub_revision'], 2)
     ep['som_type'] = get_som_type(args)
     if ep['som_type'] <= 1:
-        ep['base_article_number'] = int(args.som[4:])
+        ep['base_article_number'] = int(args.som[3:])
         ep['ksp_number'] = 0
     elif ep['som_type'] <= 3:
         if int(args.ksx[4:]) <= 255:
-            ep['base_article_number'] = int(args.ksx[4:])
+            ep['base_article_number'] = int(args.ksx[3:])
             ep['ksp_number'] = 0
         else:
-            ksp_bytes = '{0:{fill}16b}'.format(int(args.ksx[4:]), fill='0')
+            ksp_bytes = '{0:{fill}16b}'.format(int(args.ksx[3:]), fill='0')
             ksp_lower_byte = int(ksp_bytes[8:], 2)
             ksp_higher_byte = int(ksp_bytes[:8], 2)
             ep['base_article_number'] = int(ksp_lower_byte)
             ep['ksp_number'] = int(ksp_higher_byte)
     else:
         ep['base_article_number'] = int(args.som[4:])
-        if int(args.ksx[4:]) <= 255:
-            ep['ksp_number'] = int(args.ksx[4:])
+        if int(args.ksx[3:]) <= 255:
+            ep['ksp_number'] = int(args.ksx[3:])
         else:
             sys.exit('KSX-number out of bounce.')
     ep['bom_rev'] = bytes(args.bom, 'utf-8')
@@ -298,8 +298,8 @@ def format_args(args):
             som_split = args.som.split('-')
         if len(args.rev) != 2:
             args.rev = args.rev + '0'
-        if args.ksx:
-            ksx_split = args.ksx.split('-')
+        #if args.ksx:
+         #   ksx_split = args.ksx.split('-')
     except IOError as err:
         sys.exit('BOM argument is malformed. Exiting.')
 
