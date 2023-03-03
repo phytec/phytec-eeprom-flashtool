@@ -150,7 +150,7 @@ def load_som_config(args):
     ep['sub_revision'] = int(ep['sub_revision'], 2)
     ep['som_type'] = get_som_type(args)
     if ep['som_type'] <= 1:
-        ep['base_article_number'] = int(args.som[3:])
+        ep['base_article_number'] = int(args.som[4:])
         ep['ksp_number'] = 0
     elif ep['som_type'] <= 3:
         if int(args.ksx[4:]) <= 255:
@@ -298,8 +298,6 @@ def format_args(args):
             som_split = args.som.split('-')
         if len(args.rev) != 2:
             args.rev = args.rev + '0'
-        #if args.ksx:
-         #   ksx_split = args.ksx.split('-')
     except IOError as err:
         sys.exit('BOM argument is malformed. Exiting.')
 
