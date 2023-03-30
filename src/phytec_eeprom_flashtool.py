@@ -53,20 +53,19 @@ som = {
 }
 
 def eeprom_read(args, yml_parser):
-    """ Get i2c bus and i2c dev out of the config files.
-        Read out the eeprom-id page.
+    """ Read eeprom data from the i2c eeprom or if '-file' parameter was passed from a binary file
     """
     try:
         offset = 0
-        eeprom_bus = args.file
-        if eeprom_bus == "":
-            eeprom_bus = \
+        eeprom_bin_location = args.file
+        if eeprom_bin_location == "":
+            eeprom_bin_location = \
                     '/sys/class/i2c-dev/i2c-%s/device/%s-%s/eeprom' \
                     % (yml_parser['PHYTEC']['i2c_bus'], str(yml_parser['PHYTEC']['i2c_bus']),
                     format(yml_parser['PHYTEC']['i2c_dev'], 'x').zfill(4))
             offset = yml_parser['PHYTEC']['eeprom_offset']
 
-        eeprom_file = open(eeprom_bus, 'rb')
+        eeprom_file = open(eeprom_bin_location, 'rb')
         eeprom_file.seek(offset)
         eeprom_data = eeprom_file.read(EEPROM_SIZE)
         eeprom_file.close()

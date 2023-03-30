@@ -41,6 +41,7 @@ Read
 ****
 
 Reads the product configuration from an EEPROM chips and dumps it to the console.
+Alternatively it can read a binary file by passing the filename via -file argument.
 It takes the required argument -o with the option read and the argument -som
 followed by the product name as parameter.
 Required arguments: -o read -som <som>
@@ -75,6 +76,7 @@ Example:
     phytec_eeprom_flashtool.py -o read -som PCL-066
     phytec_eeprom_flashtool.py -o read -ksx KSP08
     phytec_eeprom_flashtool.py -o read -som PCL-066 -ksx KSP-24
+    phytec_eeprom_flashtool.py -o read -som PCL-066 -file binary_file.bin
 
 Write
 *****
