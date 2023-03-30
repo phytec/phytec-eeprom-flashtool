@@ -52,18 +52,22 @@ som = {
     "PCL-KSM": 0x7
 }
 
-def eeprom_read(yml_parser):
+def eeprom_read(args, yml_parser):
     """ Get i2c bus and i2c dev out of the config files.
         Read out the eeprom-id page.
     """
     try:
-        eeprom_bus = \
-                '/sys/class/i2c-dev/i2c-%s/device/%s-%s/eeprom' \
-                % (yml_parser['PHYTEC']['i2c_bus'], str(yml_parser['PHYTEC']['i2c_bus']),
-                format(yml_parser['PHYTEC']['i2c_dev'], 'x').zfill(4))
+        offset = 0
+        eeprom_bus = args.file
+        if eeprom_bus == "":
+            eeprom_bus = \
+                    '/sys/class/i2c-dev/i2c-%s/device/%s-%s/eeprom' \
+                    % (yml_parser['PHYTEC']['i2c_bus'], str(yml_parser['PHYTEC']['i2c_bus']),
+                    format(yml_parser['PHYTEC']['i2c_dev'], 'x').zfill(4))
+            offset = yml_parser['PHYTEC']['eeprom_offset']
 
         eeprom_file = open(eeprom_bus, 'rb')
-        eeprom_file.seek(yml_parser['PHYTEC']['eeprom_offset'])
+        eeprom_file.seek(offset)
         eeprom_data = eeprom_file.read(EEPROM_SIZE)
         eeprom_file.close()
         return bytes(eeprom_data)
@@ -268,7 +272,7 @@ def struct_to_dict(eeprom_struct, yml_parser):
         sys.exit(err)
 
 def read_som_config(args, yml_parser):
-    eeprom_data = eeprom_read(yml_parser)
+    eeprom_data = eeprom_read(args, yml_parser)
     struct_to_dict(eeprom_data, yml_parser)
     print_eeprom_dict(args, yml_parser)
     print('CRC8-Checksum correct if 0:', crc8_checksum_calc(eeprom_data))
@@ -342,6 +346,7 @@ def main():
     parser.add_argument('-rev', dest='rev', nargs='?', default='00', help='Board revision', type=str)
     parser.add_argument('-bom', dest='bom', nargs='?', default='00', help='BoM revision', type=str)
     parser.add_argument('-opt', dest='opt', nargs='?', default=0, type=int, help='Optiontree revision')
+    parser.add_argument('-file', dest='file', nargs='?', default="", type=str, help='Binary file to be read')
     args = parser.parse_args()
 
     if not (args.som or args.ksx):
