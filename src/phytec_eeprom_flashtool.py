@@ -16,6 +16,7 @@ import sys
 import binascii
 import yaml
 import crc8
+import re
 
 # Defaults defined by the PHYTEC EEPROM API version
 API_VERSION = 2
@@ -105,15 +106,15 @@ def write_binary(string, args, yml_parser):
         if ep['som_type'] <= 1:
             output_file = os.path.join(output_path, '%s-%s.%s_%s%s_%d'\
                     % (args.som, args.kit, (ep['bom_rev']).decode('utf-8'),
-                      ep['som_revision'], args.rev[1], int(ep['opttree_revision'])))
+                      ep['som_revision'], sub_revision_to_str(ep['som_sub_revision']), int(ep['opttree_revision'])))
         elif ep['som_type'] <= 3:
             output_file = os.path.join(output_path, '%s-%s.%s_%s%s_%d'\
                     % (args.ksx, args.kit, (ep['bom_rev']).decode('utf-8'),
-                      ep['som_revision'], args.rev[1], int(ep['opttree_revision'])))
+                      ep['som_revision'], sub_revision_to_str(ep['som_sub_revision']), int(ep['opttree_revision'])))
         else:
             output_file = os.path.join(output_path, '%s-%s-%s.%s_%s%s_%d'\
                      % (args.som, args.ksx, args.kit, (ep['bom_rev']).decode('utf-8'),
-                       ep['som_revision'], args.rev[1], int(ep['opttree_revision'])))
+                       ep['som_revision'], sub_revision_to_str(ep['som_sub_revision']), int(ep['opttree_revision'])))
 
         eeprom_file = open(output_file, 'wb')
         eeprom_file.seek(yml_parser['PHYTEC']['eeprom_offset'])
@@ -141,13 +142,8 @@ def open_som_config(args):
 
 def load_som_config(args):
     """ Load the argparser information to the ep dict with the correct type. """
-    ofset = ord('a') - 1
     ep['api_version'] = API_VERSION
-    ep['som_revision'] = int(args.rev[0])
-    if args.rev[1] != '0':
-        ep['som_sub_revision'] = str(format((ord(args.rev[1]) - ofset),'04b'))
-    else:
-        ep['som_sub_revision'] = format(0, '04b')
+    ep['som_revision'], ep['som_sub_revision'] = str_to_revision(args.rev)
     ep['opttree_revision'] = format(int(args.opt), '04b')
     ep['sub_revision'] = ep['opttree_revision'] + ep['som_sub_revision']
     ep['sub_revision'] = int(ep['sub_revision'], 2)
@@ -192,13 +188,9 @@ def print_eeprom_dict(args, yml_parser):
                          (ep['kit_opt'].decode('utf-8')), (ep['bom_rev'].decode('utf-8'))))
     print()
     print('%-20s:\t%-40d' % ('API version', ep['api_version']))
-    if args.operation == 'read':
-        print('%-20s:\t%-5d%-s' % ('SOM PCB revision', int(ep['som_revision']),
-                                  ep['som_sub_revision']))
-    else:
-        print('%-20s:\t%-5d%-s' % ('SOM PCB revision', int(ep['som_revision']),
-                                  str(args.rev[1])))
-    print('%-20s:\t%-40s' % ('Optiontree revision', args.opt))
+    print('%-20s:\t%-5d%-s' % ('SOM PCB revision', int(ep['som_revision']),
+                              ep['som_sub_revision']))
+    print('%-20s:\t%-40s' % ('Optiontree revision', ep['opttree_revision']))
     if ep['som_type'] <= 1:
         print('%-20s:\t%-40s' % ('SoM type', args.som[:3]))
     elif ep['som_type'] <= 3:
@@ -261,14 +253,34 @@ def struct_to_dict(eeprom_struct, yml_parser):
         ep['kit_opt'] = ep['kit_opt_full'][:yml_parser['PHYTEC']['kit_options']]
         ep['sub_revision'] = format(ep['sub_revision'], '08b')
         ep['som_sub_revision'] = ep['sub_revision'][4:]
-        ep['opttree_revision'] = int(ep['sub_revision'][:4])
-        ofset = ord('a') - 1
-        if int(ep['som_sub_revision']) != 0:
-            ep['som_sub_revision'] = chr(int(ep['som_sub_revision']) + ofset)
-        else:
-            ep['som_sub_revision'] = 0
+        ep['opttree_revision'] = int(ep['sub_revision'][:4], 2)
+        ep['som_sub_revision'] = sub_revision_to_str(ep['som_sub_revision'])
     except IOError as err:
         sys.exit(err)
+
+def sub_revision_to_str(sub_revision):
+    if int(sub_revision) != 0:
+        ofset = ord('a') - 1
+        if isinstance(sub_revision, str):
+            sub_revision = chr(int(sub_revision, 2) + ofset)
+    else:
+        sub_revision = "0"
+    return sub_revision
+
+def str_to_revision(revision_str):
+    ofset = ord('a') - 1
+    rev_digits = len(revision_str)
+    rev_digits_re = re.search(r'[^0-9]',revision_str)
+    if rev_digits_re != None:
+        rev_digits = rev_digits_re.start()
+    revision = int(revision_str[0:rev_digits])
+    sub_revision = 0
+    if len(revision_str) > rev_digits:
+        sub_revision = ord(revision_str[rev_digits]) - ofset
+    sub_revision = format(sub_revision, '04b')
+    if int(sub_revision, 2) > 15:
+        raise IOError("PCB subversion has to be a character between 'a' and 'o'!")
+    return revision, sub_revision
 
 def read_som_config(args, yml_parser):
     eeprom_data = eeprom_read(args, yml_parser)
@@ -279,19 +291,25 @@ def read_som_config(args, yml_parser):
 def display_som_config(args, yml_parser):
     format_args(args)
     load_som_config(args)
+    eeprom_data = dict_to_struct(yml_parser)
+    struct_to_dict(eeprom_data, yml_parser)
     print_eeprom_dict(args, yml_parser)
 
 def write_som_config(args, yml_parser):
     format_args(args)
     load_som_config(args)
-    eeprom_write(dict_to_struct(yml_parser), yml_parser)
+    eeprom_data = dict_to_struct(yml_parser)
+    eeprom_write(eeprom_data, yml_parser)
+    struct_to_dict(eeprom_data, yml_parser)
     print_eeprom_dict(args, yml_parser)
     print('EEPROM flash successful!')
 
 def create_binary(args, yml_parser):
     format_args(args)
     load_som_config(args)
-    write_binary(dict_to_struct(yml_parser), args, yml_parser)
+    eeprom_data = dict_to_struct(yml_parser)
+    write_binary(eeprom_data, args, yml_parser)
+    struct_to_dict(eeprom_data, yml_parser)
     print_eeprom_dict(args, yml_parser)
 
 def format_args(args):
@@ -299,10 +317,13 @@ def format_args(args):
     try:
         if args.som:
             som_split = args.som.split('-')
-        if len(args.rev) != 2:
-            args.rev = args.rev + '0'
     except IOError as err:
         sys.exit('BOM argument is malformed. Exiting.')
+    try:
+        if args.rev:
+            str_to_revision(args.rev)
+    except IOError as err:
+        sys.exit(err)
 
 def get_som_type(args):
     """ Choose the write SoM type to write it into the ep dict.
