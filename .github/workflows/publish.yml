@@ -1,40 +1,7 @@
-name: Publish Repo Selectively
 on: [push, workflow_dispatch]
-env:
-  BRANCHES: "main release/v1"
 jobs:
-  publish:
-    name: "Publish Repo Selectively"
-    runs-on: [self-hosted, Linux]
-    steps:
-    - name: check out repo
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: setup ssh keys
-      uses: webfactory/ssh-agent@fc49353b67b2b7c1e0e6a600572d01a69f2672dd #v0.5.4
-      with:
-        ssh-private-key: ${{ secrets.SSH_SYNC_KEY }}
-    - name: setup push target
-      shell: bash
-      run: |
-        repo=${{ github.repository }}
-        pub_repo_url=git@github.com:${repo:0:-4}.git
-        git remote set-url --push origin ${pub_repo_url}
-    - name: pushing selected branches
-      shell: bash
-      run: |
-        branches=( $BRANCHES )
-        for i in "${branches[@]}"; do
-          # check if configured branch exists
-          ret=$(git branch -r | grep -w "origin/${i}$")
-          if [ $? -gt 0 ]; then
-            echo "ERROR: expected branch ${i} does not exist on remote!"
-            exit 1
-          fi
-
-          echo "syncing branch ${i}"
-          git checkout -B $i origin/${i}
-          git push origin --follow-tags HEAD:${i}
-        done
-
+  call_selective_push:
+    uses: phytec/gh-action-tools/.github/workflows/selective-push.yml@main
+    with:
+      BRANCHES: "main release/v1"
+    secrets: inherit
