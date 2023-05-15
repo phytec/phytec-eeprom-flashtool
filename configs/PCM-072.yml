@@ -47,22 +47,22 @@ DDR-Ram:
   '2': 2 GB (DDR4)
 
 eMMC:
-  '0': No eMMC
   A: 4GB eMMC
   B: 8GB eMMC
   C: 16GB eMMC
   D: 32GB eMMC
   E: 64GB eMMC
   F: 128GB eMMC
+  X: No eMMC
 
 NOR-Flash:
-  '0': no NOR
-  A: 8MB
-  B: 16MB
-  C: 32MB
-  D: 64MB
-  E: 128MB
-  F: 256MB
+  A: 16MB (Quad)
+  B: 32MB (Quad)
+  C: 64MB (Quad)
+  D: 32MB (Octal)
+  E: 64MB (Octal)
+  F: 128MB (Octal)
+  X: no NOR
 
 Ethernet:
   '0': No Ethernet Phy
