@@ -1,0 +1,80 @@
+---
+# PCL-075 PHYTEC EEPROM Flashtool Config File
+# board: am62axx phyboard lyra
+# Copyright (C) 2019-2023 PHYTEC
+
+PHYTEC:
+  eeprom_offset: 0x0
+  eth_name: 'eth0'
+  i2c_bus: 0
+  i2c_dev: 0x50
+  kit_options: 9
+  ep_encoding: '6B17s2s6xB'
+# ep_encoding_format:
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
+
+Kit:
+  0: AM62Anx
+  1: AM62Axn
+  2: Features
+  3: DDR-Ram
+  4: eMMC
+  5: NOR-Flash
+  6: Ethernet
+  7: RTC
+  8: Temperature
+
+# This options defines the first digit of the SOC part number after 62A
+# Deep Learning Accelerator
+AM62Anx:
+  '3': AM62A3x (Up to 1 TOPS)
+  '7': AM62A7x (Up to 2 TOPS)
+
+# This options defines the second digit of the SOC part number after 62A
+AM62Axn:
+  '1': AM62Ax1 (Single Core)
+  '2': AM62Ax2 (Dual Core)
+  '4': AM62Ax4 (Quad Core)
+
+Features:
+  '0': Low Speed, no JPEG Encoder
+  '1': Low Speed, JPEG Encoder
+  '2': High Speed, no JPEG Encoder
+  '3': High Speed, JPEG Encoder
+
+DDR-Ram:
+  '0': 512 MB (LPDDR4)
+  '1': 1 GB (LPDDR4)
+  '2': 2 GB (LPDDR4)
+  '4': 4 GB (LPDDR4)
+  '8': 8 GB (LPDDR4)
+
+eMMC:
+  A: 4GB eMMC
+  B: 8GB eMMC
+  C: 16GB eMMC
+  D: 32GB eMMC
+  E: 64GB eMMC
+  F: 128GB eMMC
+  X: No eMMC
+
+NOR-Flash:
+  A: 8MB
+  B: 16MB
+  C: 32MB
+  D: 64MB
+  E: 128MB
+  F: 256MB
+  X: no NOR
+
+Ethernet:
+  '0': No Ethernet Phy
+  '1': 10/100/1000MBit Ethernet Phy
+
+RTC:
+  '0': No RTC
+  '1': External RTC
+
+Temperature:
+  C: Consumer Temp
+  I: Industrial Temp
