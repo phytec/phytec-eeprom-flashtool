@@ -202,7 +202,7 @@ def print_eeprom_dict(args, yml_parser):
     print('%-20s:\t0x%-40s' % ('KSX number high', format(ep['ksp_number'], 'x')))
     print()
     print('Verbose kit options:')
-    for i in range(0, yml_parser['PHYTEC']['kit_options']):
+    for i in range(0, len(yml_parser['Kit'])):
         kit_opt = yml_parser['Kit'][i]
         print('%-20s:\t%-40s' % (kit_opt, yml_parser[kit_opt][chr(ep['kit_opt'][i])]))
     print()
@@ -250,7 +250,7 @@ def struct_to_dict(eeprom_struct, yml_parser):
         ep['bom_rev'] = unpacked[7]
         ep['crc8'] = unpacked[8]
 
-        ep['kit_opt'] = ep['kit_opt_full'][:yml_parser['PHYTEC']['kit_options']]
+        ep['kit_opt'] = ep['kit_opt_full'][:len(yml_parser['Kit'])]
         ep['sub_revision'] = format(ep['sub_revision'], '08b')
         ep['som_sub_revision'] = ep['sub_revision'][4:]
         ep['opttree_revision'] = int(ep['sub_revision'][:4], 2)
