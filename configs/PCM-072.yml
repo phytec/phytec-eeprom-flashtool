@@ -34,12 +34,10 @@ Processor Cortex-A53:
   '2': Dual Core
 
 Additional Processor Features:
-  A: Not Defined Yet
-  B: Not Defined Yet
-  C: Not Defined Yet
-  D: Not Defined Yet
-  E: Not Defined Yet
-  F: Not Defined Yet
+  C: Featureset C
+  D: Featureset D
+  E: Featureset E
+  F: Featureset F
 
 DDR-Ram:
   '0': 512 MB (DDR4)
