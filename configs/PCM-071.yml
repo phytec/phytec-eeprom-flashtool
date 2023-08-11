@@ -1,5 +1,5 @@
 ---
-# PCM-071 PHYTEC EEPROM Flashtool Config File
+# PCM-071/PCL-071 PHYTEC EEPROM Flashtool Config File
 # board: am62xx phyboard lyra
 # Copyright (C) 2019-2023 PHYTEC
 
@@ -25,19 +25,24 @@ Kit:
   8: Temperature
 
 # This options defines the first digit of the SOC part number after 62
+# 3D Graphics Engine
 AM62nx:
-  '3': AM623x
-  '5': AM625x
+  '3': AM623x (No GPU)
+  '5': AM625x (GPU)
 
 # This options defines the second digit of the SOC part number after 62
+# Processor
 AM62xn:
-  '1': AM62x1
-  '2': AM62x2
-  '4': AM62x4
+  '1': AM62x1 (Single Core
+  '2': AM62x2 (Dual Core)
+  '4': AM62x4 (Quad Core)
 
+# Additional Processor Features
 PRU:
-  '0': no PRU
-  '3': 2 PRUs
+  '0': Low Speed, no PRU
+  '1': Low Speed, 2 PRUs
+  '2': High Speed, no PRU
+  '3': High Speed, 2 PRUs
 
 DDR-Ram:
   '0': 512 MB (DDR4)
@@ -46,22 +51,22 @@ DDR-Ram:
   '4': 4 GB (DDR4)
 
 eMMC:
-  '0': No eMMC
   A: 4GB eMMC
   B: 8GB eMMC
   C: 16GB eMMC
   D: 32GB eMMC
   E: 64GB eMMC
   F: 128GB eMMC
+  X: No eMMC
 
 NOR-Flash:
-  '0': no NOR
-  A: 8MB
-  B: 16MB
-  C: 32MB
-  D: 64MB
-  E: 128MB
-  F: 256MB
+  A: 8MB (Quad)
+  B: 16MB (Quad)
+  C: 32MB (Quad)
+  D: 64MB (Octal)
+  E: 128MB (Octal)
+  F: 256MB (Octal)
+  X: no NOR
 
 Ethernet:
   '0': No Ethernet Phy
