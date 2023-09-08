@@ -51,21 +51,21 @@ DDR-Ram:
   '4': 4 GB (DDR4)
 
 eMMC:
-  A: 4GB eMMC
-  B: 8GB eMMC
-  C: 16GB eMMC
-  D: 32GB eMMC
-  E: 64GB eMMC
-  F: 128GB eMMC
+  A: 4GB eMMC (MLC)
+  B: 8GB eMMC (MLC)
+  C: 16GB eMMC (MLC)
+  D: 32GB eMMC (MLC)
+  E: 64GB eMMC (MLC)
+  F: 128GB eMMC (MLC)
   X: No eMMC
 
 NOR-Flash:
-  A: 8MB (Quad)
-  B: 16MB (Quad)
-  C: 32MB (Quad)
-  D: 64MB (Octal)
-  E: 128MB (Octal)
-  F: 256MB (Octal)
+  A: 16MB (Quad)
+  B: 32MB (Quad)
+  C: 64MB (Quad)
+  D: 32MB (Octal)
+  E: 64MB (Octal)
+  F: 128MB (Octal)
   X: no NOR
 
 Ethernet:
