@@ -53,9 +53,10 @@ DDR:
   '2': 1GB DDR4 RAM
   '3': 2GB DDR4 RAM
   '4': 3GB DDR4 RAM
-  '5': 4GB DDR4 RAM
+  '5': 4GB DDR4 RAM (1.5GHz)
   '6': 6GB DDR4 RAM
   '7': 8GB DDR4 RAM
+  '8': 4GB DDR4 RAM (2GHz)
 
 eMMC:
   '0': No eMMC
