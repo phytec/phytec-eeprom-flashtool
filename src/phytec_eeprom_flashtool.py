@@ -22,6 +22,7 @@ import re
 API_VERSION = 2
 EEPROM_SIZE = 32    # bytes
 MAX_KIT_OPTS = 17
+DEFAULT_EP_FORMAT = "6B"
 
 YML_DIR = '../configs'
 OUTPUT_DIR = '../output'
@@ -157,6 +158,14 @@ def write_binary(string, args, yml_parser):
 def open_som_config(args):
     """ Opens *.yml configuration files at the config dir. """
     try:
+        if not (args.som or args.ksx):
+            print("Neither -som nor -ksx nor both are given. Trying to detect information automatically!")
+            ret = eeprom_read(args, None)
+            struct_to_dict(ret[:6], {'PHYTEC':{'ep_encoding' : DEFAULT_EP_FORMAT}})
+            base_article = decode_base_name(ep)
+            print("Detected base article config: %s.yml" % base_article)
+            print()
+            args.som = base_article
         yml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), YML_DIR)
         if args.som and not args.ksx:
             yml_file = os.path.join(yml_path, "{}.yml".format(args.som))
@@ -213,8 +222,8 @@ def print_eeprom_dict(yml_parser):
     print("Decoded information:")
     print('%-20s:\t%-40s' % ('Full name', decode_full_name(ep)))
     pcb_revision = str(ep['som_revision'])
-    if int(ep['som_sub_revision']) > 0:
-        pcb_revision = pcb_revision + sub_revision_to_str(ep['som_sub_revision'])
+    if ep['som_sub_revision'] != "0":
+        pcb_revision = pcb_revision + ep['som_sub_revision']
     print('%-20s:\t%-40s' % ('PCB revision', pcb_revision))
     print()
     print("Raw information:")
@@ -273,11 +282,13 @@ def struct_to_dict(eeprom_struct, yml_parser):
         ep['som_type'] = unpacked[3]
         ep['base_article_number'] = unpacked[4]
         ep['ksp_number'] = unpacked[5]
-        ep['kit_opt_full'] = unpacked[6]
-        ep['bom_rev'] = unpacked[7]
-        ep['crc8'] = unpacked[8]
+        if len(eeprom_struct) > 6:
+            #This will not be read when DEFAULT_EP_FORMAT is used
+            ep['kit_opt_full'] = unpacked[6]
+            ep['bom_rev'] = unpacked[7]
+            ep['crc8'] = unpacked[8]
+            ep['kit_opt'] = ep['kit_opt_full'][:len(yml_parser['Kit'])]
 
-        ep['kit_opt'] = ep['kit_opt_full'][:len(yml_parser['Kit'])]
         ep['sub_revision'] = format(ep['sub_revision'], '08b')
         ep['som_sub_revision'] = ep['sub_revision'][4:]
         ep['opttree_revision'] = int(ep['sub_revision'][:4], 2)
@@ -396,8 +407,8 @@ def main():
     parser.add_argument('-file', dest='file', nargs='?', default="", type=str, help='Binary file to be read')
     args = parser.parse_args()
 
-    if not (args.som or args.ksx):
-        parser.error('Either -som or -ksx or both need to be set.')
+    if not (args.som or args.ksx) and not args.file:
+        parser.error('Either -som or -ksx or both need to be set or -file parameter must be given to use autodetection.')
 
     open_som_config(args)
 
