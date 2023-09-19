@@ -53,6 +53,38 @@ som = {
     "PCL-KSM": 0x7
 }
 
+
+def get_som_type_name_by_value(som_value):
+    """Returns the som type name for the passed number value"""
+    return list(som.keys())[list(som.values()).index(som_value)]
+
+
+def decode_base_name(ep_data):
+    """Decodes the product base name from ep_data"""
+    if ep_data['som_type'] <= 1:
+        return "{0}-{1:03}".format(get_som_type_name_by_value(ep_data['som_type']), ep_data['base_article_number'])
+    elif ep_data['som_type'] <= 3:
+        return "{0}-{1:04}".format(get_som_type_name_by_value(ep_data['som_type']),
+                                   (ep_data['ksp_number'] << 16 + ep_data['base_article_number']))
+    else:
+        return "{0}-{1:03}".format(get_som_type_name_by_value(ep_data['som_type']).split('-')[0],
+                                   ep_data['base_article_number'])
+
+
+def decode_full_name(ep_data):
+    """Decodes the product full name from ep_data"""
+    base_name = decode_base_name(ep_data)
+    if ep_data['som_type'] <= 1:
+        full_name = "{0}-{1}".format(base_name, ep_data['kit_opt'].decode('utf-8'))
+    elif ep_data['som_type'] <= 3:
+        full_name = base_name
+    else:
+        som_type = get_som_type_name_by_value(ep_data['som_type']).split('-')
+        full_name = "{0}-{1}{2:02}".format(base_name, som_type[1], ep_data['ksp_number'])
+
+    full_name = "{0}.{1}".format(full_name, ep_data['bom_rev'].decode('utf-8'))
+    return full_name
+
 def eeprom_read(args, yml_parser):
     """ Read eeprom data from the i2c eeprom or if '-file' parameter was passed from a binary file
     """
@@ -174,29 +206,16 @@ def load_som_config(args):
         for i in range(len(ep['kit_opt']), MAX_KIT_OPTS):
             ep['kit_opt_full'] += bytes('\0', 'utf-8')
 
-def print_eeprom_dict(args, yml_parser):
-    """ Print out the data which the user enters. """
+def print_eeprom_dict(yml_parser):
+    """ Print out the eeprom data. """
     print()
-    if ep['som_type'] <=1:
-        print('%s-%s.%s EEPROM contents.' % (args.som, (ep['kit_opt'].decode('utf-8')),
-                                            (ep['bom_rev'].decode('utf-8'))))
-    elif ep['som_type'] <= 3:
-        print('%s-%s.%s EEPROM contents.' % (args.ksx, (ep['kit_opt'].decode('utf-8')),
-                                            (ep['bom_rev'].decode('utf-8'))))
-    else:
-        print('%s-%s-%s.%s EEPROM contents.' % (args.som, args.ksx,
-                         (ep['kit_opt'].decode('utf-8')), (ep['bom_rev'].decode('utf-8'))))
+    print('%s EEPROM contents.' % (decode_full_name(ep)))
     print()
     print('%-20s:\t%-40d' % ('API version', ep['api_version']))
     print('%-20s:\t%-5d%-s' % ('SOM PCB revision', int(ep['som_revision']),
                               ep['som_sub_revision']))
     print('%-20s:\t%-40s' % ('Optiontree revision', ep['opttree_revision']))
-    if ep['som_type'] <= 1:
-        print('%-20s:\t%-40s' % ('SoM type', args.som[:3]))
-    elif ep['som_type'] <= 3:
-        print('%-20s:\t%-40s' % ('SoM type', args.ksx[:3]))
-    else:
-        print('%-20s:\t%-s-%s' % ('SoM type', args.som[:3], args.ksx[:3]))
+    print('%-20s:\t%-40s' % ('SoM type', get_som_type_name_by_value(ep['som_type'])))
     print('%-20s\n%-20s:\t0x%-40s' % ('Base article number', 'KSX number low',
                                      format(ep['base_article_number'], 'x')))
     print('%-20s:\t0x%-40s' % ('KSX number high', format(ep['ksp_number'], 'x')))
@@ -285,7 +304,7 @@ def str_to_revision(revision_str):
 def read_som_config(args, yml_parser):
     eeprom_data = eeprom_read(args, yml_parser)
     struct_to_dict(eeprom_data, yml_parser)
-    print_eeprom_dict(args, yml_parser)
+    print_eeprom_dict(yml_parser)
     print('CRC8-Checksum correct if 0:', crc8_checksum_calc(eeprom_data))
 
 def display_som_config(args, yml_parser):
@@ -293,7 +312,7 @@ def display_som_config(args, yml_parser):
     load_som_config(args)
     eeprom_data = dict_to_struct(yml_parser)
     struct_to_dict(eeprom_data, yml_parser)
-    print_eeprom_dict(args, yml_parser)
+    print_eeprom_dict(yml_parser)
 
 def write_som_config(args, yml_parser):
     format_args(args)
@@ -301,7 +320,7 @@ def write_som_config(args, yml_parser):
     eeprom_data = dict_to_struct(yml_parser)
     eeprom_write(eeprom_data, yml_parser)
     struct_to_dict(eeprom_data, yml_parser)
-    print_eeprom_dict(args, yml_parser)
+    print_eeprom_dict(yml_parser)
     print('EEPROM flash successful!')
 
 def create_binary(args, yml_parser):
@@ -310,7 +329,7 @@ def create_binary(args, yml_parser):
     eeprom_data = dict_to_struct(yml_parser)
     write_binary(eeprom_data, args, yml_parser)
     struct_to_dict(eeprom_data, yml_parser)
-    print_eeprom_dict(args, yml_parser)
+    print_eeprom_dict(yml_parser)
 
 def format_args(args):
     """ Bring the argparser parameters to a usable format. """
