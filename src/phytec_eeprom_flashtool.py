@@ -208,9 +208,16 @@ def load_som_config(args):
 
 def print_eeprom_dict(yml_parser):
     """ Print out the eeprom data. """
+    print('EEPROM contents:')
     print()
-    print('%s EEPROM contents.' % (decode_full_name(ep)))
+    print("Decoded information:")
+    print('%-20s:\t%-40s' % ('Full name', decode_full_name(ep)))
+    pcb_revision = str(ep['som_revision'])
+    if int(ep['som_sub_revision']) > 0:
+        pcb_revision = pcb_revision + sub_revision_to_str(ep['som_sub_revision'])
+    print('%-20s:\t%-40s' % ('PCB revision', pcb_revision))
     print()
+    print("Raw information:")
     print('%-20s:\t%-40d' % ('API version', ep['api_version']))
     print('%-20s:\t%-5d%-s' % ('SOM PCB revision', int(ep['som_revision']),
                               ep['som_sub_revision']))
@@ -219,6 +226,7 @@ def print_eeprom_dict(yml_parser):
     print('%-20s\n%-20s:\t0x%-40s' % ('Base article number', 'KSX number low',
                                      format(ep['base_article_number'], 'x')))
     print('%-20s:\t0x%-40s' % ('KSX number high', format(ep['ksp_number'], 'x')))
+    print('%-20s:\t%-40s' % ('Options', ep['kit_opt'].decode('utf-8')))
     print()
     print('Verbose kit options:')
     for i in range(0, len(yml_parser['Kit'])):
