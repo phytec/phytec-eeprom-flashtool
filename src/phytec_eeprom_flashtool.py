@@ -406,7 +406,7 @@ def eeprom_exit(eeprom_bus):
     except IOError as err:
         sys.exit(err)
 
-def main():
+def main(args):
     """ Set up parsing for commandline arguments. """
     parser = argparse.ArgumentParser(description='PHYTEC SOM EEPROM configuration tool')
     parser.add_argument('-o', '--operation', dest='operation', default='display',
@@ -419,7 +419,7 @@ def main():
     parser.add_argument('-bom', dest='bom', nargs='?', default='00', help='BoM revision', type=str)
     parser.add_argument('-opt', dest='opt', nargs='?', default=0, type=int, help='Optiontree revision')
     parser.add_argument('-file', dest='file', nargs='?', default="", type=str, help='Binary file to be read')
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     if not (args.som or args.ksx) and not args.file:
         parser.error('Either -som or -ksx or both need to be set or -file parameter must be given to use autodetection.')
@@ -427,4 +427,4 @@ def main():
     open_som_config(args)
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
