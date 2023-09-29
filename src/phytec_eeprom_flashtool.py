@@ -208,10 +208,10 @@ def load_som_config(args):
         ep['ksp_number'] = 0
     elif ep['som_type'] <= 3:
         if int(args.ksx[4:]) <= 255:
-            ep['base_article_number'] = int(args.ksx[3:])
+            ep['base_article_number'] = int(args.ksx[4:])
             ep['ksp_number'] = 0
         else:
-            ksp_bytes = '{0:{fill}16b}'.format(int(args.ksx[3:]), fill='0')
+            ksp_bytes = '{0:{fill}16b}'.format(int(args.ksx[4:]), fill='0')
             ksp_lower_byte = int(ksp_bytes[8:], 2)
             ksp_higher_byte = int(ksp_bytes[:8], 2)
             ep['base_article_number'] = int(ksp_lower_byte)
