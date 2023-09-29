@@ -133,21 +133,35 @@ def write_binary(string, args, yml_parser):
         string: 32-Byte string
     """
     try:
+        #Set default output path
         output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), OUTPUT_DIR)
+
+        if args.file:
+            if os.path.basename(args.file) != args.file:
+                #When file parameter includes a path, the output path is changed
+                output_path = os.path.abspath(os.path.dirname(args.file))
+            output_file = os.path.join(output_path, os.path.basename(args.file))
+
+
         if not os.path.exists(output_path):
             os.mkdir(output_path)
-        if ep['som_type'] <= 1:
-            output_file = os.path.join(output_path, '%s-%s.%s_%s%s_%d'\
-                    % (args.som, args.kit, (ep['bom_rev']).decode('utf-8'),
-                      ep['som_revision'], sub_revision_to_str(ep['som_sub_revision']), int(ep['opttree_revision'])))
-        elif ep['som_type'] <= 3:
-            output_file = os.path.join(output_path, '%s-%s.%s_%s%s_%d'\
-                    % (args.ksx, args.kit, (ep['bom_rev']).decode('utf-8'),
-                      ep['som_revision'], sub_revision_to_str(ep['som_sub_revision']), int(ep['opttree_revision'])))
-        else:
-            output_file = os.path.join(output_path, '%s-%s-%s.%s_%s%s_%d'\
-                     % (args.som, args.ksx, args.kit, (ep['bom_rev']).decode('utf-8'),
-                       ep['som_revision'], sub_revision_to_str(ep['som_sub_revision']), int(ep['opttree_revision'])))
+
+        if args.file == "":
+            if ep['som_type'] <= 1:
+                output_file = os.path.join(output_path, '%s-%s.%s_%s%s_%d' \
+                                           % (args.som, args.kit, (ep['bom_rev']).decode('utf-8'),
+                                              ep['som_revision'], sub_revision_to_str(ep['som_sub_revision']),
+                                              int(ep['opttree_revision'])))
+            elif ep['som_type'] <= 3:
+                output_file = os.path.join(output_path, '%s-%s.%s_%s%s_%d' \
+                                           % (args.ksx, args.kit, (ep['bom_rev']).decode('utf-8'),
+                                              ep['som_revision'], sub_revision_to_str(ep['som_sub_revision']),
+                                              int(ep['opttree_revision'])))
+            else:
+                output_file = os.path.join(output_path, '%s-%s-%s.%s_%s%s_%d' \
+                                           % (args.som, args.ksx, args.kit, (ep['bom_rev']).decode('utf-8'),
+                                              ep['som_revision'], sub_revision_to_str(ep['som_sub_revision']),
+                                              int(ep['opttree_revision'])))
 
         eeprom_file = open(output_file, 'wb')
         eeprom_file.seek(yml_parser['PHYTEC']['eeprom_offset'])

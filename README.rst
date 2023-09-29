@@ -117,7 +117,8 @@ Create
 Creates a binary file at the output directory which can then be written to the
 EEPROM chip with dd or via JTAG.
 It also dumps the complete configuration on the console.
-The necessary and optional arguments are the same as for the write command.
+The default filename and directory can be changed by the -file argument.
+The other necessary and optional arguments are the same as for the write command.
 
 .. code-block:: bash
 
@@ -142,7 +143,7 @@ Example:
     phytec_eeprom_flashtool.py -o create -som PCL-066 -kit 3022210I -bom A0
     phytec_eeprom_flashtool.py -o create -ksx KSP08 -kit 3022210I -bom A0
     phytec_eeprom_flashtool.py -o create -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
-
+    phytec_eeprom_flashtool.py -o create -som PCL-066 -kit 3022210I -bom A0 -file eeprom.dat
 
 Display
 *******
