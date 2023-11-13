@@ -1,0 +1,133 @@
+---
+# PCL-077 PHYTEC EEPROM Flashtool Config File
+# board: phyCORE-i.MX 93
+# Copyright (C) 2023 PHYTEC
+
+PHYTEC:
+  eeprom_offset: 0x0
+  eth_name: 'eth0'
+  i2c_bus: 3
+  i2c_dev: 0x50
+  ep_encoding: '6B17s2s6xB'
+# ep_encoding_format:
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
+
+Kit:
+  0: DDR-Ram
+  1: eMMC
+  2: Processor
+  3: Frequency
+  4: NPU
+  5: Display Option
+  6: Ethernet
+  7: Feature Flags
+  8: Temperature
+  #extended options:
+  9: Boot Mode
+  10: LED
+  11: EEPROM
+
+DDR-Ram:
+  '0': 512 MB (LPDDR4X)
+  '1': 1 GB (LPDDR4X)
+  '2': 2 GB (LPDDR4X)
+  '3': 512 MB (LPDDR4)
+  '4': 1 GB (LPDDR4)
+  '5': 2 GB (LPDDR4)
+
+eMMC:
+  '0': No eMMC
+  '1': 8 GB (MLC)
+  '2': 16 GB (MLC)
+  '3': 32 GB (TLC)
+
+Processor:
+  '0': Single Core i.MX 91
+  '1': Single Core i.MX 93
+  '2': Dual Core i.MX 93
+
+Frequency:
+  '0': 800 MHz
+  '1': 900 MHz
+  '2': 1.4 GHz
+  '3': 1.7 GHZ
+
+NPU:
+  '0': no NPU
+  '1': NPU
+  '2': reduced NPU
+
+Display Option:
+  '0': Parallel 18 bit
+  '1': Parallel 24 bit
+  '2': LVDS
+
+Ethernet:
+  '0': no Ethernet
+  '1': 10/100 Mbit normale mode
+  '2': 10/100 Mbit enhanced mode
+
+# 'Feature Flags' below is a set of 4 bits, where each bit represents a single
+# feature. Setting or resetting a bit enables or disables the corresponding feature.
+#
+# Overview about all bits and features:
+#  bit 0 - 1=IO-voltage to 1v8, 0=IO-voltage to 3v3
+#  bit 1 - for future extension, must be zero
+#  bit 2 - for future extension, must be zero
+#  bit 3 - for future extension, must be zero
+Feature Flags:
+  # bitmap 0000b
+   '0':                                                 IO Voltage 3v3
+  # bitmap 0001b
+   '1':                                                 IO Voltage 1v8
+  # for future extension:
+  # bitmap 0010b     
+  #'2':                                 Future Flag 1 - IO Voltage 3v3
+  # bitmap 0011b  
+  #'3':                                 Future Flag 1 - IO Voltage 1v8
+  # bitmap 0100b  
+  #'4':                 Future Flag 2 -                 IO Voltage 3v3
+  # bitmap 0101b  
+  #'5':                 Future Flag 2 -                 IO Voltage 1v8
+  # bitmap 0110b  
+  #'6':                 Future Flag 2 - Future Flag 1 - IO Voltage 3v3
+  # bitmap 0111b  
+  #'7':                 Future Flag 2 - Future Flag 1 - IO Voltage 1v8
+  # bitmap 1000b  
+  #'8': Future Flag 3 -                                 IO Voltage 3v3
+  # bitmap 1001b  
+  #'9': Future Flag 3 -                                 IO Voltage 1v8
+  # bitmap 1010b  
+  #'a': Future Flag 3 -                 Future Flag 1 - IO Voltage 3v3
+  # bitmap 1011b  
+  #'b': Future Flag 3 -                 Future Flag 1 - IO Voltage 1v8
+  # bitmap 1100b  
+  #'c': Future Flag 3 - Future Flag 2 -                 IO Voltage 3v3
+  # bitmap 1101b  
+  #'d': Future Flag 3 - Future Flag 2 -                 IO Voltage 1v8
+  # bitmap 1110b  
+  #'e': Future Flag 3 - Future Flag 2 - Future Flag 1 - IO Voltage 3v3
+  # bitmap 1111b  
+  #'f': Future Flag 3 - Future Flag 2 - Future Flag 1 - IO Voltage 1v8
+
+Temperature:
+  C: Consumer Temp (0C to +95C Tj)
+  E: Extended Industrial (-40C to +125C Tj)
+  I: Industrial Temp (-40 to +105C Tj)
+ 
+Boot Mode:
+  '0': eMMC A55
+  '1': Fuses A55
+  '2': Serial Downloader A55
+  '3': SD-Card A55
+  '4': Serial Downloader M33
+  '5': eMMC M33
+  '6': SD-Card M33
+
+LED:
+  '0': Green LED
+  '1': no LED
+
+EEPROM:
+  '0': 4 kB
+  '1': no EEPROM
