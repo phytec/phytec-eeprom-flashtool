@@ -81,40 +81,40 @@ Feature Flags:
   # bitmap 0001b
    '1':                                                 IO Voltage 1v8
   # for future extension:
-  # bitmap 0010b     
+  # bitmap 0010b
   #'2':                                 Future Flag 1 - IO Voltage 3v3
-  # bitmap 0011b  
+  # bitmap 0011b
   #'3':                                 Future Flag 1 - IO Voltage 1v8
-  # bitmap 0100b  
+  # bitmap 0100b
   #'4':                 Future Flag 2 -                 IO Voltage 3v3
-  # bitmap 0101b  
+  # bitmap 0101b
   #'5':                 Future Flag 2 -                 IO Voltage 1v8
-  # bitmap 0110b  
+  # bitmap 0110b
   #'6':                 Future Flag 2 - Future Flag 1 - IO Voltage 3v3
-  # bitmap 0111b  
+  # bitmap 0111b
   #'7':                 Future Flag 2 - Future Flag 1 - IO Voltage 1v8
-  # bitmap 1000b  
+  # bitmap 1000b
   #'8': Future Flag 3 -                                 IO Voltage 3v3
-  # bitmap 1001b  
+  # bitmap 1001b
   #'9': Future Flag 3 -                                 IO Voltage 1v8
-  # bitmap 1010b  
+  # bitmap 1010b
   #'a': Future Flag 3 -                 Future Flag 1 - IO Voltage 3v3
-  # bitmap 1011b  
+  # bitmap 1011b
   #'b': Future Flag 3 -                 Future Flag 1 - IO Voltage 1v8
-  # bitmap 1100b  
+  # bitmap 1100b
   #'c': Future Flag 3 - Future Flag 2 -                 IO Voltage 3v3
-  # bitmap 1101b  
+  # bitmap 1101b
   #'d': Future Flag 3 - Future Flag 2 -                 IO Voltage 1v8
-  # bitmap 1110b  
+  # bitmap 1110b
   #'e': Future Flag 3 - Future Flag 2 - Future Flag 1 - IO Voltage 3v3
-  # bitmap 1111b  
+  # bitmap 1111b
   #'f': Future Flag 3 - Future Flag 2 - Future Flag 1 - IO Voltage 1v8
 
 Temperature:
   C: Consumer Temp (0C to +95C Tj)
   E: Extended Industrial (-40C to +125C Tj)
   I: Industrial Temp (-40 to +105C Tj)
- 
+
 Boot Mode:
   '0': eMMC A55
   '1': Fuses A55
