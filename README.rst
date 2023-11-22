@@ -283,6 +283,26 @@ The following command adds the key-value pair `CAFE1234`, `SERIAL` to a local bi
 
     phytec_eeprom_flashtool add-key-value -som PCM-071 SERIAL CAFE1234 -f output/binary_file
 
+Scripts
+#######
+
+The scripts directory contains workflow integration scripts:
+
+scripts/pull_option_tree.py
+---------------------------
+
+Fetch an option tree from the php tool API and display it:
+
+.. code-block:: bash
+
+    scripts/pull_option_tree.py print PCL-069
+
+Update the yaml config file with the current option tree:
+
+.. code-block:: bash
+
+    scripts/pull_option_tree.py write PCL-069
+
 License
 #######
 
