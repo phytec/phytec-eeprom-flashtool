@@ -1,12 +1,14 @@
 Output_strings:
- full_name: "Full name           :\t{0}"
- pcb_revision: "PCB revision        :\t{0}"
- api_version: "API version         :\t{0}"
- optiontree_revision: "Optiontree revision :\t{0}"
- som_type: "SoM type            :\t{0}"
- base_article_number: "KSX number low      :\t0x{0:x}"
- ksp_number: "KSX number high     :\t0x{0:x}"
- option: "Options             :\t{0}"
+ full_name: "Full name       :  {0}"
+ pcb_revision: "PCB revision    :  {0}"
+ api_version: "API version     :  {0}"
+ optiontree_revision: "Optiontree rev. :  {0}"
+ som_type: "SOM type        :  {0}"
+ base_article_number: "Product number  :  {0}"
+ ksp_number: "KSx number      :  {0}"
+ option: "Options         :  {0}"
+ crc: "CRC-Checksum    :  0x{0}"
+ bad_crc: "CRC-Checksum    :  0x{0}"
 
 Test_data:
  -
@@ -18,9 +20,10 @@ Test_data:
    optiontree_revision: 0
    som_type: 'PCL'
    base_article_number: 69
-   ksp_number: 0
+   ksp_number: "-"
    option: '1011011I'
-   crc: 0
+   crc: "b7"
+   bad_crc: "b7"
   read_args: '-som PCL-069'
   create_args: '-som PCL-069 -kit 1011011I -bom A3 -rev 3a'
  -
@@ -32,9 +35,10 @@ Test_data:
    optiontree_revision: 0
    som_type: 'PCL'
    base_article_number: 69
-   ksp_number: 0
+   ksp_number: "-"
    option: '1011011I'
-   crc: 0
+   crc: "c8"
+   bad_crc: "c8"
   read_args: '-som PCL-069'
   create_args: '-som PCL-069 -kit 1011011I -bom A3'
  -
@@ -48,7 +52,8 @@ Test_data:
    base_article_number: 66
    ksp_number: 59
    option: '4054411I'
-   crc: 0
+   crc: "bb"
+   bad_crc: "bb"
   read_args: '-som PCL-066 -ksx KSM59'
   create_args: '-som PCL-066 -ksx KSM59 -kit 4054411I -bom S9 -rev 5d -opt 5'
  -
@@ -62,7 +67,8 @@ Test_data:
    base_article_number: 66
    ksp_number: 59
    option: '4054411I'
-   crc: 0
+   crc: "8d"
+   bad_crc: "8d"
   read_args: '-som PCL-066 -ksx KSP59'
   create_args: '-som PCL-066 -ksx KSP59 -kit 4054411I -bom B4 -rev 15d'
  -
@@ -74,7 +80,8 @@ Test_data:
    optiontree_revision: 0
    som_type: 'PCL'
    base_article_number: 69
-   ksp_number: 0
+   ksp_number: "-"
    option: '2011011I'
-   crc: 119
+   crc: "c8"
+   bad_crc: "b7"
   read_args: '-som PCL-069'
