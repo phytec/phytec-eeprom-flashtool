@@ -11,6 +11,7 @@ PHYTEC:
   eth_name: 'eth0'                              //primary ethernet phy
   i2c_bus: 0                                    //i2c bus number where the eeprom is connected to
   i2c_dev: 0x51                                 //i2c address (This is the normal eeprom page. This should be our new default.
+  api: 3                                        //Sets API to v3. Not required for v2.
 
 """ Kit contains all option-headlines from the option tree in the correct order """
 Kit:

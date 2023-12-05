@@ -8,6 +8,7 @@ PHYTEC:
   eth_name: 'eth0'
   i2c_bus: 0
   i2c_dev: 0x50
+  api: 3
 
 Kit:
   0: AM62Anx
