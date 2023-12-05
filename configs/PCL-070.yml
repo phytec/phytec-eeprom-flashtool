@@ -7,11 +7,7 @@ PHYTEC:
   eeprom_offset: 0x0
   eth_name: 'eth0'
   i2c_bus: 0
-  # i2c_dev: 0x59
   i2c_dev: 0x51
-  ep_encoding: '6B17s2s6xB'
-# ep_encoding_format:
-# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
 
 Kit:
   0: Controller

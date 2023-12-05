@@ -10,11 +10,7 @@ PHYTEC:
   eeprom_offset: 0x0                            //At the moment, the eeprom offset is 0 for all boards
   eth_name: 'eth0'                              //primary ethernet phy
   i2c_bus: 0                                    //i2c bus number where the eeprom is connected to
-  # i2c_dev: 0x59                               //i2c address (id eeprom page)
   i2c_dev: 0x51                                 //i2c address (This is the normal eeprom page. This should be our new default.
-  ep_encoding: '6B17s2s6xB'                     //The ep_encoding is always the same (This is a tool relevant specification)
-# ep_encoding_format:
-# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
 
 """ Kit contains all option-headlines from the option tree in the correct order """
 Kit:

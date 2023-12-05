@@ -12,7 +12,8 @@ from src.common import str_to_revision, sub_revision_to_str
 API_VERSION = 2
 MAX_KIT_OPTS = 17
 DEFAULT_EP_FORMAT = "6B"
-
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
+ENCODING_API2 = "6B17s2s6xB"
 
 YmlParser = Dict[str, Dict[str, str]]
 
@@ -120,9 +121,9 @@ def crc8_checksum_calc(eeprom_struct: bytes) -> int:
 
 def eeprom_data_to_struct(eeprom_data: EepromData) -> bytes:
     """Pack the EEPROM data into a string."""
-    length = len(eeprom_data.yml_parser['PHYTEC']['ep_encoding'])
+    length = len(ENCODING_API2)
     eeprom_struct = struct.pack(
-        eeprom_data.yml_parser['PHYTEC']['ep_encoding'][:length-3],
+        ENCODING_API2[:length-3],
         eeprom_data.api_version,
         eeprom_data.som_revision,
         int(eeprom_data.sub_revisions, 2),
@@ -132,7 +133,7 @@ def eeprom_data_to_struct(eeprom_data: EepromData) -> bytes:
         bytes(eeprom_data.kit_opt_full, 'utf-8'),
         bytes(eeprom_data.bom_rev, 'utf-8')
     )
-    eeprom_struct += struct.pack(eeprom_data.yml_parser['PHYTEC']['ep_encoding'][7:9])
+    eeprom_struct += struct.pack(ENCODING_API2[7:9])
     eeprom_data.crc8 = crc8_checksum_calc(eeprom_struct)
     eeprom_struct += struct.pack('B', eeprom_data.crc8)
 
@@ -142,7 +143,7 @@ def eeprom_data_to_struct(eeprom_data: EepromData) -> bytes:
 def struct_to_eeprom_data(eeprom_struct: bytes, yml_parser: YmlParser) -> EepromData:
     """Unpack the EEPROM struct which is read out of the EEPROM device."""
     try:
-        unpacked = struct.unpack(yml_parser['PHYTEC']['ep_encoding'], eeprom_struct)
+        unpacked = struct.unpack(ENCODING_API2, eeprom_struct)
 
         eeprom_data = EepromData(yml_parser)
         eeprom_data.api_version = unpacked[0]
