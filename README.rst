@@ -174,6 +174,43 @@ Example:
     phytec_eeprom_flashtool.py display -ksx KSP08 -kit 3322115I -bom A0
     phytec_eeprom_flashtool.py display -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
 
+Blocks
+######
+
+Blocks are a flexible way to extend the general information inside the EEPROM chip by information
+required for a product. For example, it allows to store multiple MACs for Ethernet interfaces.
+
+Please keep in mind each transaction will read the content first, append the MAC and writes the
+new image back to the EEPROM chip. It's not possible to remove a block.
+
+Each command requires either the `-som` and/or `-ksx` argument to identify the EEPROM chip. The
+`-f` arguments works as well for read/write operations on a local file.
+
+MAC Block
+*********
+
+Adds a MAC block with information about the physical Ethernet interface and MAC address.
+
+Requires the Ethernet interface number and MAC address as parameters. The following example adds
+two MACs to the interface 0 and 1.
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool.py add-mac -som PCM-071 0 00:91:da:dc:1f:c5
+    phytec_eeprom_flashtool.py add-mac -som PCM-071 1 00:91:da:dc:1f:c6
+
+Key Value Block
+---------------
+
+Adds a key-value pair to the EEPROM chip. Both the key and value are stored as UTF-8 string.
+
+This block can be used to write persistent data into the EEPROM chip during production or assembly
+and can be used in software later.
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool.py add-key-value -som PCM-071 SERIAL CAFE1234
+
 License
 #######
 

@@ -1,6 +1,8 @@
 import pytest
 from src.common import str_to_revision
 from src.common import sub_revision_to_str
+from src.common import crc8_checksum_calc
+
 
 @pytest.mark.parametrize("value, expect", [
     ("1", (1, '0000')),
@@ -22,6 +24,7 @@ def test_str_to_revision_failure(value):
     with pytest.raises(ValueError):
         str_to_revision(value)
 
+
 @pytest.mark.parametrize("value, expect", [
     ("0001", ('a')),
 ])
@@ -29,3 +32,13 @@ def test_sub_revision_to_str(value, expect):
     """test sub_revision_to_str"""
     revs = sub_revision_to_str(value)
     assert revs == expect
+
+
+@pytest.mark.parametrize("value, expect", [
+    (bytes("cafe", 'utf-8'), 118),
+])
+def test_crc8_checksum_calc(value, expect):
+    """test crc8_checksum_calc"""
+    crc8 = crc8_checksum_calc(value)
+    assert crc8 == expect, f"CRC8 doesn't match. Expected {expect} but calculated {crc8}"
+    assert not crc8_checksum_calc(value + bytes(chr(crc8), 'utf-8'))

@@ -4,19 +4,29 @@ from typing import Dict
 from dataclasses import dataclass
 import struct
 import sys
-import crc8  # type: ignore
 
-from src.common import str_to_revision, sub_revision_to_str
+from src.common import str_to_revision
+from src.common import sub_revision_to_str
+from src.common import crc8_checksum_calc
+from src.blocks import API_V3_SUB_VERSION
+from src.blocks import EepromV3BlockInterface
+from src.blocks import unpack_block
 
-# Defaults defined by the PHYTEC EEPROM API version
-API_VERSION = 2
 MAX_KIT_OPTS = 17
-DEFAULT_EP_FORMAT = "6B"
+# 6 uchars
+DEFAULT_EP_FORMAT = "<6B"
 # 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
-ENCODING_API2 = "6B17s2s6xB"
+ENCODING_API2 = DEFAULT_EP_FORMAT + "17s2s6xB"
+# 1 ushort, 2 uchars, 3 reserved, 1 uchar
+ENCODING_API3_DATA_HEADER = "<1H2B3x1B"
+
+# All values in bytes
+EEPROM_V2_SIZE = 32
+EEPROM_V3_DATA_HEADER_SIZE = 8
+# Relative address inside the v3 data payload
+EEPROM_V3_DATA_PAYLOAD_START = 0
 
 YmlParser = Dict[str, Dict[str, str]]
-
 
 SOM = {
     "PCM": 0x0,
@@ -36,6 +46,8 @@ class EepromData:
     """Data class to hold all values of the API v2 EEPROM structure."""
     def __init__(self, yml_parser: YmlParser):
         self.yml_parser = yml_parser
+        # API v3 content
+        self.blocks: list = []
 
     api_version: int
     som_revision: int
@@ -45,11 +57,19 @@ class EepromData:
     som_type: int
     base_article_number: int
     kit_opt: str
-    kit_opt_full: str
     bom_rev: str
     crc8: int
     ksp_number: int = 0
+    # API v3 content
+    v3_sub_version: int = API_V3_SUB_VERSION
+    v3_header_crc8: int = 0
+    v3_payload_length: int = 0
+    v3_block_count: int = 0  # only required to unpack blocks. Use length of blocks.
+    v3_next_block_address: int = EEPROM_V3_DATA_PAYLOAD_START
 
+    def is_v3(self) -> bool:
+        """Returns a boolean whether the EEPROM data are API v3 or not."""
+        return self.api_version == 3
 
     def base_name(self) -> str:
         """Returns the product base name"""
@@ -61,7 +81,6 @@ class EepromData:
         else:
             base_name += f"{self.base_article_number:03}"
         return base_name
-
 
     def full_name(self) -> str:
         """Decodes the product full name from ep_data"""
@@ -76,11 +95,16 @@ class EepromData:
 
         return f"{full_name}.{self.bom_rev}"
 
+    def add_block(self, block: EepromV3BlockInterface):
+        """Adds an EEPROM block to the EEPROM data."""
+        self.v3_next_block_address += block.length
+        self.blocks.append(block)
+
 
 def get_eeprom_data(args, yml_parser: YmlParser) -> EepromData:
     """Generates an EEPROM data class and fill all information with argparser information."""
     eeprom_data = EepromData(yml_parser)
-    eeprom_data.api_version = API_VERSION
+    eeprom_data.api_version = int(yml_parser['PHYTEC'].get('api', 2))
     eeprom_data.som_revision, eeprom_data.som_sub_revision = str_to_revision(args.rev)
     eeprom_data.opttree_revision = format(int(args.opt), '04b')
     eeprom_data.sub_revisions = eeprom_data.opttree_revision + eeprom_data.som_sub_revision
@@ -105,67 +129,112 @@ def get_eeprom_data(args, yml_parser: YmlParser) -> EepromData:
             sys.exit('KSX-number out of bounce.')
     eeprom_data.bom_rev = args.bom
     eeprom_data.kit_opt = args.kit
-    eeprom_data.kit_opt_full = eeprom_data.kit_opt
-    eeprom_data.kit_opt_full += '\0' * (MAX_KIT_OPTS - len(eeprom_data.kit_opt))
 
     return eeprom_data
 
 
-def crc8_checksum_calc(eeprom_struct: bytes) -> int:
-    """Create a CRC8 checksum from the packed EEPROM data."""
-    hash_ = crc8.crc8()
-    hash_.update(eeprom_struct)
-    crc8_sum = hash_.hexdigest()
-    return int(crc8_sum, 16)
-
-
 def eeprom_data_to_struct(eeprom_data: EepromData) -> bytes:
     """Pack the EEPROM data into a string."""
-    length = len(ENCODING_API2)
+    kit_opt_full = eeprom_data.kit_opt + '\0' * (MAX_KIT_OPTS - len(eeprom_data.kit_opt))
     eeprom_struct = struct.pack(
-        ENCODING_API2[:length-3],
+        ENCODING_API2,
         eeprom_data.api_version,
         eeprom_data.som_revision,
         int(eeprom_data.sub_revisions, 2),
         eeprom_data.som_type,
         eeprom_data.base_article_number,
         eeprom_data.ksp_number,
-        bytes(eeprom_data.kit_opt_full, 'utf-8'),
-        bytes(eeprom_data.bom_rev, 'utf-8')
+        bytes(kit_opt_full, 'utf-8'),
+        bytes(eeprom_data.bom_rev, 'utf-8'),
+        0  # CRC8
     )
-    eeprom_struct += struct.pack(ENCODING_API2[7:9])
-    eeprom_data.crc8 = crc8_checksum_calc(eeprom_struct)
-    eeprom_struct += struct.pack('B', eeprom_data.crc8)
+    eeprom_data.crc8 = crc8_checksum_calc(eeprom_struct[:-1])
+    eeprom_struct = eeprom_struct[:-1] + struct.pack('B', eeprom_data.crc8)
+
+    if eeprom_data.is_v3():
+        eeprom_struct += eeprom_data_to_data_header(eeprom_data)
 
     return eeprom_struct
 
 
+def eeprom_data_to_data_header(eeprom_data: EepromData) -> bytes:
+    """Pack the EEPROM data in the data header."""
+    eeprom_data.v3_payload_length = sum(block.length for block in eeprom_data.blocks)
+    eeprom_struct = struct.pack(
+        ENCODING_API3_DATA_HEADER[:-2],
+        eeprom_data.v3_payload_length,
+        len(eeprom_data.blocks),
+        eeprom_data.v3_sub_version
+    )
+    eeprom_data.v3_header_crc8 = crc8_checksum_calc(eeprom_struct)
+    eeprom_struct += struct.pack('B', eeprom_data.v3_header_crc8)
+
+    return eeprom_struct
+
+
+def eeprom_data_to_blocks(eeprom_data: EepromData) -> bytes:
+    """Pack all EEPROM blocks."""
+    eeprom_blocks = bytes()
+    next_block_address = EEPROM_V3_DATA_PAYLOAD_START
+    for block in eeprom_data.blocks:
+        next_block_address += block.length
+        eeprom_blocks += block.pack(next_block_address)
+    return eeprom_blocks
+
+
 def struct_to_eeprom_data(eeprom_struct: bytes, yml_parser: YmlParser) -> EepromData:
-    """Unpack the EEPROM struct which is read out of the EEPROM device."""
-    try:
-        unpacked = struct.unpack(ENCODING_API2, eeprom_struct)
+    """Unpack the EEPROM struct."""
+    unpacked = struct.unpack(ENCODING_API2, eeprom_struct[:EEPROM_V2_SIZE])
 
-        eeprom_data = EepromData(yml_parser)
-        eeprom_data.api_version = unpacked[0]
-        eeprom_data.som_revision = unpacked[1]
-        eeprom_data.sub_revisions = unpacked[2]
-        eeprom_data.som_type = unpacked[3]
-        eeprom_data.base_article_number = unpacked[4]
-        eeprom_data.ksp_number = unpacked[5]
-        if len(eeprom_struct) > 6:
-            #This will not be read when DEFAULT_EP_FORMAT is used
-            eeprom_data.kit_opt_full = unpacked[6].decode('utf-8')
-            eeprom_data.bom_rev = unpacked[7].decode('utf-8')
-            eeprom_data.crc8 = unpacked[8]
-            eeprom_data.kit_opt = eeprom_data.kit_opt_full[:len(yml_parser['Kit'])]
+    if crc8_checksum_calc(eeprom_struct[:EEPROM_V2_SIZE]):
+        raise AssertionError("API v2 crc8 mismatch!")
 
-        eeprom_data.sub_revisions = format(eeprom_data.sub_revisions, '08b')
-        eeprom_data.som_sub_revision = eeprom_data.sub_revisions[4:]
-        eeprom_data.opttree_revision = format(int(eeprom_data.sub_revisions[:4], 2), '04b')
-        eeprom_data.som_sub_revision = sub_revision_to_str(eeprom_data.som_sub_revision)
-        return eeprom_data
-    except IOError as err:
-        sys.exit(str(err))
+    eeprom_data = EepromData(yml_parser)
+    eeprom_data.api_version = unpacked[0]
+    eeprom_data.som_revision = unpacked[1]
+    eeprom_data.sub_revisions = unpacked[2]
+    eeprom_data.som_type = unpacked[3]
+    eeprom_data.base_article_number = unpacked[4]
+    eeprom_data.ksp_number = unpacked[5]
+    if len(eeprom_struct) > 6:
+        #This will not be read when DEFAULT_EP_FORMAT is used
+        eeprom_data.bom_rev = unpacked[7].decode('utf-8')
+        eeprom_data.crc8 = unpacked[8]
+        eeprom_data.kit_opt = unpacked[6].decode('utf-8')[:len(yml_parser['Kit'])]
+
+    eeprom_data.sub_revisions = format(eeprom_data.sub_revisions, '08b')
+    eeprom_data.som_sub_revision = eeprom_data.sub_revisions[4:]
+    eeprom_data.opttree_revision = format(int(eeprom_data.sub_revisions[:4], 2), '04b')
+    eeprom_data.som_sub_revision = sub_revision_to_str(eeprom_data.som_sub_revision)
+
+    if eeprom_data.is_v3():
+        eeprom_data = data_header_to_eeprom_data(eeprom_struct, eeprom_data)
+
+    return eeprom_data
+
+
+def data_header_to_eeprom_data(eeprom_struct: bytes, eeprom_data: EepromData) -> EepromData:
+    """Unpack the EEPROM data header."""
+    unpacked = struct.unpack(ENCODING_API3_DATA_HEADER,
+                             eeprom_struct[-EEPROM_V3_DATA_HEADER_SIZE:])
+
+    if crc8_checksum_calc(eeprom_struct[-EEPROM_V3_DATA_HEADER_SIZE:]):
+        raise AssertionError("Data header crc8 mismatch!")
+
+    eeprom_data.v3_payload_length = int(unpacked[0])
+    eeprom_data.v3_block_count = int(unpacked[1])
+    eeprom_data.v3_sub_version = int(unpacked[2])
+    eeprom_data.v3_header_crc8 = int(unpacked[3])
+
+    return eeprom_data
+
+
+def blocks_to_eeprom_data(eeprom_data: EepromData, eeprom_blocks: bytes) -> EepromData:
+    """Unpack all EEPROM blocks."""
+    for _ in range(eeprom_data.v3_block_count):
+        block_size = unpack_block(eeprom_data, eeprom_blocks)
+        eeprom_blocks = eeprom_blocks[block_size:]
+    return eeprom_data
 
 
 def print_eeprom_data(eeprom_data: EepromData):
@@ -210,6 +279,19 @@ Extras
 {"CRC-Checksum":16s}:  0x{eeprom_data.crc8:x}
 """
     print(output)
+    if eeprom_data.api_version <= 2:
+        return
+    output_v3 = f"""
+API v3 Content
+##############
+{"API sub version":16s}:  {eeprom_data.v3_sub_version}
+{"Number of blocks":16s}:  {len(eeprom_data.blocks)}
+{"CRC-Checksum":16s}:  0x{eeprom_data.v3_header_crc8:x}
+"""
+    print(output_v3)
+    for block in eeprom_data.blocks:
+        print(f"""{block!r}
+""")
 
 
 def decode_base_name_from_raw(eeprom_raw):

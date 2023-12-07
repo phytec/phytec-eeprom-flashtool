@@ -30,17 +30,22 @@ def test_read(test_data, capsys):
     command = ['phytec_eeprom_flashtool.py', 'read'] + test_data['read_args'].split() + \
         ['-file', file]
     print(command)
-    result = subprocess.run(command, stdout=subprocess.PIPE)
-    assert result.returncode == 0
-    output = result.stdout.decode('utf-8').split('\n')
-    print("\n".join(output))
-    try:
-        for name, out_string in pytest.OUTPUT_STRINGS.items():
-            if not (file.endswith("bad_crc") and name == "crc"):
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if file.endswith("_bad_crc"):
+        assert result.returncode == 1
+        output = result.stderr.decode('utf-8').split('\n')
+        assert "AssertionError: API v2 crc8 mismatch!" in output
+    else:
+        assert result.returncode == 0
+        output = result.stdout.decode('utf-8').split('\n')
+        print("\n".join(output))
+        try:
+            for name, out_string in pytest.OUTPUT_STRINGS.items():
                 search_string = out_string.format(test_data['data'][name])
                 index = output.index(search_string)
-    except ValueError as err:
-        pytest.fail(f"Output not found: {err}\nOutput:\n{output}")
+                del output[index]
+        except ValueError as err:
+            pytest.fail(f"Output not found: {err}\nOutput:\n{output}")
 
 def test_create(test_data, capsys, tmp_path):
     if not ('create_args' in test_data):

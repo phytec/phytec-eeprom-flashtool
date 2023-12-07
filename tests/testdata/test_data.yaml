@@ -8,7 +8,6 @@ Output_strings:
  ksp_number: "KSx number      :  {0}"
  option: "Options         :  {0}"
  crc: "CRC-Checksum    :  0x{0}"
- bad_crc: "CRC-Checksum    :  0x{0}"
 
 Test_data:
  -
@@ -23,7 +22,6 @@ Test_data:
    ksp_number: "-"
    option: '1011011I'
    crc: "b7"
-   bad_crc: "b7"
   read_args: '-som PCL-069'
   create_args: '-som PCL-069 -kit 1011011I -bom A3 -rev 3a'
  -
@@ -38,7 +36,6 @@ Test_data:
    ksp_number: "-"
    option: '1011011I'
    crc: "c8"
-   bad_crc: "c8"
   read_args: '-som PCL-069'
   create_args: '-som PCL-069 -kit 1011011I -bom A3'
  -
@@ -53,7 +50,6 @@ Test_data:
    ksp_number: 59
    option: '4054411I'
    crc: "bb"
-   bad_crc: "bb"
   read_args: '-som PCL-066 -ksx KSM59'
   create_args: '-som PCL-066 -ksx KSM59 -kit 4054411I -bom S9 -rev 5d -opt 5'
  -
@@ -68,7 +64,6 @@ Test_data:
    ksp_number: 59
    option: '4054411I'
    crc: "8d"
-   bad_crc: "8d"
   read_args: '-som PCL-066 -ksx KSP59'
   create_args: '-som PCL-066 -ksx KSP59 -kit 4054411I -bom B4 -rev 15d'
  -
@@ -83,5 +78,4 @@ Test_data:
    ksp_number: "-"
    option: '2011011I'
    crc: "c8"
-   bad_crc: "b7"
   read_args: '-som PCL-069'

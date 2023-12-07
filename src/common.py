@@ -1,6 +1,7 @@
 """Module with common functions."""
 import re
 from typing import Union, Tuple
+import crc8  # type: ignore
 
 REV_A_OFFSET = ord('a') - 1
 
@@ -28,3 +29,11 @@ def sub_revision_to_str(sub_revision: Union[int, str]) -> str:
     if isinstance(sub_revision, str):
         sub_revision = chr(int(sub_revision, 2) + REV_A_OFFSET)
     return str(sub_revision)
+
+
+def crc8_checksum_calc(eeprom_struct: bytes) -> int:
+    """Create a CRC8 checksum from the packed EEPROM data."""
+    hash_ = crc8.crc8()
+    hash_.update(eeprom_struct)
+    crc8_sum = hash_.hexdigest()
+    return int(crc8_sum, 16)
