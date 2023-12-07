@@ -1,0 +1,117 @@
+---
+# PCM-074 PHYTEC EEPROM Flashtool Config File
+# board: imx8mp phyboard pollux
+# Copyright (C) 2019-2021 PHYTEC
+
+PHYTEC:
+  eeprom_offset: 0x0
+  eth_name: 'eth1'
+  i2c_bus: 0
+  i2c_dev: 0x50
+  ep_encoding: '6B17s2s6xB'
+# ep_encoding_format:
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
+
+Kit:
+  0: SoC
+  1: Frequency A72
+  2: Additional Processor Features
+  3: DDR-Ram
+  4: eMMC
+  5: NOR-Flash
+  6: Ethernet / RTC / Power Monitor / EEPROM
+  7: Display Option (DSI0)
+  8: Temperature
+  9: Oscillator (OSC1) / eFuse
+  10: Temperature Sensor
+
+SoC:
+  '1': TDA4VE
+  '2': TDA4VL
+  '3': TDA4AL
+  '4': AM68D
+  '5': AM68A7
+  '6': AM68A
+  '7': AM68
+
+Frequency A72:
+  'H': 1.2 GHz
+  'N': 1.6 GHz
+  'T': 2 GHz
+
+Additional Processor Features:
+  '0': High Security capable
+  '5': High Security capable, R5F Lockstep capable
+  'C': General purpose, R5F Lockstep capable
+  'D': High Sec. cap., R5F Lockstep cap., Cust. Dev Keys
+  'G': General purpose
+  'P': High Sec. Prime cap., R5F Lockstep cap., Cust. Dev Keys
+  'R': High Security Prime capable, R5F Lockstep capable
+
+DDR-Ram:
+  '0': 512MB (1 Bank)
+  '1': 1GB (1 Bank)
+  '2': 1GB (2 Banks)
+  '3': 2GB (1 Bank)
+  '4': 2GB (2 Banks)
+  '5': 4GB (1 Bank)
+  '6': 4GB (2 Banks)
+  '7': 8GB (1 Bank)
+  '8': 8GB (2 Banks)
+  '9': 16GB (2 Banks)
+
+eMMC:
+  '0': 4GB (MLC)
+  '1': 8GB (MLC)
+  '2': 16GB (MLC)
+  '3': 32GB (MLC)
+  '4': 64GB (MLC)
+
+NOR-Flash:
+  '0': '-'
+  '1': 8MB
+  '2': 16MB
+  '3': 32MB
+  '4': 64MB
+  '5': 128MB
+  '6': 256MB
+
+Ethernet / RTC / Power Monitor / EEPROM:
+  '0': 2xRGMII
+  '1': GBit Ethernet Phy (+ 1x RGMII)
+  '2': 2xRGMII / RTC
+  '3': GBit Ethernet Phy (+ 1x RGMII) / RTC
+  '4': 2xRGMII / Power monitor
+  '5': GBit Ethernet Phy (+ 1x RGMII) / Power monitor
+  '6': 2xRGMII / RTC / Power monitor
+  '7': GBit Ethernet Phy (+ 1x RGMII) / RTC / Power monitor
+  '8': 2xRGMII / 32 KB EEPROM
+  '9': GBit Ethernet Phy (+ 1x RGMII) / 32 KB EEPROM
+  'A': 2xRGMII / RTC / 32 KB EEPROM
+  'B': GBit Ethernet Phy (+ 1x RGMII) / RTC / 32 KB EEPROM
+  'C': 2xRGMII / Power monitor / 32 KB EEPROM
+  'D': GBit Ethernet Phy (+ 1x RGMII) / Power monitor / 32 KB EEPROM
+  'E': 2xRGMII / RTC / Power monitor / 32 KB EEPROM
+  'F': GBit Ethernet Phy (+ 1x RGMII) / RTC / Power monitor / 32 KB EEPROM
+
+Display Option (DSI0):
+  '0': DSI0 not usable
+  '1': MIPI DSI
+  '2': LVDS
+
+Temperature:
+  'A': Automotive Temp
+  'C': Consumer Temp
+  'I': Industrial Temp
+
+Oscillator (OSC1) / eFuse:
+  '0': eFuse not programmable in field
+  '2': Oscillator (OSC1) / eFuse not programmable in field
+  '4': eFuse programmable in field
+  '6': Oscillator (OSC1) / eFuse programmable in field
+
+Temperature Sensor:
+  '0': no temperature sensor
+  '1': Temperature sensor DRAM
+  '2': Temperature sensor ambient
+  '3': Temperature sensor DRAM and ambient
