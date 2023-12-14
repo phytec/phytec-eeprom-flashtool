@@ -86,7 +86,12 @@ class EepromData:
         """Decodes the product full name from ep_data"""
         base_name = self.base_name()
         if self.som_type <= 1:
-            full_name = f"{base_name}-{self.kit_opt}"
+            extended_opt = int(self.yml_parser['PHYTEC'].get('extended_options', 0))
+            full_name = f"{base_name}"
+            if extended_opt:
+                full_name += f"-{self.kit_opt[:-extended_opt]}-{self.kit_opt[-extended_opt:]}"
+            else:
+                full_name += f"-{self.kit_opt}"
         elif self.som_type <= 3:
             full_name = base_name
         else:
