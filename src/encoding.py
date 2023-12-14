@@ -248,6 +248,11 @@ def print_eeprom_data(eeprom_data: EepromData):
     if eeprom_data.som_sub_revision != "0":
         pcb_rev += eeprom_data.som_sub_revision
 
+    if len(eeprom_data.kit_opt) != len(eeprom_data.yml_parser['Kit']):
+        opt_error = f"Passed kit options {eeprom_data.kit_opt} mismatch number of options for " \
+            f"this product: {len(eeprom_data.yml_parser['Kit'])}"
+        raise ValueError(opt_error)
+
     newline = '\n'
     kit_options_verbose = []
     for index, kit_opt in eeprom_data.yml_parser['Kit'].items():
