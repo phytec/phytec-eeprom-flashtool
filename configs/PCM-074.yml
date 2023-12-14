@@ -9,6 +9,7 @@ PHYTEC:
   i2c_bus: 0
   i2c_dev: 0x50
   api: 3
+  extended_options: 2
 
 Kit:
   0: SoC
