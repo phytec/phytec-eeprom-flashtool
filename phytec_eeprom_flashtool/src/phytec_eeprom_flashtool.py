@@ -10,25 +10,24 @@
 """
 
 import argparse
-import sys
 
-from src.io import get_yml_parser
-from src.io import eeprom_write
-from src.io import eeprom_read
-from src.io import binary_write
-from src.io import binary_read
-from src.encoding import YmlParser
-from src.encoding import EepromData
-from src.encoding import EEPROM_V2_SIZE
-from src.encoding import EEPROM_V3_DATA_HEADER_SIZE
-from src.encoding import get_eeprom_data
-from src.encoding import eeprom_data_to_struct
-from src.encoding import eeprom_data_to_blocks
-from src.encoding import struct_to_eeprom_data
-from src.encoding import blocks_to_eeprom_data
-from src.encoding import print_eeprom_data
-from src.blocks import add_mac_block
-from src.blocks import add_key_value_block
+from .io import get_yml_parser
+from .io import eeprom_write
+from .io import eeprom_read
+from .io import binary_write
+from .io import binary_read
+from .encoding import YmlParser
+from .encoding import EepromData
+from .encoding import EEPROM_V2_SIZE
+from .encoding import EEPROM_V3_DATA_HEADER_SIZE
+from .encoding import get_eeprom_data
+from .encoding import eeprom_data_to_struct
+from .encoding import eeprom_data_to_blocks
+from .encoding import struct_to_eeprom_data
+from .encoding import blocks_to_eeprom_data
+from .encoding import print_eeprom_data
+from .blocks import add_mac_block
+from .blocks import add_key_value_block
 
 def write_clearance() -> bool:
     """Notifies the user about potential risks and asks for the write clearance."""
@@ -244,6 +243,3 @@ def main(args):
             args.bom = "0"
             args.opt = 0
         args.func(args, yml_parser)
-
-if __name__ == '__main__':
-    main(sys.argv[1:])

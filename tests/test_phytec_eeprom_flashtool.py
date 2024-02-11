@@ -27,17 +27,19 @@ def get_test_data(test_data):
 
 def test_read(test_data, capsys):
     file = os.path.join(TESTDATA_PATH, test_data['file_name'])
-    command = ['phytec_eeprom_flashtool.py', 'read'] + test_data['read_args'].split() + \
+    command = ['phytec_eeprom_flashtool', 'read'] + test_data['read_args'].split() + \
         ['-file', file]
     print(command)
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if file.endswith("_bad_crc"):
         assert result.returncode == 1
         output = result.stderr.decode('utf-8').split('\n')
+        output = [s.strip() for s in output]
         assert "AssertionError: API v2 crc8 mismatch!" in output
     else:
         assert result.returncode == 0
         output = result.stdout.decode('utf-8').split('\n')
+        output = [s.strip() for s in output]
         print("\n".join(output))
         try:
             for name, out_string in pytest.OUTPUT_STRINGS.items():
@@ -51,12 +53,13 @@ def test_create(test_data, capsys, tmp_path):
     if not ('create_args' in test_data):
         pytest.skip("create_args missing")
     bin_file_name = os.path.join(tmp_path, "eeprom_data.bin")
-    command = ['phytec_eeprom_flashtool.py', 'create'] + test_data['create_args'].split() + \
+    command = ['phytec_eeprom_flashtool', 'create'] + test_data['create_args'].split() + \
         ['-file', bin_file_name]
     print(command)
     result = subprocess.run(command, stdout=subprocess.PIPE)
     assert result.returncode == 0
     output = result.stdout.decode('utf-8').split('\n')
+    output = [s.strip() for s in output]
     print("\n".join(output))
     for name, out_string in pytest.OUTPUT_STRINGS.items():
         search_string = out_string.format(test_data['data'][name])

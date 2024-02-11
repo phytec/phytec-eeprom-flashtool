@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import struct
 import re
 
-from src.common import crc8_checksum_calc
+from .common import crc8_checksum_calc
 
 # This sub version defines the available blocks. Increase this number when new blocks are
 # available.

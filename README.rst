@@ -8,8 +8,8 @@ target PHYTEC platform (PCM-057.yml for PCM-057 boards, for example).
 By default, this tool looks for configuration files in a 'configs' subdirectory
 to where the script is currently located.
 
-Installation
-############
+Installation (Linux)
+####################
 
 - The packets virtualenv must be installed on your distribution::
 
@@ -33,6 +33,49 @@ Installation
 You can leave the virtualenv by running ``deactivate`` in the bash. Do not
 forget to source the virtualenv again next time you want to use it.
 
+Installation (Windows)
+######################
+
+This guide is written for PowerShell.
+
+- First, set the Execution policy::
+
+        PS C:> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+- Clone the repository locally::
+
+        git clone git@github.com:phytec/phytec-eeprom-flashtool.git
+        cd phytec-eeprom-flashtool
+
+- Create a virtualenv::
+
+        python -m venv venv
+        \venv\Scripts\Activate.ps1
+
+- Install this package and all dependencies::
+
+        pip install .
+        pip install -r requirements-windows.txt
+
+Installation Without Virtualenv
+###############################
+
+You can run the phytec-eeprom-flashtool without a virtual environment. However, it's highly
+recommended to use a virtual environment to not overwrite dependencies of other projects.
+
+- Clone the repository locally::
+
+        git clone git@github.com:phytec/phytec-eeprom-flashtool.git
+        cd phytec-eeprom-flashtool
+
+- Install all dependencies::
+
+        pip install -r requirements.txt
+
+- You can run the tool with the following command (you have to be in the root directory)::
+
+        python -m phytec_eeprom_flashtool
+
 Usage
 #####
 
@@ -48,7 +91,7 @@ Required arguments: -som <som>
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py read -som <som>
+    phytec_eeprom_flashtool read -som <som>
 
 If the product configuration is made by a KSM/KSP or a PCM/PCL-KSM/KSP then the
 optional argument -ksx is used.
@@ -58,7 +101,7 @@ Required arguments: read -ksx <KSM/KSP>
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py read -ksx <KSP/KSX>
+    phytec_eeprom_flashtool read -ksx <KSP/KSX>
 
 If the product configuration is a PCM/PCL-KSM/KSP then -som is used to enter
 the PCM/PCL number and the argument -ksx is additionally specified.
@@ -67,16 +110,16 @@ Required arguments: read -som <som> -ksx <KSM/KSP>
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py read -som <som> -ksx <KSP/KSX>
+    phytec_eeprom_flashtool read -som <som> -ksx <KSP/KSX>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py read -som PCL-066
-    phytec_eeprom_flashtool.py read -ksx KSP08
-    phytec_eeprom_flashtool.py read -som PCL-066 -ksx KSP-24
-    phytec_eeprom_flashtool.py read -som PCL-066 -file binary_file.bin
+    phytec_eeprom_flashtool read -som PCL-066
+    phytec_eeprom_flashtool read -ksx KSP08
+    phytec_eeprom_flashtool read -som PCL-066 -ksx KSP-24
+    phytec_eeprom_flashtool read -som PCL-066 -file binary_file.bin
 
 Write
 *****
@@ -88,27 +131,27 @@ for the bom revision are optional and default 0.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py write -som <som> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool write -som <som> -kit <bom> -bom <bom rev>
 
 KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py write -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool write -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
 
 PCM/PCL-KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py write -som <som> -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool write -som <som> -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py write -som PCL-066 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool.py write -ksx KSP08 -kit 3322115I -bom A0
-    phytec_eeprom_flashtool.py write -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool write -som PCL-066 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool write -ksx KSP08 -kit 3322115I -bom A0
+    phytec_eeprom_flashtool write -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
 
 Create
 ******
@@ -121,28 +164,28 @@ The other necessary and optional arguments are the same as for the write command
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py create -som <som> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool create -som <som> -kit <bom> -bom <bom rev>
 
 KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py create -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool create -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
 
 PCM/PCL-KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py create -som <som> -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool create -som <som> -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py create -som PCL-066 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool.py create -ksx KSP08 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool.py create -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool.py create -som PCL-066 -kit 3022210I -bom A0 -file eeprom.dat
+    phytec_eeprom_flashtool create -som PCL-066 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool create -ksx KSP08 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool create -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool create -som PCL-066 -kit 3022210I -bom A0 -file eeprom.dat
 
 Display
 *******
@@ -152,27 +195,27 @@ EEPROM chip. It takes same arguments as for create or write.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py display -som <som> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool display -som <som> -kit <bom> -bom <bom rev>
 
 KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py display -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool display -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
 
 PCM/PCL-KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py display -som <som> -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool display -som <som> -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py display -som PCL-066 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool.py display -ksx KSP08 -kit 3322115I -bom A0
-    phytec_eeprom_flashtool.py display -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool display -som PCL-066 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool display -ksx KSP08 -kit 3322115I -bom A0
+    phytec_eeprom_flashtool display -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
 
 Blocks
 ######
@@ -196,8 +239,8 @@ two MACs to the interface 0 and 1.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py add-mac -som PCM-071 0 00:91:da:dc:1f:c5
-    phytec_eeprom_flashtool.py add-mac -som PCM-071 1 00:91:da:dc:1f:c6
+    phytec_eeprom_flashtool add-mac -som PCM-071 0 00:91:da:dc:1f:c5
+    phytec_eeprom_flashtool add-mac -som PCM-071 1 00:91:da:dc:1f:c6
 
 Key Value Block
 ---------------
@@ -209,11 +252,11 @@ and can be used in software later.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool.py add-key-value -som PCM-071 SERIAL CAFE1234
+    phytec_eeprom_flashtool add-key-value -som PCM-071 SERIAL CAFE1234
 
 License
 #######
 
-Copyright (C) 2017 PHYTEC America, LLC. Released under the `license`_.
+Copyright (C) 2024 PHYTEC Holding AG. Released under the `license`_.
 
 .. _license: COPYING.MIT

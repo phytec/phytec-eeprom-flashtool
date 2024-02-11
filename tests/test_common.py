@@ -1,7 +1,7 @@
 import pytest
-from src.common import str_to_revision
-from src.common import sub_revision_to_str
-from src.common import crc8_checksum_calc
+from phytec_eeprom_flashtool.src.common import str_to_revision
+from phytec_eeprom_flashtool.src.common import sub_revision_to_str
+from phytec_eeprom_flashtool.src.common import crc8_checksum_calc
 
 
 @pytest.mark.parametrize("value, expect", [

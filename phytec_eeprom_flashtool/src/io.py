@@ -2,7 +2,7 @@
 from pathlib import Path
 import sys
 import yaml
-from src.encoding import decode_base_name_from_raw, YmlParser, EepromData
+from .encoding import decode_base_name_from_raw, YmlParser, EepromData
 
 TOOL_DIR = Path(__file__).resolve().parent
 YML_DIR = TOOL_DIR / Path('../configs')

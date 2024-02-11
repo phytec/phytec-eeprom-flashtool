@@ -5,12 +5,12 @@ from dataclasses import dataclass
 import struct
 import sys
 
-from src.common import str_to_revision
-from src.common import sub_revision_to_str
-from src.common import crc8_checksum_calc
-from src.blocks import API_V3_SUB_VERSION
-from src.blocks import EepromV3BlockInterface
-from src.blocks import unpack_block
+from .common import str_to_revision
+from .common import sub_revision_to_str
+from .common import crc8_checksum_calc
+from .blocks import API_V3_SUB_VERSION
+from .blocks import EepromV3BlockInterface
+from .blocks import unpack_block
 
 MAX_KIT_OPTS = 17
 # 6 uchars
