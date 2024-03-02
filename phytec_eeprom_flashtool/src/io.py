@@ -6,7 +6,7 @@ from .encoding import decode_base_name_from_raw, YmlParser, EepromData
 
 TOOL_DIR = Path(__file__).resolve().parent
 YML_DIR = TOOL_DIR / Path('../configs')
-OUTPUT_DIR = TOOL_DIR / Path('../output')
+OUTPUT_DIR = TOOL_DIR / Path('../../output')
 
 
 def get_eeprom_bus(yml_parser: YmlParser) -> Path:
