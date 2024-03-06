@@ -11,6 +11,7 @@
 
 import argparse
 
+from . import __version__
 from .io import get_yml_parser
 from .io import eeprom_write
 from .io import eeprom_read
@@ -176,11 +177,12 @@ def add_always_write_argument(parser):
     parser.add_argument('-y', dest='always_write', action='store_true',
                         help='Do no ask before flashing a new image to the EEPROM chip.')
 
-def main(args):
+def main(args): # pylint: disable=too-many-statements
     """ Set up parsing for commandline arguments. """
     parser = argparse.ArgumentParser(description='PHYTEC SOM EEPROM configuration tool')
 
     subparsers = parser.add_subparsers(help="EEPROM operation commands", dest='command')
+    parser.add_argument('-v', '--version', action='version', version=f"Version: {__version__}")
     subparsers.required = True
 
     parser_read = subparsers.add_parser('read', help="Reads the product configuration from an " \

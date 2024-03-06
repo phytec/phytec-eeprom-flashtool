@@ -79,7 +79,17 @@ recommended to use a virtual environment to not overwrite dependencies of other 
 Usage
 #####
 
-This tool has four different modes and required/optional arguments.
+This tool has five different modes and required/optional arguments.
+
+Version
+*******
+
+Prints the current version of this tool.
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool -v
+    phytec_eeprom_flashtool --version
 
 Read
 ****
