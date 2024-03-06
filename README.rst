@@ -95,32 +95,35 @@ Read
 ****
 
 Reads the product configuration from an EEPROM chips and dumps it to the console.
-Alternatively it can read a binary file by passing the filename via -file argument.
-It takes the argument -som followed by the product name as parameter.
+Alternatively it can read a binary file by passing the filename via `-file` or `-f` argument.
+
+It takes the argument `-som` followed by the product name as parameter.
 Required arguments: -som <som>
 
 .. code-block:: bash
 
     phytec_eeprom_flashtool read -som <som>
 
-If the product configuration is made by a KSM/KSP or a PCM/PCL-KSM/KSP then the
-optional argument -ksx is used.
+If the product configuration is a PCM/PCL-KSM/KSP then -som is used to enter
+the PCM/PCL number and the argument `-ksx` is additionally specified.
+Required arguments: read -som <som> -ksx <KSM/KSP>
 
-For a pure KSM/KSX -ksx replaces the parameter -som.
+.. code-block:: bash
+
+    phytec_eeprom_flashtool read -som <som> -ksx <KSP/KSX>
+
+For a pure KSM/KSX `-ksx` replaces the parameter `-som`.
 Required arguments: read -ksx <KSM/KSP>
 
 .. code-block:: bash
 
     phytec_eeprom_flashtool read -ksx <KSP/KSX>
 
-If the product configuration is a PCM/PCL-KSM/KSP then -som is used to enter
-the PCM/PCL number and the argument -ksx is additionally specified.
-Required arguments: read -som <som> -ksx <KSM/KSP>
-
+Each of the above commands allows an optional `-file` or `-f` argument to read directly from a file.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool read -som <som> -ksx <KSP/KSX>
+    phytec_eeprom_flashtool read -som <som> -f <path to file>
 
 Example:
 
@@ -129,103 +132,105 @@ Example:
     phytec_eeprom_flashtool read -som PCL-066
     phytec_eeprom_flashtool read -ksx KSP08
     phytec_eeprom_flashtool read -som PCL-066 -ksx KSP-24
-    phytec_eeprom_flashtool read -som PCL-066 -file binary_file.bin
+    phytec_eeprom_flashtool read -som PCL-075 -f output/PCL-075-7432CE11I.A0_10_0000
 
 Write
 *****
 
 Writes a product configuration to the EEPROM chip.
-This commands takes the the argument -som followed by the argument -kit for the article number.
-The -rev for the PCB revision, the -opt for the optiontree revision and the -bom
-for the bom revision are optional and default 0.
+This commands takes the the argument `-som` followed by the argument `-kit` for the article number and
+`-rev` for the PCB revision followed by `-bom` for the BOM revision.
+`-opt` is an optional argument for the optiontree revision and defaults to 0.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool write -som <som> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool write -som <som> -kit <bom> -pcb <pcb rev> -bom <bom rev>
 
 KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool write -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool write -ksx <KSM/KSP> -kit <bom> -pcb <pcb rev> -bom <bom rev>
 
 PCM/PCL-KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool write -som <som> -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool write -som <som> -ksx <KSM/KSP> -kit <bom> -pcb <pcb rev> -bom <bom rev>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool write -som PCL-066 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool write -ksx KSP08 -kit 3322115I -bom A0
-    phytec_eeprom_flashtool write -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool write -som PCL-066 -kit 3022210I rev 1a -bom A0
+    phytec_eeprom_flashtool write -ksx KSP08 -kit 3322115I rev 2 -bom A0
+    phytec_eeprom_flashtool write -som PCL-066 -ksx KSP24 -kit 3022210I rev 1 -bom A0
 
 Create
 ******
 
 Creates a binary file at the output directory which can then be written to the
-EEPROM chip with dd or via JTAG.
+EEPROM chip with dd or JTAG.
 It also dumps the complete configuration on the console.
-The default filename and directory can be changed by the -file argument.
+The default filename and directory can be changed by the `-file` or `-f` argument.
 The other necessary and optional arguments are the same as for the write command.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool create -som <som> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool create -som <som> -kit <bom> -rev <pcb rev> -bom <bom rev>
 
 KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool create -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool create -ksx <KSM/KSP> -kit <bom> -rev <pcb rev> -bom <bom rev>
 
 PCM/PCL-KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool create -som <som> -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool create -som <som> -ksx <KSM/KSP> -kit <bom> -rev <pcb rev> -bom <bom rev>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool create -som PCL-066 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool create -ksx KSP08 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool create -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool create -som PCL-066 -kit 3022210I -bom A0 -file eeprom.dat
+    phytec_eeprom_flashtool create -som PCL-066 -kit 3022210I -rev 1a -bom A0
+    phytec_eeprom_flashtool create -ksx KSP08 -kit 3022210I -rev 2 -bom A0
+    phytec_eeprom_flashtool create -som PCL-066 -ksx KSP24 -kit 3022210I -rev 1 -bom A0
+    phytec_eeprom_flashtool create -som PCL-066 -kit 3022210I -rev 1 -bom A0 -file eeprom.dat
 
 Display
 *******
 
 Dumps the complete configuration on the console without communicating with a
-EEPROM chip. It takes same arguments as for create or write.
+EEPROM chip. It takes same arguments as for create or write and also allows to display the
+content of a local file with the `-file` or `-f` argument.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool display -som <som> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool display -som <som> -kit <bom> -rev <pcb rev> -bom <bom rev>
 
 KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool display -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool display -ksx <KSM/KSP> -kit <bom> -rev <pcb rev> -bom <bom rev>
 
 PCM/PCL-KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool display -som <som> -ksx <KSM/KSP> -kit <bom> -bom <bom rev>
+    phytec_eeprom_flashtool display -som <som> -ksx <KSM/KSP> -kit <bom> -rev <pcb rev> -bom <bom rev>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool display -som PCL-066 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool display -ksx KSP08 -kit 3322115I -bom A0
-    phytec_eeprom_flashtool display -som PCL-066 -ksx KSP24 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool display -som PCL-066 -kit 3022210I -rev 1a -bom A0
+    phytec_eeprom_flashtool display -ksx KSP08 -kit 3322115I -rev 2 -bom A0
+    phytec_eeprom_flashtool display -som PCL-066 -ksx KSP24 -rev 1 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool display -som PCL-066 -kit 3022210I -rev 1 -bom A0 -file eeprom.dat
 
 Blocks
 ######
@@ -233,11 +238,12 @@ Blocks
 Blocks are a flexible way to extend the general information inside the EEPROM chip by information
 required for a product. For example, it allows to store multiple MACs for Ethernet interfaces.
 
-Please keep in mind each transaction will read the content first, append the MAC and writes the
+Please keep in mind each transaction will read the content first, append the block and writes the
 new image back to the EEPROM chip. It's not possible to remove a block.
 
-Each command requires either the `-som` and/or `-ksx` argument to identify the EEPROM chip. The
-`-f` arguments works as well for read/write operations on a local file.
+Each command requires either the `-som` and/or `-ksx` argument to identify the EEPROM chip.
+
+It's also possible to append a block to a local binary file with the `-file` or `-f` argument.
 
 MAC Block
 *********
@@ -252,6 +258,13 @@ two MACs to the interface 0 and 1.
     phytec_eeprom_flashtool add-mac -som PCM-071 0 00:91:da:dc:1f:c5
     phytec_eeprom_flashtool add-mac -som PCM-071 1 00:91:da:dc:1f:c6
 
+The following commands add two MACs to a local binary file.
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool add-mac -som PCM-071 0 00:91:da:dc:1f:c5 -f output/binary_file
+    phytec_eeprom_flashtool add-mac -som PCM-071 1 00:91:da:dc:1f:c6 -f output/binary_file
+
 Key Value Block
 ---------------
 
@@ -263,6 +276,12 @@ and can be used in software later.
 .. code-block:: bash
 
     phytec_eeprom_flashtool add-key-value -som PCM-071 SERIAL CAFE1234
+
+The following command adds the key-value pair `CAFE1234`, `SERIAL` to a local binary file.
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool add-key-value -som PCM-071 SERIAL CAFE1234 -f output/binary_file
 
 License
 #######
