@@ -37,7 +37,7 @@ Test_data:
    option: '1011011I'
    crc: "c8"
   read_args: '-som PCL-069'
-  create_args: '-som PCL-069 -kit 1011011I -bom A3'
+  create_args: '-som PCL-069 -kit 1011011I -bom A3 -rev 0'
  -
   file_name: 'PCL-066-KSM59-4054411I.S9_5d_101'
   data:

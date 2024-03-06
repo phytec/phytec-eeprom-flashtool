@@ -152,18 +152,17 @@ def write_key_value_block(args, yml_parser: YmlParser):
 
 def add_mandatory_arguments(parser):
     """Adds all mandatory arguments to the parser. Mandatory are -som and -ksx."""
-    parser.add_argument('-som', dest='som', nargs='?', default=None, help='PCX-### format')
-    parser.add_argument('-ksx', dest='ksx', nargs='?', default=None, help='KSX-####')
+    parser.add_argument('-som', dest='som', nargs='?', help='PCX-### format')
+    parser.add_argument('-ksx', dest='ksx', nargs='?', help='KSX-####')
 
 
-def add_optional_arguments(parser):
-    """Adds all optional arguments to the parser. Optional are -kit, -rev, -opt, and -bom."""
+def add_additional_arguments(parser):
+    """Adds additional arguments to the parser. Options are -kit, -rev, -bom and -opt."""
     parser.add_argument('-kit', dest='kit', help='Kitoptions from Optiontree')
-    parser.add_argument('-rev', dest='rev', nargs='?', default='00', help='Board revision',
-                        type=str)
+    parser.add_argument('-rev', dest='rev', nargs='?', type=str, help='Board revision')
+    parser.add_argument('-bom', dest='bom', nargs='?', type=str, help='BoM revision')
     parser.add_argument('-opt', dest='opt', nargs='?', default=0, type=int,
                         help='Optiontree revision')
-    parser.add_argument('-bom', dest='bom', nargs='?', default='00', help='BoM revision', type=str)
 
 
 def add_file_argument(parser):
@@ -196,20 +195,20 @@ def main(args): # pylint: disable=too-many-statements
     parser_write.set_defaults(func=write_som_config)
     add_mandatory_arguments(parser_write)
     add_always_write_argument(parser_write)
-    add_optional_arguments(parser_write)
+    add_additional_arguments(parser_write)
 
     parser_create = subparsers.add_parser('create', help="Creates a binary file at the output " \
         "directory which can then be written to the EEPROM device with dd or via JTAG.")
     parser_create.set_defaults(func=create_binary)
     add_mandatory_arguments(parser_create)
-    add_optional_arguments(parser_create)
+    add_additional_arguments(parser_create)
     add_file_argument(parser_create)
 
     parser_display = subparsers.add_parser('display', help="Dumps the complete configuration on " \
         "the console without communicating with a EEPROM device")
     parser_display.set_defaults(func=display_som_config)
     add_mandatory_arguments(parser_display)
-    add_optional_arguments(parser_display)
+    add_additional_arguments(parser_display)
 
     parser_add_mac = subparsers.add_parser('add-mac', help="Adds a MAC address block to an " \
         "existing EEPROM binary or updates the content of an EEPROM device.")
@@ -234,14 +233,22 @@ def main(args): # pylint: disable=too-many-statements
     if not (args.som or args.ksx or ("file" in args and args.file)):
         error = "Set -som and/or -ksx."
         if "file" in args:
-            error += " Additionally, set -file."
+            error += " Additionally, set -file or -f."
         parser.error(error)
 
     yml_parser = get_yml_parser(args)
     if hasattr(args, 'func'):
-        if args.func in (read_som_config, write_mac_block, write_key_value_block):
+        # Set default values for all subparser without additional arguments.
+        if not args.func in (write_som_config, create_binary, display_som_config):
             args.kit = "0"
-            args.rev = "0"
-            args.bom = "0"
+            args.rev = "00"
+            args.bom = "00"
             args.opt = 0
+        # Check -kit, -rev, and -bom are set.
+        if args.func in (write_som_config, create_binary, display_som_config):
+            arguments = [(args.kit, '-kit'), (args.rev, '-rev'), (args.bom, '-bom')]
+            for arg in arguments:
+                if arg[0] is None:
+                    parser.error(f"{arg[1]} argument is missing and mandatory for command " \
+                                f"'{args.command}'")
         args.func(args, yml_parser)
