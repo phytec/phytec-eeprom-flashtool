@@ -62,7 +62,6 @@ Display Option:
 Ethernet:
   '0': no Ethernet
   '1': 10/100 Mbit normal mode
-  '2': 10/100 Mbit enhanced mode
 
 # 'Feature Flags' below is a set of 4 bits, where each bit represents a single
 # feature. Setting or resetting a bit enables or disables the corresponding
