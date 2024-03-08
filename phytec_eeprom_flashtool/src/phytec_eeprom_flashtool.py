@@ -104,6 +104,7 @@ def read_som_config(args, yml_parser: YmlParser):
             eeprom_blocks = eeprom_read(yml_parser, eeprom_data.v3_payload_length, eeprom_size)
         eeprom_data = blocks_to_eeprom_data(eeprom_data, eeprom_blocks)
     print_eeprom_data(eeprom_data)
+    return eeprom_data
 
 
 def write_som_config(args, yml_parser: YmlParser):
@@ -118,6 +119,7 @@ def write_som_config(args, yml_parser: YmlParser):
     else:
         print_eeprom_data(eeprom_data)
         print("Skipped flashing EEPROM!")
+    return eeprom_data
 
 
 def create_binary(args, yml_parser: YmlParser):
@@ -126,6 +128,7 @@ def create_binary(args, yml_parser: YmlParser):
     eeprom_struct = eeprom_data_to_struct(eeprom_data)
     binary_write(args, eeprom_data, eeprom_struct)
     print_eeprom_data(eeprom_data)
+    return eeprom_data
 
 
 def display_som_config(args, yml_parser: YmlParser):
@@ -133,6 +136,7 @@ def display_som_config(args, yml_parser: YmlParser):
     eeprom_data = get_eeprom_data(args, yml_parser)
     eeprom_data_to_struct(eeprom_data)
     print_eeprom_data(eeprom_data)
+    return eeprom_data
 
 
 def write_mac_block(args, yml_parser: YmlParser):
@@ -140,6 +144,7 @@ def write_mac_block(args, yml_parser: YmlParser):
     eeprom_data = read_eeprom_data(args, yml_parser, "MAC blocks are only supported with API v3")
     add_mac_block(eeprom_data, args.interface, args.mac)
     write_eeprom_data(args, eeprom_data)
+    return eeprom_data
 
 
 def write_key_value_block(args, yml_parser: YmlParser):
@@ -148,6 +153,7 @@ def write_key_value_block(args, yml_parser: YmlParser):
                                    "Key Value blocks are only supported with API v3")
     add_key_value_block(eeprom_data, args.key, args.value)
     write_eeprom_data(args, eeprom_data)
+    return eeprom_data
 
 
 def add_mandatory_arguments(parser):
@@ -251,4 +257,4 @@ def main(args): # pylint: disable=too-many-statements
                 if arg[0] is None:
                     parser.error(f"{arg[1]} argument is missing and mandatory for command " \
                                 f"'{args.command}'")
-        args.func(args, yml_parser)
+        return args.func(args, yml_parser)
