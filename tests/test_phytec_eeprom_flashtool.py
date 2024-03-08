@@ -26,9 +26,16 @@ def get_test_data(test_data):
     return yml_parser['Test_data']
 
 def test_read(test_data, capsys):
+    command = ['phytec_eeprom_flashtool', 'read'] + test_data['read_args'].split()
+    read(test_data, command)
+
+def test_autodetect(test_data, capsys):
+    command = ['phytec_eeprom_flashtool', 'read']
+    read(test_data, command)
+
+def read(test_data, command):
     file = os.path.join(TESTDATA_PATH, test_data['file_name'])
-    command = ['phytec_eeprom_flashtool', 'read'] + test_data['read_args'].split() + \
-        ['-file', file]
+    command = command + ['-file', file]
     print(command)
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if file.endswith("_bad_crc"):
