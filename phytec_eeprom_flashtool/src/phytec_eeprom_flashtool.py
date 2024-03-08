@@ -228,7 +228,7 @@ def main(args): # pylint: disable=too-many-statements
     add_always_write_argument(parser_add_key_value)
     add_file_argument(parser_add_key_value)
 
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     if not (args.som or args.ksx or ("file" in args and args.file)):
         error = "Set -som and/or -ksx."
