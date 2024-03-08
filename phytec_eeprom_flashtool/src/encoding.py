@@ -13,10 +13,8 @@ from .blocks import EepromV3BlockInterface
 from .blocks import unpack_block
 
 MAX_KIT_OPTS = 17
-# 6 uchars
-DEFAULT_EP_FORMAT = "<6B"
 # 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
-ENCODING_API2 = DEFAULT_EP_FORMAT + "17s2s6xB"
+ENCODING_API2 = "<6B17s2s6xB"
 # 1 ushort, 2 uchars, 3 reserved, 1 uchar
 ENCODING_API3_DATA_HEADER = "<1H2B3x1B"
 
@@ -201,8 +199,8 @@ def struct_to_eeprom_data(eeprom_struct: bytes, yml_parser: YmlParser) -> Eeprom
     eeprom_data.som_type = unpacked[3]
     eeprom_data.base_article_number = unpacked[4]
     eeprom_data.ksp_number = unpacked[5]
-    if len(eeprom_struct) > 6:
-        #This will not be read when DEFAULT_EP_FORMAT is used
+    if yml_parser is not None:
+        #This will not be read when yml_parser is not set
         eeprom_data.bom_rev = unpacked[7].decode('utf-8')
         eeprom_data.crc8 = unpacked[8]
         eeprom_data.kit_opt = unpacked[6].decode('utf-8')[:len(yml_parser['Kit'])]
@@ -306,7 +304,7 @@ API v3 Content
 
 def decode_base_name_from_raw(eeprom_raw):
     """Returns the base name from raw EEPROM data."""
-    eeprom_data = struct_to_eeprom_data(eeprom_raw, {'PHYTEC':{'ep_encoding' : DEFAULT_EP_FORMAT}})
+    eeprom_data = struct_to_eeprom_data(eeprom_raw, None)
     return eeprom_data.base_name()
 
 

@@ -2,7 +2,7 @@
 from pathlib import Path
 import sys
 import yaml
-from .encoding import decode_base_name_from_raw, YmlParser, EepromData
+from .encoding import decode_base_name_from_raw, YmlParser, EepromData, EEPROM_V2_SIZE
 
 TOOL_DIR = Path(__file__).resolve().parent
 YML_DIR = TOOL_DIR / Path('../configs')
@@ -18,6 +18,8 @@ def get_eeprom_bus(yml_parser: YmlParser) -> Path:
 
 def get_binary_path(args, eeprom_data: EepromData) -> Path:
     """Returns the path to a local binary file."""
+    if "file" in args and args.file:
+        return Path(args.file).resolve()
     if eeprom_data.som_type <= 1:
         # %s-%s.%s_%s%s_%d
         file_name_beginning = f"{args.som}"
@@ -31,7 +33,7 @@ def get_binary_path(args, eeprom_data: EepromData) -> Path:
     file_name = f"{file_name_beginning}-{args.kit}.{eeprom_data.bom_rev}_" \
         f"{eeprom_data.som_revision}{eeprom_data.som_sub_revision}_" \
         f"{eeprom_data.opttree_revision}"
-    return Path(args.file).resolve() if "file" in args and args.file else OUTPUT_DIR / file_name
+    return OUTPUT_DIR / file_name
 
 
 def eeprom_read(yml_parser: YmlParser, size: int, offset: int = 0) -> bytes:
@@ -86,9 +88,9 @@ def binary_write(args, eeprom_fake_data: EepromData, content: bytes, offset: int
 
 def get_yml_parser(args) -> dict:
     """Open a YML configuration file at the config directory."""
-    if not (args.som or args.ksx):
+    if not (args.som or args.ksx) and args.file:
         print("Neither -som nor -ksx are given. Trying to detect information automatically!")
-        image = eeprom_read(args, 6)
+        image = binary_read(args, None, EEPROM_V2_SIZE)
         base_article = decode_base_name_from_raw(image)
         print(f"Detected base article config: {base_article}.yml")
         args.som = base_article
