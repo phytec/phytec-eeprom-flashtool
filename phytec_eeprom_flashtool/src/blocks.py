@@ -173,6 +173,9 @@ class EepromDataKeyValueBlock(EepromV3BlockInterface):
 def add_key_value_block(eeprom_data, key: str, value: str):
     """Function to create a key value block object and add it to the EEPROM data."""
     key_value_block = EepromDataKeyValueBlock(key, value)
+    for block in [elm for elm in eeprom_data.blocks if isinstance(elm, EepromDataKeyValueBlock)]:
+        if block.key == key_value_block.key:
+            raise ValueError(f"EEPROM image already contains a key value pair for key {block.key}")
     key_value_block.pack(eeprom_data.v3_next_block_address)
     eeprom_data.add_block(key_value_block)
 
