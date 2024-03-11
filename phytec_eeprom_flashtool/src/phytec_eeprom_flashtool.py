@@ -27,8 +27,8 @@ from .encoding import eeprom_data_to_blocks
 from .encoding import struct_to_eeprom_data
 from .encoding import blocks_to_eeprom_data
 from .encoding import print_eeprom_data
-from .blocks import add_mac_block
-from .blocks import add_key_value_block
+from .blocks import add_mac_block, EepromDataMACBlock
+from .blocks import add_key_value_block, EepromDataKeyValueBlock
 
 def write_clearance() -> bool:
     """Notifies the user about potential risks and asks for the write clearance."""
@@ -147,6 +147,16 @@ def write_mac_block(args, yml_parser: YmlParser):
     return eeprom_data
 
 
+def read_mac_block(args, yml_parser: YmlParser):
+    """Prints a MAC block for a given Ethernet interface number."""
+    eeprom_data = read_eeprom_data(args, yml_parser, "MAC blocks are only supported with API v3")
+    for block in [elm for elm in eeprom_data.blocks if isinstance(elm, EepromDataMACBlock)]:
+        if block.interface == args.interface:
+            print(block)
+            return
+    raise ValueError(f"No MAC found for Ethernet interface {args.interface}")
+
+
 def write_key_value_block(args, yml_parser: YmlParser):
     """Adds a key-value block to an existing binary file or updates an EEPROM device."""
     eeprom_data = read_eeprom_data(args, yml_parser,
@@ -154,6 +164,17 @@ def write_key_value_block(args, yml_parser: YmlParser):
     add_key_value_block(eeprom_data, args.key, args.value)
     write_eeprom_data(args, eeprom_data)
     return eeprom_data
+
+
+def read_key_value_block(args, yml_parser: YmlParser):
+    """Prints a key-value block for a given key."""
+    eeprom_data = read_eeprom_data(args, yml_parser,
+                                   "Key Value blocks are only supported with API v3")
+    for block in [elm for elm in eeprom_data.blocks if isinstance(elm, EepromDataKeyValueBlock)]:
+        if block.key == args.key:
+            print(block)
+            return
+    raise ValueError(f"No key found for {args.key}")
 
 
 def add_mandatory_arguments(parser):
@@ -225,6 +246,13 @@ def main(args): # pylint: disable=too-many-statements
     add_always_write_argument(parser_add_mac)
     add_file_argument(parser_add_mac)
 
+    parser_read_mac = subparsers.add_parser('read-mac', help="Reads a MAC address block for an " \
+        "Ethernet interface from either an existing EEPROM binary or an EEPROM device.")
+    parser_read_mac.set_defaults(func=read_mac_block)
+    parser_read_mac.add_argument('interface', type=int, help='Number of the Ethernet interface')
+    add_mandatory_arguments(parser_read_mac)
+    add_file_argument(parser_read_mac)
+
     parser_add_key_value = subparsers.add_parser('add-key-value', help="Adds a key-value block " \
         "to an existing EEPROM binary or updates the content of an EEPROM device.")
     parser_add_key_value.set_defaults(func=write_key_value_block)
@@ -233,6 +261,13 @@ def main(args): # pylint: disable=too-many-statements
     add_mandatory_arguments(parser_add_key_value)
     add_always_write_argument(parser_add_key_value)
     add_file_argument(parser_add_key_value)
+
+    parser_read_key_value = subparsers.add_parser('read-key-value', help="Reads a key-value " \
+        " block for a key from either an existing EEPROM binary or an EEPROM device.")
+    parser_read_key_value.set_defaults(func=read_key_value_block)
+    parser_read_key_value.add_argument('key', type=str, help='Name of the key')
+    add_mandatory_arguments(parser_read_key_value)
+    add_file_argument(parser_read_key_value)
 
     args = parser.parse_args(args)
 
