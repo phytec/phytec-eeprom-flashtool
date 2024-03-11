@@ -101,6 +101,11 @@ class EepromDataMACBlock(EepromV3BlockInterface):
 def add_mac_block(eeprom_data, interface: int, mac: str):
     """Function to create a MAC block object and add it to the EEPROM data."""
     mac_block = EepromDataMACBlock(interface, mac)
+    for block in [elm for elm in eeprom_data.blocks if isinstance(elm, EepromDataMACBlock)]:
+        if block.mac == mac_block.mac:
+            raise ValueError(f"EEPROM image already contains a MAC address with {block.mac}")
+        if block.interface == mac_block.interface:
+            raise ValueError(f"EEPROM image already contains a MAC of interface {block.interface}")
     mac_block.pack(eeprom_data.v3_next_block_address)
     eeprom_data.add_block(mac_block)
 
