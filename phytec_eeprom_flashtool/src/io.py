@@ -60,11 +60,10 @@ def eeprom_write(yml_parser: YmlParser, content: bytes, offset: int = 0):
         sys.exit(str(err))
 
 
-def binary_read(args, eeprom_fake_data: EepromData, size: int, offset: int = 0) -> bytes:
+def binary_read(binary_file: str, size: int, offset: int = 0) -> bytes:
     """Read the content from a local binary file."""
-    binary_file = get_binary_path(args, eeprom_fake_data)
     try:
-        with open(binary_file, 'rb') as eeprom_file:
+        with open(Path(binary_file).resolve(), 'rb') as eeprom_file:
             eeprom_file.seek(offset)
             eeprom_data = eeprom_file.read(size)
     except IOError as err:

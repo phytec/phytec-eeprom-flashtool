@@ -45,7 +45,7 @@ can lead to boot failure or misbehaving hardware.""")
 def read_content(args, eeprom_data: EepromData, eeprom_size: int, offset: int = 0):
     """Helper to read either from a binary file or an EEPROM chip."""
     if "file" in args and args.file:
-        return binary_read(args, eeprom_data, eeprom_size, offset)
+        return binary_read(args.file, eeprom_size, offset)
     return eeprom_read(eeprom_data.yml_parser, eeprom_size, offset)
 
 
@@ -92,14 +92,13 @@ def read_som_config(args, yml_parser: YmlParser):
     eeprom_data = get_eeprom_data(args, yml_parser)
     eeprom_size = EEPROM_V2_SIZE + (EEPROM_V3_DATA_HEADER_SIZE if eeprom_data.is_v3() else 0)
     if "file" in args and args.file:
-        eeprom_struct = binary_read(args, eeprom_data, eeprom_size)
+        eeprom_struct = binary_read(args.file, eeprom_size)
     else:
         eeprom_struct = eeprom_read(yml_parser, eeprom_size)
     eeprom_data = struct_to_eeprom_data(eeprom_struct, yml_parser)
     if eeprom_data.is_v3():
         if "file" in args and args.file:
-            eeprom_blocks = binary_read(args, eeprom_data, eeprom_data.v3_payload_length,
-                                        eeprom_size)
+            eeprom_blocks = binary_read(args.file, eeprom_data.v3_payload_length, eeprom_size)
         else:
             eeprom_blocks = eeprom_read(yml_parser, eeprom_data.v3_payload_length, eeprom_size)
         eeprom_data = blocks_to_eeprom_data(eeprom_data, eeprom_blocks)
@@ -293,3 +292,4 @@ def main(args): # pylint: disable=too-many-statements
                     parser.error(f"{arg[1]} argument is missing and mandatory for command " \
                                 f"'{args.command}'")
         return args.func(args, yml_parser)
+    return None
