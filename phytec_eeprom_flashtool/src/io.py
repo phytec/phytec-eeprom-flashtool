@@ -2,7 +2,8 @@
 from pathlib import Path
 import sys
 import yaml
-from .encoding import decode_base_name_from_raw, YmlParser, EepromData, EEPROM_V2_SIZE
+from .encoding import decode_base_name_from_raw, YmlParser, EepromData
+from .encoding import EEPROM_V2_SIZE, EEPROM_V3_DATA_HEADER_SIZE
 
 TOOL_DIR = Path(__file__).resolve().parent
 YML_DIR = TOOL_DIR / Path('../configs')
@@ -89,8 +90,12 @@ def get_yml_parser(args) -> dict:
     """Open a YML configuration file at the config directory."""
     if not (args.som or args.ksx) and args.file:
         print("Neither -som nor -ksx are given. Trying to detect information automatically!")
-        image = binary_read(args, None, EEPROM_V2_SIZE)
-        base_article = decode_base_name_from_raw(image)
+        image = binary_read(args.file, EEPROM_V2_SIZE)
+        try:
+            base_article = decode_base_name_from_raw(image)
+        except AssertionError:
+            image = binary_read(args.file, EEPROM_V2_SIZE + EEPROM_V3_DATA_HEADER_SIZE)
+            base_article = decode_base_name_from_raw(image)
         print(f"Detected base article config: {base_article}.yml")
         args.som = base_article
 
