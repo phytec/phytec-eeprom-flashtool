@@ -1,6 +1,6 @@
 ---
 # PCM-074 PHYTEC EEPROM Flashtool Config File
-# board: imx8mp phyboard pollux
+# board: am68x phyboard izar
 # Copyright (C) 2019-2021 PHYTEC
 
 PHYTEC:
