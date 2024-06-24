@@ -48,23 +48,23 @@ Additional Processor Features:
   'R': High Security Prime capable, R5F Lockstep capable
 
 DDR-Ram:
-  '0': 512MB (1 Bank)
-  '1': 1GB (1 Bank)
-  '2': 1GB (2 Banks)
-  '3': 2GB (1 Bank)
-  '4': 2GB (2 Banks)
-  '5': 4GB (1 Bank)
-  '6': 4GB (2 Banks)
-  '7': 8GB (1 Bank)
-  '8': 8GB (2 Banks)
-  '9': 16GB (2 Banks)
+  '0': 512MB (1 Controller)
+  '1': 1GB (1 Controller)
+  '2': 1GB (2 Controller)
+  '3': 2GB (1 Controller)
+  '4': 2GB (2 Controller)
+  '5': 4GB (1 Controller)
+  '6': 4GB (2 Controller)
+  '7': 8GB (1 Controller)
+  '8': 8GB (2 Controller)
+  '9': 16GB (2 Controller)
 
 eMMC:
-  '0': 4GB (MLC)
-  '1': 8GB (MLC)
-  '2': 16GB (MLC)
-  '3': 32GB (MLC)
-  '4': 64GB (MLC)
+  '0': 4GB (TLC)
+  '1': 8GB (TLC)
+  '2': 16GB (TLC)
+  '3': 32GB (TLC)
+  '4': 64GB (TLC)
 
 NOR-Flash:
   '0': '-'
