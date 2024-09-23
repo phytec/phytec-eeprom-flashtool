@@ -51,12 +51,14 @@ LPDDR:
   '5': 4GB DDR4 RAM 1 Bank
 
 eMMC:
-  '0': No eMMC
-  '1': 4GB eMMC
-  '2': 8GB eMMC
-  '3': 16GB eMMC
-  '4': 32GB eMMC
-  '5': 64GB eMMC
+  '0': No eMMC (MLC)
+  '1': 4GB eMMC (MLC)
+  '2': 8GB eMMC (MLC)
+  '3': 16GB eMMC (MLC)
+  '4': 32GB eMMC (MLC)
+  '5': 64GB eMMC (MLC)
+  '6': 128GB eMMC (MLC)
+  '7': 256GB eMMC (MLC)
 
 Quad SPI Nor:
   '0': no SPI-Nor
