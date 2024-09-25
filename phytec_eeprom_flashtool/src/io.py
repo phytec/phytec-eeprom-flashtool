@@ -7,7 +7,7 @@ from .encoding import EEPROM_V2_SIZE, EEPROM_V3_DATA_HEADER_SIZE
 
 TOOL_DIR = Path(__file__).resolve().parent
 YML_DIR = TOOL_DIR / Path('../configs')
-OUTPUT_DIR = TOOL_DIR / Path('../../output')
+OUTPUT_DIR = Path.cwd() / 'output'
 
 
 def get_eeprom_bus(yml_parser: YmlParser) -> Path:
