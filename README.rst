@@ -139,7 +139,7 @@ Write
 
 Writes a product configuration to the EEPROM chip.
 This commands takes the the argument `-som` followed by the argument `-kit` for the article number and
-`-rev` for the PCB revision followed by `-bom` for the BOM revision.
+`-pcb` for the PCB revision followed by `-bom` for the BOM revision.
 `-opt` is an optional argument for the optiontree revision and defaults to 0.
 
 .. code-block:: bash
@@ -177,28 +177,28 @@ The other necessary and optional arguments are the same as for the write command
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool create -som <som> -kit <bom> -rev <pcb rev> -bom <bom rev>
+    phytec_eeprom_flashtool create -som <som> -kit <bom> -pcb <pcb rev> -bom <bom rev>
 
 KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool create -ksx <KSM/KSP> -kit <bom> -rev <pcb rev> -bom <bom rev>
+    phytec_eeprom_flashtool create -ksx <KSM/KSP> -kit <bom> -pcb <pcb rev> -bom <bom rev>
 
 PCM/PCL-KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool create -som <som> -ksx <KSM/KSP> -kit <bom> -rev <pcb rev> -bom <bom rev>
+    phytec_eeprom_flashtool create -som <som> -ksx <KSM/KSP> -kit <bom> -pcb <pcb rev> -bom <bom rev>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool create -som PCL-066 -kit 3022210I -rev 1a -bom A0
-    phytec_eeprom_flashtool create -ksx KSP08 -kit 3022210I -rev 2 -bom A0
-    phytec_eeprom_flashtool create -som PCL-066 -ksx KSP24 -kit 3022210I -rev 1 -bom A0
-    phytec_eeprom_flashtool create -som PCL-066 -kit 3022210I -rev 1 -bom A0 -file eeprom.dat
+    phytec_eeprom_flashtool create -som PCL-066 -kit 3022210I -pcb 1a -bom A0
+    phytec_eeprom_flashtool create -ksx KSP08 -kit 3022210I -pcb 2 -bom A0
+    phytec_eeprom_flashtool create -som PCL-066 -ksx KSP24 -kit 3022210I -pcb 1 -bom A0
+    phytec_eeprom_flashtool create -som PCL-066 -kit 3022210I -pcb 1 -bom A0 -file eeprom.dat
 
 Display
 *******
@@ -209,28 +209,28 @@ content of a local file with the `-file` or `-f` argument.
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool display -som <som> -kit <bom> -rev <pcb rev> -bom <bom rev>
+    phytec_eeprom_flashtool display -som <som> -kit <bom> -pcb <pcb rev> -bom <bom rev>
 
 KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool display -ksx <KSM/KSP> -kit <bom> -rev <pcb rev> -bom <bom rev>
+    phytec_eeprom_flashtool display -ksx <KSM/KSP> -kit <bom> -pcb <pcb rev> -bom <bom rev>
 
 PCM/PCL-KSM/KSP:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool display -som <som> -ksx <KSM/KSP> -kit <bom> -rev <pcb rev> -bom <bom rev>
+    phytec_eeprom_flashtool display -som <som> -ksx <KSM/KSP> -kit <bom> -pcb <pcb rev> -bom <bom rev>
 
 Example:
 
 .. code-block:: bash
 
-    phytec_eeprom_flashtool display -som PCL-066 -kit 3022210I -rev 1a -bom A0
-    phytec_eeprom_flashtool display -ksx KSP08 -kit 3322115I -rev 2 -bom A0
-    phytec_eeprom_flashtool display -som PCL-066 -ksx KSP24 -rev 1 -kit 3022210I -bom A0
-    phytec_eeprom_flashtool display -som PCL-066 -kit 3022210I -rev 1 -bom A0 -file eeprom.dat
+    phytec_eeprom_flashtool display -som PCL-066 -kit 3022210I -pcb 1a -bom A0
+    phytec_eeprom_flashtool display -ksx KSP08 -kit 3322115I -pcb 2 -bom A0
+    phytec_eeprom_flashtool display -som PCL-066 -ksx KSP24 -pcb 1 -kit 3022210I -bom A0
+    phytec_eeprom_flashtool display -som PCL-066 -kit 3022210I -pcb 1 -bom A0 -file eeprom.dat
 
 Blocks
 ######

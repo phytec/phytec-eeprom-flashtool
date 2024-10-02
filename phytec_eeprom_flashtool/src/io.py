@@ -32,7 +32,7 @@ def get_binary_path(args, eeprom_data: EepromData) -> Path:
         file_name_beginning = f"{args.som}-{args.ksx}"
 
     file_name = f"{file_name_beginning}-{args.kit}.{eeprom_data.bom_rev}_" \
-        f"{eeprom_data.som_revision}{eeprom_data.som_sub_revision}_" \
+        f"{eeprom_data.pcb_revision}{eeprom_data.pcb_sub_revision}_" \
         f"{eeprom_data.opttree_revision}"
     return OUTPUT_DIR / file_name
 

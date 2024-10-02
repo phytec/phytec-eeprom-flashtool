@@ -23,7 +23,7 @@ Test_data:
    option: '1011011I'
    crc: "b7"
   read_args: '-som PCL-069'
-  create_args: '-som PCL-069 -kit 1011011I -bom A3 -rev 3a'
+  create_args: '-som PCL-069 -kit 1011011I -bom A3 -pcb 3a'
  -
   file_name: 'PCL-069-1011011I.A3_00_0'
   data:
@@ -37,7 +37,7 @@ Test_data:
    option: '1011011I'
    crc: "c8"
   read_args: '-som PCL-069'
-  create_args: '-som PCL-069 -kit 1011011I -bom A3 -rev 0'
+  create_args: '-som PCL-069 -kit 1011011I -bom A3 -pcb 0'
  -
   file_name: 'PCL-066-KSM59-4054411I.S9_5d_101'
   data:
@@ -51,7 +51,7 @@ Test_data:
    option: '4054411I'
    crc: "bb"
   read_args: '-som PCL-066 -ksx KSM59'
-  create_args: '-som PCL-066 -ksx KSM59 -kit 4054411I -bom S9 -rev 5d -opt 5'
+  create_args: '-som PCL-066 -ksx KSM59 -kit 4054411I -bom S9 -pcb 5d -opt 5'
  -
   file_name: 'PCL-066-KSP59-4054411I.B4_15d_0'
   data:
@@ -65,7 +65,7 @@ Test_data:
    option: '4054411I'
    crc: "8d"
   read_args: '-som PCL-066 -ksx KSP59'
-  create_args: '-som PCL-066 -ksx KSP59 -kit 4054411I -bom B4 -rev 15d'
+  create_args: '-som PCL-066 -ksx KSP59 -kit 4054411I -bom B4 -pcb 15d'
  -
   file_name: 'PCL-069-1011011I.A3_3a_0_bad_crc'
   data:

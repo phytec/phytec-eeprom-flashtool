@@ -183,9 +183,9 @@ def add_mandatory_arguments(parser):
 
 
 def add_additional_arguments(parser):
-    """Adds additional arguments to the parser. Options are -kit, -rev, -bom and -opt."""
+    """Adds additional arguments to the parser. Options are -kit, -pcb, -bom and -opt."""
     parser.add_argument('-kit', dest='kit', help='Kitoptions from Optiontree')
-    parser.add_argument('-rev', dest='rev', nargs='?', type=str, help='Board revision')
+    parser.add_argument('-pcb', dest='pcb', nargs='?', type=str, help='PCB revision')
     parser.add_argument('-bom', dest='bom', nargs='?', type=str, help='BoM revision')
     parser.add_argument('-opt', dest='opt', nargs='?', default=0, type=int,
                         help='Optiontree revision')
@@ -281,12 +281,12 @@ def main(args): # pylint: disable=too-many-statements
         # Set default values for all subparser without additional arguments.
         if not args.func in (write_som_config, create_binary, display_som_config):
             args.kit = "0"
-            args.rev = "00"
+            args.pcb = "00"
             args.bom = "00"
             args.opt = 0
-        # Check -kit, -rev, and -bom are set.
+        # Check -kit, -pcb, and -bom are set.
         if args.func in (write_som_config, create_binary, display_som_config):
-            arguments = [(args.kit, '-kit'), (args.rev, '-rev'), (args.bom, '-bom')]
+            arguments = [(args.kit, '-kit'), (args.pcb, '-pcb'), (args.bom, '-bom')]
             for arg in arguments:
                 if arg[0] is None:
                     parser.error(f"{arg[1]} argument is missing and mandatory for command " \

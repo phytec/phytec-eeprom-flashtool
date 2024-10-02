@@ -48,8 +48,8 @@ class EepromData:
         self.blocks: list = []
 
     api_version: int
-    som_revision: int
-    som_sub_revision: str
+    pcb_revision: int
+    pcb_sub_revision: str
     opttree_revision: str
     sub_revisions: str
     som_type: int
@@ -108,10 +108,10 @@ def get_eeprom_data(args, yml_parser: YmlParser) -> EepromData:
     """Generates an EEPROM data class and fill all information with argparser information."""
     eeprom_data = EepromData(yml_parser)
     eeprom_data.api_version = int(yml_parser['PHYTEC'].get('api', 2))
-    eeprom_data.som_revision, eeprom_data.som_sub_revision = str_to_revision(args.rev)
+    eeprom_data.pcb_revision, eeprom_data.pcb_sub_revision = str_to_revision(args.pcb)
     eeprom_data.opttree_revision = format(int(args.opt), '04b')
-    eeprom_data.sub_revisions = eeprom_data.opttree_revision + eeprom_data.som_sub_revision
-    eeprom_data.som_sub_revision = sub_revision_to_str(eeprom_data.som_sub_revision)
+    eeprom_data.sub_revisions = eeprom_data.opttree_revision + eeprom_data.pcb_sub_revision
+    eeprom_data.pcb_sub_revision = sub_revision_to_str(eeprom_data.pcb_sub_revision)
     eeprom_data.som_type = get_som_type(args)
     if eeprom_data.som_type <= 1:
         eeprom_data.base_article_number = int(args.som[4:])
@@ -142,7 +142,7 @@ def eeprom_data_to_struct(eeprom_data: EepromData) -> bytes:
     eeprom_struct = struct.pack(
         ENCODING_API2,
         eeprom_data.api_version,
-        eeprom_data.som_revision,
+        eeprom_data.pcb_revision,
         int(eeprom_data.sub_revisions, 2),
         eeprom_data.som_type,
         eeprom_data.base_article_number,
@@ -194,7 +194,7 @@ def struct_to_eeprom_data(eeprom_struct: bytes, yml_parser: YmlParser) -> Eeprom
 
     eeprom_data = EepromData(yml_parser)
     eeprom_data.api_version = unpacked[0]
-    eeprom_data.som_revision = unpacked[1]
+    eeprom_data.pcb_revision = unpacked[1]
     eeprom_data.sub_revisions = unpacked[2]
     eeprom_data.som_type = unpacked[3]
     eeprom_data.base_article_number = unpacked[4]
@@ -206,9 +206,9 @@ def struct_to_eeprom_data(eeprom_struct: bytes, yml_parser: YmlParser) -> Eeprom
         eeprom_data.kit_opt = unpacked[6].decode('utf-8')[:len(yml_parser['Kit'])]
 
     eeprom_data.sub_revisions = format(eeprom_data.sub_revisions, '08b')
-    eeprom_data.som_sub_revision = eeprom_data.sub_revisions[4:]
+    eeprom_data.pcb_sub_revision = eeprom_data.sub_revisions[4:]
     eeprom_data.opttree_revision = format(int(eeprom_data.sub_revisions[:4], 2), '04b')
-    eeprom_data.som_sub_revision = sub_revision_to_str(eeprom_data.som_sub_revision)
+    eeprom_data.pcb_sub_revision = sub_revision_to_str(eeprom_data.pcb_sub_revision)
 
     if eeprom_data.is_v3():
         eeprom_data = data_header_to_eeprom_data(eeprom_struct, eeprom_data)
@@ -242,9 +242,9 @@ def blocks_to_eeprom_data(eeprom_data: EepromData, eeprom_blocks: bytes) -> Eepr
 
 def print_eeprom_data(eeprom_data: EepromData):
     """ Print out the eeprom data. """
-    pcb_rev = str(eeprom_data.som_revision)
-    if eeprom_data.som_sub_revision != "0":
-        pcb_rev += eeprom_data.som_sub_revision
+    pcb_rev = str(eeprom_data.pcb_revision)
+    if eeprom_data.pcb_sub_revision != "0":
+        pcb_rev += eeprom_data.pcb_sub_revision
 
     if len(eeprom_data.kit_opt) != len(eeprom_data.yml_parser['Kit']):
         opt_error = f"Passed kit options {eeprom_data.kit_opt} mismatch number of options for " \
@@ -268,7 +268,7 @@ Decoded Information
 Raw Information
 ***************
 {"API version":16s}:  {eeprom_data.api_version}
-{"SOM PCB rev.":16s}:  {eeprom_data.som_revision}-{eeprom_data.som_sub_revision}
+{"SOM PCB rev.":16s}:  {eeprom_data.pcb_revision}-{eeprom_data.pcb_sub_revision}
 {"Optiontree rev.":16s}:  {int(eeprom_data.opttree_revision, 2)}
 {"SOM type":16s}:  {get_som_type_name_by_value(eeprom_data.som_type)}
 
