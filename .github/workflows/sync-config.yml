@@ -1,0 +1,82 @@
+name: Sync Product Configs
+
+on:
+  schedule:
+    - cron: "15 6 * * *"   # Run every day at an odd time
+
+jobs:
+  build:
+    runs-on: self-hosted-ubuntu-22.04
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+        product:
+          - PCL-066
+          - PCL-069
+          - PCL-070
+          - PCL-071
+          - PCL-075
+          - PCL-077
+          - PCM-057
+          - PCM-070
+          - PCM-071
+          - PCM-072
+          - PCM-074
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: syphar/restore-virtualenv@v1
+      - run: pip install requests pyyaml
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -qy gh
+
+      - name: Sync config for ${{ matrix.product }}
+        run: |
+          python3 scripts/pull_option_tree.py write ${{ matrix.product }}
+      - name: Check for changes
+        id: check_changes
+        continue-on-error: true
+        run: |
+          echo "changes=true" >> $GITHUB_OUTPUT
+          git diff --exit-code
+          # Step will stop when exit code isn't 0
+          echo "No changes to commit."
+          echo "changes=false" >> $GITHUB_OUTPUT
+      - name: Check for sync branch
+        id: check_branch
+        continue-on-error: true
+        run: |
+          echo "branch=false" >> $GITHUB_OUTPUT
+          git ls-remote --exit-code --heads origin refs/heads/sync/${{ matrix.product }}
+          # Step will stop when exit code isn't 0
+          echo "No sync branch exists."
+          echo "branch=true" >> $GITHUB_OUTPUT
+      - name: create pull request
+        if: steps.check_changes.outputs.changes == 'true' && steps.check_branch.outputs.branch == 'false'
+        run: |
+          PR_BODY_CMD=$(echo $(cat << EOF
+          Update ${{ matrix.product }} config with latest changes from phptool.
+
+          **Delete this branch after these changed got merged!**
+          EOF
+          ))
+          git config --global user.email "support@phytec.de"
+          git config --global user.name "Automatix CI"
+          git add phytec_eeprom_flashtool/configs/
+          git commit -s -m "phytec_eeprom_flashtool: config: Sync ${{ matrix.product}}"
+          git checkout -b sync/${{ matrix.product }}
+          git push origin sync/${{ matrix.product }}
+          gh pr create -B main -H sync/${{ matrix.product }} \
+            --title '[SYNC] Update ${{ matrix.product }} config' \
+            --body "$PR_BODY_CMD"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
