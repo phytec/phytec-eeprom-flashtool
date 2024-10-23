@@ -18,99 +18,88 @@ Kit:
   3: DDR-Ram
   4: eMMC
   5: NOR-Flash
-  6: Ethernet / RTC / Power Monitor / EEPROM
+  6: EEPROM / Power Monitor / RTC / Ethernet
   7: Display Option (DSI0)
   8: Temperature
-  9: Oscillator (OSC1) / eFuse
+  9: eFuse / Oscillator (OSC1)
   10: Temperature Sensor
-
 SoC:
   '1': TDA4VE
   '2': TDA4VL
   '3': TDA4AL
   '4': AM68D
   '5': AM68A7
-  '6': AM68A
+  '6': AM68A9
   '7': AM68
-
 Frequency A72:
-  'H': 1.2 GHz
-  'N': 1.6 GHz
-  'T': 2 GHz
-
+  H: 1.2 GHz
+  N: 1.6 GHz
+  T: 2 GHz
 Additional Processor Features:
   '0': High Security capable
   '5': High Security capable, R5F Lockstep capable
-  'C': General purpose, R5F Lockstep capable
-  'D': High Sec. cap., R5F Lockstep cap., Cust. Dev Keys
-  'G': General purpose
-  'P': High Sec. Prime cap., R5F Lockstep cap., Cust. Dev Keys
-  'R': High Security Prime capable, R5F Lockstep capable
-
+  C: General purpose, R5F Lockstep capable
+  D: High Sec. cap., R5F Lockstep cap., Cust. Dev Keys
+  G: General purpose
+  P: High Sec. Prime cap., R5F Lockstep cap., Cust. Dev Keys
+  R: High Security Prime capable, R5F Lockstep capable
 DDR-Ram:
-  '0': 512MB (1 Controller)
-  '1': 1GB (1 Controller)
-  '2': 1GB (2 Controller)
-  '3': 2GB (1 Controller)
-  '4': 2GB (2 Controller)
-  '5': 4GB (1 Controller)
-  '6': 4GB (2 Controller)
-  '7': 8GB (1 Controller)
-  '8': 8GB (2 Controller)
-  '9': 16GB (2 Controller)
-
+  '0': 512 MB (1 Controller)
+  '1': 1 GB (1 Controller)
+  '2': 1 GB (2 Controller)
+  '3': 2 GB (1 Controller)
+  '4': 2 GB (2 Controller)
+  '5': 4 GB (1 Controller)
+  '6': 4 GB (2 Controller)
+  '7': 8 GB (1 Controller)
+  '8': 8 GB (2 Controller)
+  '9': 16 GB (2 Controller)
 eMMC:
-  '0': 4GB (TLC)
-  '1': 8GB (TLC)
-  '2': 16GB (TLC)
-  '3': 32GB (TLC)
-  '4': 64GB (TLC)
-
+  '0': 4 GB (TLC)
+  '1': 8 GB (TLC)
+  '2': 16 GB (TLC)
+  '3': 32 GB (TLC)
+  '4': 64 GB (TLC)
 NOR-Flash:
   '0': '-'
-  '1': 8MB
-  '2': 16MB
-  '3': 32MB
-  '4': 64MB
-  '5': 128MB
-  '6': 256MB
-
-Ethernet / RTC / Power Monitor / EEPROM:
-  '0': 2xRGMII
-  '1': GBit Ethernet Phy (+ 1x RGMII)
-  '2': 2xRGMII / RTC
-  '3': GBit Ethernet Phy (+ 1x RGMII) / RTC
-  '4': 2xRGMII / Power monitor
-  '5': GBit Ethernet Phy (+ 1x RGMII) / Power monitor
-  '6': 2xRGMII / RTC / Power monitor
-  '7': GBit Ethernet Phy (+ 1x RGMII) / RTC / Power monitor
-  '8': 2xRGMII / 32 KB EEPROM
-  '9': GBit Ethernet Phy (+ 1x RGMII) / 32 KB EEPROM
-  'A': 2xRGMII / RTC / 32 KB EEPROM
-  'B': GBit Ethernet Phy (+ 1x RGMII) / RTC / 32 KB EEPROM
-  'C': 2xRGMII / Power monitor / 32 KB EEPROM
-  'D': GBit Ethernet Phy (+ 1x RGMII) / Power monitor / 32 KB EEPROM
-  'E': 2xRGMII / RTC / Power monitor / 32 KB EEPROM
-  'F': GBit Ethernet Phy (+ 1x RGMII) / RTC / Power monitor / 32 KB EEPROM
-
+  '1': 8 MB
+  '2': 16 MB
+  '3': 32 MB
+  '4': 64 MB
+  '5': 128 MB
+  '6': 256 MB
+EEPROM / Power Monitor / RTC / Ethernet:
+  '0': '- / - / - / - (2x RGMII)'
+  '1': '- / - / - / Gbit Ethernet Phy (+ 1x RGMII)'
+  '2': '- / - / External RTC / - (2x RGMII)'
+  '3': '- / - / External RTC / Gbit Ethernet Phy (+ 1x RGMII)'
+  '4': '- / Power monitor / - / - (2x RGMII)'
+  '5': '- / Power monitor / - / Gbit Ethernet Phy (+ 1x RGMII)'
+  '6': '- / Power monitor / External RTC / - (2x RGMII)'
+  '7': '- / Power monitor / External RTC / Gbit Ethernet Phy (+ 1x RGMII)'
+  '8': 32 kB / - / - / - (2x RGMII)
+  '9': 32 kB / - / - / Gbit Ethernet Phy (+ 1x RGMII)
+  A: 32 kB / - / External RTC / - (2x RGMII)
+  B: 32 kB / - / External RTC / Gbit Ethernet Phy (+ 1x RGMII)
+  C: 32 kB / Power monitor / - / - (2x RGMII)
+  D: 32 kB / Power monitor / - / Gbit Ethernet Phy (+ 1x RGMII)
+  E: 32 kB / Power monitor / External RTC / - (2x RGMII)
+  F: 32 kB / Power monitor / External RTC / Gbit Ethernet Phy (+ 1x RGMII)
 Display Option (DSI0):
-  '0': DSI0 not usable
+  '0': '- (DSI0 not usable)'
   '1': MIPI DSI
   '2': LVDS
-
 Temperature:
-  'A': Automotive Temp
-  'C': Consumer Temp
-  'I': Industrial Temp
-
-Oscillator (OSC1) / eFuse:
-  '0': eFuse not programmable in field
-  '2': Oscillator (OSC1) / eFuse not programmable in field
-  '4': eFuse programmable in field
-  '6': Oscillator (OSC1) / eFuse programmable in field
-
+  A: Automotive Temp
+  C: Consumer Temp
+  I: Industrial Temp
+eFuse / Oscillator (OSC1):
+  '0': not programmable in field / -
+  '1': not programmable in field / Oscillator
+  '2': programmable in field / -
+  '3': programmable in field / Oscillator
 Temperature Sensor:
-  '0': no temperature sensor
-  '1': Temperature sensor DRAM
-  '2': Temperature sensor ambient
-  '3': Temperature sensor DRAM and ambient
+  '0': '-'
+  '1': Temperature Sensor DRAM
+  '2': Temperature Sensor ambient
+  '3': Temperature Sensor DRAM and ambient
