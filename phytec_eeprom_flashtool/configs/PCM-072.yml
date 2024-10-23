@@ -20,53 +20,44 @@ Kit:
   6: Ethernet
   7: RTC
   8: Temperature
-
 Processor Cortex-R5:
   '1': Single Core
   '2': Dual Core
   '4': Dual Core (2x)
-
 Processor Cortex-A53:
   '1': Single Core
   '2': Dual Core
-
 Additional Processor Features:
   C: Featureset C
   D: Featureset D
   E: Featureset E
   F: Featureset F
-
 DDR-Ram:
-  '0': 512 MB (DDR4)
-  '1': 1 GB (DDR4)
-  '2': 2 GB (DDR4)
-
+  '0': 512 MB
+  '1': 1 GB
+  '2': 2 GB
 eMMC:
-  A: 4GB eMMC
-  B: 8GB eMMC
-  C: 16GB eMMC
-  D: 32GB eMMC
-  E: 64GB eMMC
-  F: 128GB eMMC
-  X: No eMMC
-
+  A: 4 GB (MLC)
+  B: 8 GB (MLC)
+  C: 16 GB (MLC)
+  D: 32 GB (MLC)
+  E: 64 GB (MLC)
+  F: 128 GB (MLC)
+  X: '-'
 NOR-Flash:
-  A: 16MB (Quad)
-  B: 32MB (Quad)
-  C: 64MB (Quad)
-  D: 32MB (Octal)
-  E: 64MB (Octal)
-  F: 128MB (Octal)
-  X: no NOR
-
+  A: 16 MB (Quad)
+  B: 32 MB (Quad)
+  C: 64 MB (Quad)
+  D: 32 MB (Octal)
+  E: 64 MB (Octal)
+  F: 128 MB (Octal)
+  X: '-'
 Ethernet:
-  '0': No Ethernet Phy
-  '1': 10/100/1000MBit Ethernet Phy
-
+  '0': '-'
+  '1': Gbit Ethernet Phy
+  A: 10/100 Mbit
 RTC:
-  '0': No RTC
+  '0': '-'
   '1': External RTC
-
 Temperature:
-  C: Consumer Temp
   I: Industrial Temp
