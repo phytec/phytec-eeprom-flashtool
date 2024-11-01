@@ -289,7 +289,7 @@ Scripts
 The scripts directory contains workflow integration scripts:
 
 scripts/pull_option_tree.py
----------------------------
+***************************
 
 Fetch an option tree from the php tool API and display it:
 
