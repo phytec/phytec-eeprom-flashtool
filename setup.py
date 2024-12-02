@@ -36,12 +36,13 @@ if __name__ == "__main__":
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'License :: OSI Approved :: MIT License',
-            'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
             'Programming Language :: Python :: 3.10',
+            'Programming Language :: Python :: 3.11',
+            'Programming Language :: Python :: 3.12',
             "Typing :: Typed",
         ],
-        python_requires='>=3.8',
+        python_requires='>=3.9',
         install_requires=['pyyaml', 'smbus2', 'crc8'],
         entry_points={
             'console_scripts': ['phytec_eeprom_flashtool = phytec_eeprom_flashtool.__main__:cmd_main']
