@@ -8,6 +8,9 @@ from .encoding import EEPROM_V2_SIZE, EEPROM_V3_DATA_HEADER_SIZE
 TOOL_DIR = Path(__file__).resolve().parent
 YML_DIR = TOOL_DIR / Path('../configs')
 OUTPUT_DIR = Path.cwd() / 'output'
+# Files on our targets
+PRODUCT_NAME_FILE = Path("/proc/device-tree/phytec,som-product-name").resolve()
+PART_NUMBER_FILE = Path("/proc/device-tree/phytec,som-part-number").resolve()
 
 
 def get_eeprom_bus(yml_parser: YmlParser) -> Path:
@@ -84,6 +87,17 @@ def binary_write(args, eeprom_fake_data: EepromData, content: bytes, offset: int
             eeprom_file.write(content)
     except IOError as err:
         sys.exit(str(err))
+
+
+def get_product_name():
+    """Try to read the product name within the target BSP."""
+    if not PRODUCT_NAME_FILE.exists():
+        return (False, "")
+
+    with open(PRODUCT_NAME_FILE, 'r', encoding='UTF-8') as f:
+        product_name = f.read().rstrip('\x00')
+
+    return (True, str(product_name))
 
 
 def get_yml_parser(args) -> dict:

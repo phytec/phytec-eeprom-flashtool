@@ -12,6 +12,7 @@
 import argparse
 
 from . import __version__
+from .io import get_product_name
 from .io import get_yml_parser
 from .io import eeprom_write
 from .io import eeprom_read
@@ -202,7 +203,7 @@ def add_always_write_argument(parser):
     parser.add_argument('-y', dest='always_write', action='store_true',
                         help='Do no ask before flashing a new image to the EEPROM chip.')
 
-def main(args): # pylint: disable=too-many-statements
+def main(args): # pylint: disable=too-many-statements, too-many-locals
     """ Set up parsing for commandline arguments. """
     parser = argparse.ArgumentParser(description='PHYTEC SOM EEPROM configuration tool')
 
@@ -269,6 +270,11 @@ def main(args): # pylint: disable=too-many-statements
     add_file_argument(parser_read_key_value)
 
     args = parser.parse_args(args)
+
+    # try getting target information from the BSP
+    result, product_name = get_product_name()
+    if result and product_name:
+        args.som = product_name
 
     if not (args.som or args.ksx or ("file" in args and args.file)):
         error = "Set -som and/or -ksx."
