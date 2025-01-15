@@ -50,7 +50,7 @@ def read_content(args, eeprom_data: EepromData, eeprom_size: int, offset: int = 
     return eeprom_read(eeprom_data.yml_parser, eeprom_size, offset)
 
 
-def write_content(args, eeprom_data: EepromData, eeprom_struct: bytes):
+def write_content(args, eeprom_data: EepromData, eeprom_struct: bytes) -> bool:
     """Helper to write either to a binary file or an EEPROM chip."""
     if "file" in args and args.file:
         binary_write(args, eeprom_data, eeprom_struct)
@@ -61,6 +61,8 @@ def write_content(args, eeprom_data: EepromData, eeprom_struct: bytes):
             print('EEPROM flash successful!')
         else:
             print("Skipped flashing EEPROM!")
+            return False
+    return True
 
 
 def read_eeprom_data(args, yml_parser: YmlParser, error: str) -> EepromData:
@@ -84,8 +86,8 @@ def write_eeprom_data(args, eeprom_data: EepromData):
     eeprom_struct = eeprom_data_to_struct(eeprom_data)
     if eeprom_data.is_v3():
         eeprom_struct += eeprom_data_to_blocks(eeprom_data)
-    write_content(args, eeprom_data, eeprom_struct)
-    print_eeprom_data(eeprom_data)
+    if write_content(args, eeprom_data, eeprom_struct):
+        print_eeprom_data(eeprom_data)
 
 
 def read_som_config(args, yml_parser: YmlParser):
