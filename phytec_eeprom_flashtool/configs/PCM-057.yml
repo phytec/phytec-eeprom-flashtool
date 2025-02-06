@@ -1,15 +1,12 @@
 ---
-# PCM-057 PHYTEC EEPROM Flashtool Config File
-# Copyright (C) 2019-2020 PHYTEC
+# PHYTEC EEPROM Flashtool Config File
+# product: PCM-057 / phyCORE-AM57x
+# Copyright (C) 2019-2025 PHYTEC
 
 PHYTEC:
   eeprom_offset: 0x0
-  eth_name: 'eth0'
   i2c_bus: 0
   i2c_dev: 0x50
-  ep_encoding: '6B17s2s6xB'
-# ep_encoding_format:
-# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
 
 Kit:
   0: DDR-Ram

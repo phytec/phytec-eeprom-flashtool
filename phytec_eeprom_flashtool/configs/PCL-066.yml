@@ -1,11 +1,10 @@
 ---
-# PCL-066 PHYTEC EEPROM Flashtool Config File
-# board: imx8mq phyboard polaris
-# Copyright (C) 2019-2020 PHYTEC
+# PHYTEC EEPROM Flashtool Config File
+# product: PCL-066 / phyCORE-i.MX8M
+# Copyright (C) 2019-2025 PHYTEC
 
 PHYTEC:
   eeprom_offset: 0x0
-  eth_name: 'eth0'
   i2c_bus: 0
   i2c_dev: 0x50
 

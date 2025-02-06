@@ -1,15 +1,15 @@
 ---
-# PCM-074 PHYTEC EEPROM Flashtool Config File
-# board: am68x phyboard izar
-# Copyright (C) 2019-2021 PHYTEC
+# PHYTEC EEPROM Flashtool Config File
+# product: PCM-074 / phyCORE-AM68x
+# Copyright (C) 2019-2025 PHYTEC
 
 PHYTEC:
   eeprom_offset: 0x0
-  eth_name: 'eth1'
   i2c_bus: 0
   i2c_dev: 0x50
   api: 3
   extended_options: 2
+  max_image_size: 2048
 
 Kit:
   0: SoC

@@ -1,14 +1,14 @@
 ---
-# PCM-072 PHYTEC EEPROM Flashtool Config File
-# board: am64xx phyboard electra
-# Copyright (C) 2019-2023 PHYTEC
+# PHYTEC EEPROM Flashtool Config File
+# product: PCM-072 / phyCORE-AM64x
+# Copyright (C) 2019-2025 PHYTEC
 
 PHYTEC:
   eeprom_offset: 0x0
-  eth_name: 'eth0'
   i2c_bus: 0
   i2c_dev: 0x50
   api: 3
+  max_image_size: 2048
 
 Kit:
   0: Processor Cortex-R5

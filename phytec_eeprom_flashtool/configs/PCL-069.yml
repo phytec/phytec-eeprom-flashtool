@@ -1,11 +1,10 @@
 ---
-# PCL-069 PHYTEC EEPROM Flashtool Config File
-# board: imx8mm phyboard polis
-# Copyright (C) 2020 PHYTEC
+# PHYTEC EEPROM Flashtool Config File
+# product: PCL-069 / phyCORE-i.MX8 MM
+# Copyright (C) 2020-2025 PHYTEC
 
 PHYTEC:
   eeprom_offset: 0x0
-  eth_name: 'eth0'
   i2c_bus: 0
   i2c_dev: 0x51
 

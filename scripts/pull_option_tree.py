@@ -163,11 +163,11 @@ def write_option_tree(product_name):
             file.write("\n")
             file.write("PHYTEC:\n")
             file.write("  eeprom_offset: 0x0\n")
-            file.write("  eth_name: 'eth0'\n")
             file.write("  i2c_bus: 0x0\n")
             file.write("  i2c_dev: 0x0\n")
             file.write("  api: 3\n")
             file.write("  extended_options: 0\n")
+            file.write("  max_image_size: 4096\n")
 
     # Keep the comment block and 'PHYTEC' key. Remove the 'Kit' section and all
     # following options. They will be re-added with content from the option tree.

@@ -1,11 +1,10 @@
 ---
-# PCL-077 PHYTEC EEPROM Flashtool Config File
-# board: phyCORE-i.MX 93
-# Copyright (C) 2023 PHYTEC
+# PHYTEC EEPROM Flashtool Config File
+# product: PCL-077 / phyCORE-i.MX 93
+# Copyright (C) 2023-2025 PHYTEC
 
 PHYTEC:
   eeprom_offset: 0x0
-  eth_name: 'eth0'
   i2c_bus: 2
   i2c_dev: 0x50
   extended_options: 3
