@@ -20,6 +20,26 @@ def get_eeprom_bus(yml_parser: YmlParser) -> Path:
     return Path(f"/sys/class/i2c-dev/i2c-{i2c_bus}/device/{i2c_bus}-{i2c_dev:04X}/eeprom")
 
 
+def get_maximum_image_size(yml_parser: YmlParser) -> int:
+    """Returns the maximum allowed EEPROM image size in Bytes.
+    If 'max_iamge_size' is not defined in the config, this function will default to
+    32 Bytes for API v1/v2 and 4096 for API v3+.
+    """
+    api = int(yml_parser['PHYTEC'].get('api', 2))
+    return int(yml_parser['PHYTEC'].get('max_image_size', 32 if api <= 2 else 4096))
+
+
+def check_maximum_image_size(yml_parser: YmlParser, content: bytes, offset: int = 0):
+    """Checks if the image size would exceed the maximum allowed image size.
+    This function can throw an SystemExit in case the image size is too big.
+    """
+    image_size = offset + len(content)
+    max_image_size = get_maximum_image_size(yml_parser)
+    if image_size > max_image_size:
+        raise SystemExit(f"Image size ({len(content)}) at offset ({offset}) would exceed the " \
+                         f"maximum allowed size ({max_image_size})")
+
+
 def get_binary_path(args, eeprom_data: EepromData) -> Path:
     """Returns the path to a local binary file."""
     if "file" in args and args.file:
@@ -55,6 +75,7 @@ def eeprom_read(yml_parser: YmlParser, size: int, offset: int = 0) -> bytes:
 def eeprom_write(yml_parser: YmlParser, content: bytes, offset: int = 0):
     """Write a bytes object to an I2C EEPROM device."""
     eeprom_bus = get_eeprom_bus(yml_parser)
+    check_maximum_image_size(yml_parser, content, offset)
     try:
         with open(eeprom_bus, 'wb') as eeprom_file:
             eeprom_file.seek(offset)
@@ -80,7 +101,7 @@ def binary_write(args, eeprom_fake_data: EepromData, content: bytes, offset: int
     if not OUTPUT_DIR.exists():
         OUTPUT_DIR.mkdir()
     binary_file = get_binary_path(args, eeprom_fake_data)
-
+    check_maximum_image_size(eeprom_fake_data.yml_parser, content, offset)
     try:
         with open(binary_file, 'wb') as eeprom_file:
             eeprom_file.seek(offset)
