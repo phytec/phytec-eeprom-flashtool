@@ -159,8 +159,32 @@ def read_mac_block(args, yml_parser: YmlParser):
     raise ValueError(f"No MAC found for Ethernet interface {args.interface}")
 
 
+def write_serial_block(args, yml_parser: YmlParser):
+    """Adds a serial block to an existing binary file or updates an EEPROM device.
+    This is basically a key-value block with serial as hard-coded key.
+    """
+    eeprom_data = read_eeprom_data(args, yml_parser,
+                                   "Serial block are only supported with API v3")
+    add_key_value_block(eeprom_data, "serial", args.serial)
+    write_eeprom_data(args, eeprom_data)
+    return eeprom_data
+
+
+def read_serial_block(args, yml_parser: YmlParser):
+    """Print a serial block."""
+    eeprom_data = read_eeprom_data(args, yml_parser,
+                                   "Serial block are only supported with API v3")
+    for block in [elm for elm in eeprom_data.blocks if isinstance(elm, EepromDataKeyValueBlock)]:
+        if block.key == "serial":
+            print(block)
+            return
+    raise ValueError("No serial block found.")
+
+
 def write_key_value_block(args, yml_parser: YmlParser):
     """Adds a key-value block to an existing binary file or updates an EEPROM device."""
+    if args.key.lower() == "serial":
+        raise ValueError("Please use --add-serial sub-command.")
     eeprom_data = read_eeprom_data(args, yml_parser,
                                    "Key Value blocks are only supported with API v3")
     add_key_value_block(eeprom_data, args.key, args.value)
@@ -170,6 +194,8 @@ def write_key_value_block(args, yml_parser: YmlParser):
 
 def read_key_value_block(args, yml_parser: YmlParser):
     """Prints a key-value block for a given key."""
+    if args.key.lower() == "serial":
+        raise ValueError("Please use --read-serial sub-command.")
     eeprom_data = read_eeprom_data(args, yml_parser,
                                    "Key Value blocks are only supported with API v3")
     for block in [elm for elm in eeprom_data.blocks if isinstance(elm, EepromDataKeyValueBlock)]:
@@ -254,6 +280,20 @@ def main(args): # pylint: disable=too-many-statements, too-many-locals
     parser_read_mac.add_argument('interface', type=int, help='Number of the Ethernet interface')
     add_mandatory_arguments(parser_read_mac)
     add_file_argument(parser_read_mac)
+
+    parser_add_serial = subparsers.add_parser('add-serial', help="Adds a serial block " \
+        "to an existing EEPROM binary or updates the content of an EEPROM device.")
+    parser_add_serial.set_defaults(func=write_serial_block)
+    parser_add_serial.add_argument('serial', type=str)
+    add_mandatory_arguments(parser_add_serial)
+    add_always_write_argument(parser_add_serial)
+    add_file_argument(parser_add_serial)
+
+    parser_read_serial = subparsers.add_parser('read-serial', help="Reads a serial " \
+        " block from either an existing EEPROM binary or an EEPROM device.")
+    parser_read_serial.set_defaults(func=read_serial_block)
+    add_mandatory_arguments(parser_read_serial)
+    add_file_argument(parser_read_serial)
 
     parser_add_key_value = subparsers.add_parser('add-key-value', help="Adds a key-value block " \
         "to an existing EEPROM binary or updates the content of an EEPROM device.")

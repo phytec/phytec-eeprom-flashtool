@@ -265,8 +265,30 @@ The following commands add two MACs to a local binary file.
     phytec_eeprom_flashtool add-mac -som PCM-071 0 00:91:da:dc:1f:c5 -f output/binary_file
     phytec_eeprom_flashtool add-mac -som PCM-071 1 00:91:da:dc:1f:c6 -f output/binary_file
 
+Serial Block
+************
+
+Adds a serial block with a serial number. This is internally a Key Value block with 'serial'
+hard-coded as key. Thus we ensure the correct key is used and the bootloader can read it.
+
+Requires only the serial as parameter. The following example adds ``C0FFEE`` as serial
+to the product.
+
+Please keep in mind that this serial is neither write-protected nor protected against tempering
+and is therefore not thrustworthy.
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool add-serial -som PCM-071 C0FFEE
+
+The following commands add a serial to a local binary file.
+
+.. code-block:: bash
+
+    phytec_eeprom_flashtool add-serial -som PCM-071 C0FFEE -f output/binary_file
+
 Key Value Block
----------------
+***************
 
 Adds a key-value pair to the EEPROM chip. Both the key and value are stored as UTF-8 string.
 
