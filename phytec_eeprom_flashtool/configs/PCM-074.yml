@@ -95,9 +95,9 @@ Temperature:
   I: Industrial Temp
 eFuse / Oscillator (OSC1):
   '0': not programmable in field / -
-  '1': not programmable in field / Oscillator
-  '2': programmable in field / -
-  '3': programmable in field / Oscillator
+  '2': not programmable in field / Oscillator
+  '4': programmable in field / -
+  '6': programmable in field / Oscillator
 Temperature Sensor:
   '0': '-'
   '1': Temperature Sensor DRAM
