@@ -57,7 +57,7 @@ def parse_option_tree(product_name, has_extended_options):
         header = entry['header']
         option_name = header['FullName']
         if not has_extended_options and header.get('Extended', False):
-            logging.info("Found extended option: {option_anme}. Skipping.")
+            logging.info("Found extended option: {option_name}. Skipping.")
             continue
         if opt_index not in data:
             data[opt_index] = {'options': {}}
