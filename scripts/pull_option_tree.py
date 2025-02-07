@@ -8,7 +8,6 @@ EEPROM tool yaml file.
 
 import argparse
 from datetime import datetime
-import itertools
 import logging
 from pathlib import Path
 import sys
@@ -60,18 +59,17 @@ def parse_option_tree(product_name, has_extended_options):
         if not has_extended_options and header.get('Extended', False):
             logging.info("Found extended option: {option_anme}. Skipping.")
             continue
-        if not 'Reserved' == header['Name']:
-            if opt_index not in data:
-                data[opt_index] = {'options': {}}
-            if 'name' in data[opt_index]:
-                data[opt_index]['name'] = f"{option_name} / {data[opt_index]['name']}"
-            else:
-                data[opt_index]['name'] = option_name
+        if opt_index not in data:
+            data[opt_index] = {'options': {}}
+        if 'name' in data[opt_index] and not 'Reserved' == header['Name']:
+            data[opt_index]['name'] = f"{option_name} / {data[opt_index]['name']}"
+        elif not ('Reserved' == header['Name'] and header['Type'] == 'Binary'):
+            data[opt_index]['name'] = option_name
 
-            data[opt_index]['options'][option_name] = {}
-            option_entry = data[opt_index]['options'][option_name]
-            for option in entry['options']:
-                option_entry[option['Position']] = option['FullName']
+        data[opt_index]['options'][option_name] = {}
+        option_entry = data[opt_index]['options'][option_name]
+        for option in entry['options']:
+            option_entry[option['Position']] = option['FullName']
 
         # Only increase option index when
         #   Type == Alphanumeric
@@ -93,16 +91,31 @@ def get_option_tree(product_name, has_extended_options = False):
     for index, opt in data.items():
         opttree['Kit'][index] = opt['name']
         if len(opt['options']) > 1:
-            opttree[opt['name']] = {}
-            options = []
-            for _, values in opt['options'].items():
-                options = [list(values.values())] + options
-            for opt_idx, entry in enumerate(list(itertools.product(*options))):
-                opttree[opt['name']][f"{opt_idx:X}"] = " / ".join(entry)
+            opttree[opt['name']] = group_binary(opt['options'])
         else:
             opttree[opt['name']] = opt['options'][opt['name']]
 
     return opttree
+
+
+def group_binary(options, index=0, result=None, old_key=0, old_value=""):
+    """Group binary option to one entry"""
+    if result is None:
+        result = {}
+    name = list(options.keys())[index]
+    for k, v in list(options.values())[index].items():
+        key = old_key + pow(2, index) * int(k)
+        if not str(name).startswith("Reserved"):
+            value = f"{v} / {old_value}" if old_value else v
+        else:
+            value = old_value
+        if index == len(options) - 1:
+            result[f"{key:X}"] = value
+            continue
+        group_binary(options, index + 1, result, key, value)
+    if index == 0:
+        return dict(sorted(result.items()))
+    return result
 
 
 def product_has_extend_options(product_name):
