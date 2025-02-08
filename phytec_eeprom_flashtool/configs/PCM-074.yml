@@ -77,14 +77,14 @@ EEPROM / Power Monitor / RTC / Ethernet:
   '5': '- / Power monitor / - / Gbit Ethernet Phy (+ 1x RGMII)'
   '6': '- / Power monitor / External RTC / - (2x RGMII)'
   '7': '- / Power monitor / External RTC / Gbit Ethernet Phy (+ 1x RGMII)'
-  '8': 32 kB / - / - / - (2x RGMII)
-  '9': 32 kB / - / - / Gbit Ethernet Phy (+ 1x RGMII)
-  A: 32 kB / - / External RTC / - (2x RGMII)
-  B: 32 kB / - / External RTC / Gbit Ethernet Phy (+ 1x RGMII)
-  C: 32 kB / Power monitor / - / - (2x RGMII)
-  D: 32 kB / Power monitor / - / Gbit Ethernet Phy (+ 1x RGMII)
-  E: 32 kB / Power monitor / External RTC / - (2x RGMII)
-  F: 32 kB / Power monitor / External RTC / Gbit Ethernet Phy (+ 1x RGMII)
+  '8': 4 kB / - / - / - (2x RGMII)
+  '9': 4 kB / - / - / Gbit Ethernet Phy (+ 1x RGMII)
+  A: 4 kB / - / External RTC / - (2x RGMII)
+  B: 4 kB / - / External RTC / Gbit Ethernet Phy (+ 1x RGMII)
+  C: 4 kB / Power monitor / - / - (2x RGMII)
+  D: 4 kB / Power monitor / - / Gbit Ethernet Phy (+ 1x RGMII)
+  E: 4 kB / Power monitor / External RTC / - (2x RGMII)
+  F: 4 kB / Power monitor / External RTC / Gbit Ethernet Phy (+ 1x RGMII)
 Display Option (DSI0):
   '0': '- (DSI0 not usable)'
   '1': MIPI DSI
