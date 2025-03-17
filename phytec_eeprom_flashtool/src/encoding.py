@@ -131,7 +131,7 @@ def get_eeprom_data(args, yml_parser: YmlParser) -> EepromData:
         else:
             sys.exit('KSX-number out of bounce.')
     eeprom_data.bom_rev = args.bom
-    eeprom_data.kit_opt = args.kit
+    eeprom_data.kit_opt = args.kit.replace('-', '')
 
     return eeprom_data
 
