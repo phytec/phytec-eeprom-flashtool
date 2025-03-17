@@ -8,6 +8,7 @@ PHYTEC:
   i2c_bus: 0
   i2c_dev: 0x50
   api: 3
+  extended_options: 1
   max_image_size: 2048
 
 Kit:
@@ -20,6 +21,7 @@ Kit:
   6: Ethernet
   7: RTC
   8: Temperature
+  9: PMIC [VDD_CORE]
 3D Graphics Engine:
   '3': 'No'
   '5': 'Yes'
@@ -63,3 +65,6 @@ RTC:
 Temperature:
   C: Consumer Temp
   I: Industrial Temp
+PMIC [VDD_CORE]:
+  '0': 0.85V (1.4GHz)
+  '1': 0.75V (1.25GHz)
