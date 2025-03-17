@@ -253,9 +253,14 @@ def print_eeprom_data(eeprom_data: EepromData):
 
     newline = '\n'
     kit_options_verbose = []
+    kit_opt_length = 16
+    for index, kit_opt in eeprom_data.yml_parser['Kit'].items():
+        if (len(kit_opt) + 1) > kit_opt_length:
+            kit_opt_length = len(kit_opt) + 1
     for index, kit_opt in eeprom_data.yml_parser['Kit'].items():
         option = eeprom_data.kit_opt[int(index)]
-        kit_options_verbose.append(f"{kit_opt:16s}:  {eeprom_data.yml_parser[kit_opt][option]}")
+        kit_options_verbose.append(f"{kit_opt.ljust(kit_opt_length)}:  " \
+                                   f"{eeprom_data.yml_parser[kit_opt][option]}")
 
     output = f"""EEPROM Content
 ##############
