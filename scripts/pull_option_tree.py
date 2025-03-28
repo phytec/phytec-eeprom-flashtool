@@ -168,6 +168,7 @@ def write_option_tree(product_name):
             file.write("  api: 3\n")
             file.write("  extended_options: 0\n")
             file.write("  max_image_size: 4096\n")
+            file.write("  optiontree_rev: 0\n")
 
     # Keep the comment block and 'PHYTEC' key. Remove the 'Kit' section and all
     # following options. They will be re-added with content from the option tree.
