@@ -212,12 +212,10 @@ def add_mandatory_arguments(parser):
 
 
 def add_additional_arguments(parser):
-    """Adds additional arguments to the parser. Options are -kit, -pcb, -bom and -opt."""
+    """Adds additional arguments to the parser. Options are -kit, -pcb and -bom."""
     parser.add_argument('-kit', dest='kit', help='Kitoptions from Optiontree')
     parser.add_argument('-pcb', dest='pcb', nargs='?', type=str, help='PCB revision')
     parser.add_argument('-bom', dest='bom', nargs='?', type=str, help='BoM revision')
-    parser.add_argument('-opt', dest='opt', nargs='?', default=0, type=int,
-                        help='Optiontree revision')
 
 
 def add_file_argument(parser):
@@ -331,7 +329,6 @@ def main(args): # pylint: disable=too-many-statements, too-many-locals
             args.kit = "0"
             args.pcb = "00"
             args.bom = "00"
-            args.opt = 0
         # Check -kit, -pcb, and -bom are set.
         if args.func in (write_som_config, create_binary, display_som_config):
             arguments = [(args.kit, '-kit'), (args.pcb, '-pcb'), (args.bom, '-bom')]
