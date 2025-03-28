@@ -109,7 +109,7 @@ def get_eeprom_data(args, yml_parser: YmlParser) -> EepromData:
     eeprom_data = EepromData(yml_parser)
     eeprom_data.api_version = int(yml_parser['PHYTEC'].get('api', 2))
     eeprom_data.pcb_revision, eeprom_data.pcb_sub_revision = str_to_revision(args.pcb)
-    eeprom_data.opttree_revision = format(int(args.opt), '04b')
+    eeprom_data.opttree_revision = str(yml_parser['PHYTEC'].get('optiontree_rev', 0))
     eeprom_data.sub_revisions = eeprom_data.opttree_revision + eeprom_data.pcb_sub_revision
     eeprom_data.pcb_sub_revision = sub_revision_to_str(eeprom_data.pcb_sub_revision)
     eeprom_data.som_type = get_som_type(args)
