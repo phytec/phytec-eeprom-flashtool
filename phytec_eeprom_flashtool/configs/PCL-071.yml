@@ -10,6 +10,7 @@ PHYTEC:
   api: 3
   extended_options: 1
   max_image_size: 2048
+  optiontree_rev: 1
 
 Kit:
   0: 3D Graphics Engine
