@@ -39,7 +39,7 @@ Test_data:
   read_args: '-som PCL-069'
   create_args: '-som PCL-069 -kit 1011011I -bom A3 -pcb 0'
  -
-  file_name: 'PCM-071-KSM59-5432DE11I-0.S9_5d_1'
+  file_name: 'PCM-071-KSM59-5432DE11I-00.S9_5d_1'
   data:
    full_name: 'PCM-071-KSM59.S9'
    pcb_revision: '5d'
@@ -48,10 +48,10 @@ Test_data:
    som_type: 'PCM-KSM'
    base_article_number: 71
    ksp_number: 59
-   option: '5432DE11I0'
-   crc: "e0"
+   option: '5432DE11I00'
+   crc: "43"
   read_args: '-som PCM-071 -ksx KSM59'
-  create_args: '-som PCM-071 -ksx KSM59 -kit 5432DE11I-0 -bom S9 -pcb 5d'
+  create_args: '-som PCM-071 -ksx KSM59 -kit 5432DE11I-00 -bom S9 -pcb 5d'
  -
   file_name: 'PCL-066-KSP59-4054411I.B4_15d_0'
   data:
