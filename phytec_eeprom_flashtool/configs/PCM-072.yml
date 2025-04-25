@@ -9,6 +9,7 @@ PHYTEC:
   i2c_dev: 0x50
   api: 3
   max_image_size: 2048
+  optiontree_rev: 0
 
 Kit:
   0: Processor Cortex-R5

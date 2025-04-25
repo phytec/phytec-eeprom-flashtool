@@ -23,11 +23,10 @@ URL = "https://phytecphptool.phytec.de/api/v2/optiontree/"
 # Operations on the Option Tree #
 #################################
 
-
-def load_option_tree(product_name):
-    """Load the most recent optrion tree from our webservice."""
+def load_data(url):
+    """Loads json data from url"""
     # Get JSON from REST API
-    resp = requests.get(URL + product_name + "/decode", timeout=30)
+    resp = requests.get(url, timeout=30)
 
     # Parse JSON to get option tree dict
     resp_dict = resp.json()
@@ -44,11 +43,22 @@ def load_option_tree(product_name):
         sys.exit(1)
 
     return resp_dict
+def load_option_tree_revision(product_name):
+    """Gets the most recent revision form our webservice"""
+    resp = load_data(URL + product_name + "/revisions")
+    return int(resp["ActiveRevision"])
+
+def load_option_tree(product_name, revision = None):
+    """Load the most recent option tree from our webservice, or if specified a specific revision."""
+    url = URL + product_name
+    if revision is not None:
+        url = url + f"/revision/{revision}"
+    return load_data(url + "/decode")
 
 
-def parse_option_tree(product_name, has_extended_options):
+def parse_option_tree(product_name, has_extended_options, revision):
     """Parses the option tree from our webservice and prepare the structure."""
-    response = load_option_tree(product_name)
+    response = load_option_tree(product_name, revision)
 
     data = {}
     opt_index = 0
@@ -82,10 +92,10 @@ def parse_option_tree(product_name, has_extended_options):
             opt_index += 1
     return data
 
-
-def get_option_tree(product_name, has_extended_options = False):
+def get_option_tree(product_name, has_extended_options = False, revision = None):
     """Build the finial option tree structure with the pre-parsed structured."""
-    data = parse_option_tree(product_name, has_extended_options)
+
+    data = parse_option_tree(product_name, has_extended_options, revision)
 
     opttree = {'Kit': {}}
     for index, opt in data.items():
@@ -140,20 +150,24 @@ def product_has_extend_options(product_name):
 
 def print_option_tree(product_name):
     """Fetch the option tree for a product and print it afterwards."""
+    revision = load_option_tree_revision(product_name)
     has_extended_options = product_has_extend_options(product_name)
-    data = get_option_tree(product_name, has_extended_options)
+    data = get_option_tree(product_name, has_extended_options, revision)
+    print(f"optiontree_rev: {revision}")
     print(yaml.dump(data, sort_keys=False))
 
 
 def write_option_tree(product_name):
     """Update an existing YML config file or create a new one."""
+    revision = load_option_tree_revision(product_name)
     has_extended_options = product_has_extend_options(product_name)
-    data = get_option_tree(product_name, has_extended_options)
+    data = get_option_tree(product_name, has_extended_options, revision)
 
     yaml_file = Path(__file__).resolve().parent.parent / "phytec_eeprom_flashtool/configs" / \
                 f"{product_name}.yml"
 
     logging.info(yaml_file)
+    optiontree_rev_key = "  optiontree_rev:"
     if not yaml_file.is_file():
         with open(yaml_file, 'w', encoding="utf-8") as file:
             file.write("---\n")
@@ -168,7 +182,8 @@ def write_option_tree(product_name):
             file.write("  api: 3\n")
             file.write("  extended_options: 0\n")
             file.write("  max_image_size: 4096\n")
-            file.write("  optiontree_rev: 0\n")
+            file.write(f"{optiontree_rev_key} {revision}\n")
+            file.write("\n")
 
     # Keep the comment block and 'PHYTEC' key. Remove the 'Kit' section and all
     # following options. They will be re-added with content from the option tree.
@@ -178,7 +193,10 @@ def write_option_tree(product_name):
         for line in config:
             if line.startswith("Kit:"):
                 break
-            file.write(line)
+            if line.startswith(optiontree_rev_key):
+                file.write(f"{optiontree_rev_key} {revision}\n")
+            else:
+                file.write(line)
         file.truncate()
 
     with open(yaml_file, 'a', encoding="utf-8") as file:
