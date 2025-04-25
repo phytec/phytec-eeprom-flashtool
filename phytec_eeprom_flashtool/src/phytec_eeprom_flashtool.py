@@ -136,7 +136,9 @@ def create_binary(args, yml_parser: YmlParser):
 def display_som_config(args, yml_parser: YmlParser):
     """Prints EEPROM data without any read/write actions."""
     eeprom_data = get_eeprom_data(args, yml_parser)
-    eeprom_data_to_struct(eeprom_data)
+    #Create eeprom_struct and reconvert it to eeprom_data to be sure all data formats are correct
+    eeprom_struct = eeprom_data_to_struct(eeprom_data)
+    eeprom_data = struct_to_eeprom_data(eeprom_struct, yml_parser)
     print_eeprom_data(eeprom_data)
     return eeprom_data
 
