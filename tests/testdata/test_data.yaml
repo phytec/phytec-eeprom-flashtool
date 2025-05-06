@@ -49,7 +49,7 @@ Test_data:
    base_article_number: 71
    ksp_number: 59
    option: '5432DE11I00'
-   crc: "43"
+   crc: "11"
   read_args: '-som PCM-071 -ksx KSM59'
   create_args: '-som PCM-071 -ksx KSM59 -kit 5432DE11I-00 -bom S9 -pcb 5d'
  -
