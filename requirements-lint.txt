@@ -17,7 +17,7 @@ pyflakes==3.1.0
 Pygments==2.18.0
 pylint==3.0.2
 PyYAML==6.0.1
-requests==2.32.3
+requests==2.32.4
 restructuredtext_lint==1.4.0
 smbus2==0.4.3
 tomli==2.0.1
