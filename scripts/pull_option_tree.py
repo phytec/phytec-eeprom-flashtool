@@ -55,20 +55,19 @@ def load_option_tree(product_name, revision = None):
         url = url + f"/revision/{revision}"
     return load_data(url + "/decode")
 
-
-def parse_option_tree(product_name, has_extended_options, revision):
+def parse_option_tree(product_name, revision):
     """Parses the option tree from our webservice and prepare the structure."""
     response = load_option_tree(product_name, revision)
 
     data = {}
     opt_index = 0
     bit_index = 0
+    extended_options_count = 0
     for entry in response:
         header = entry['header']
         option_name = header['FullName']
-        if not has_extended_options and header.get('Extended', False):
-            logging.info("Found extended option: {option_name}. Skipping.")
-            continue
+        if header.get('Extended', False) and extended_options_count == 0:
+            extended_options_count = opt_index
         if opt_index not in data:
             data[opt_index] = {'options': {}}
         if 'name' in data[opt_index] and not 'Reserved' == header['Name']:
@@ -90,12 +89,15 @@ def parse_option_tree(product_name, has_extended_options, revision):
         else:
             bit_index = 0
             opt_index += 1
-    return data
+    if extended_options_count > 0:
+        extended_options_count = opt_index - extended_options_count
+    return data, extended_options_count
 
-def get_option_tree(product_name, has_extended_options = False, revision = None):
+
+def get_option_tree(product_name,  revision = None):
     """Build the finial option tree structure with the pre-parsed structured."""
 
-    data = parse_option_tree(product_name, has_extended_options, revision)
+    data, extended_options_count = parse_option_tree(product_name, revision)
 
     opttree = {'Kit': {}}
     for index, opt in data.items():
@@ -105,7 +107,7 @@ def get_option_tree(product_name, has_extended_options = False, revision = None)
         else:
             opttree[opt['name']] = opt['options'][opt['name']]
 
-    return opttree
+    return opttree, extended_options_count
 
 
 def group_binary(options, index=0, result=None, old_key=0, old_value=""):
@@ -127,32 +129,10 @@ def group_binary(options, index=0, result=None, old_key=0, old_value=""):
         return dict(sorted(result.items()))
     return result
 
-
-def product_has_extend_options(product_name):
-    """Tries to read a poduct config to figure out whether this product uses extended options.
-    Will return False when no config exists or the config is unreadable."""
-    yaml_file = Path(__file__).resolve().parent.parent / "phytec_eeprom_flashtool/configs" / \
-                f"{product_name}.yml"
-    if not yaml_file.is_file():
-        return False
-    with open(yaml_file, 'r', encoding="utf-8") as file:
-        try:
-            config = yaml.safe_load(file)
-            if not 'PHYTEC' in config:
-                return False
-            return config['PHYTEC'].get('extended_options', 0) > 0
-        except yaml.YAMLError as exc:
-            logging.error(str(exc))
-            print(f"Error: {exc}")
-            sys.exit(1)
-    return False
-
-
 def print_option_tree(product_name):
     """Fetch the option tree for a product and print it afterwards."""
     revision = load_option_tree_revision(product_name)
-    has_extended_options = product_has_extend_options(product_name)
-    data = get_option_tree(product_name, has_extended_options, revision)
+    data, _ = get_option_tree(product_name, revision)
     print(f"optiontree_rev: {revision}")
     print(yaml.dump(data, sort_keys=False))
 
@@ -160,13 +140,13 @@ def print_option_tree(product_name):
 def write_option_tree(product_name):
     """Update an existing YML config file or create a new one."""
     revision = load_option_tree_revision(product_name)
-    has_extended_options = product_has_extend_options(product_name)
-    data = get_option_tree(product_name, has_extended_options, revision)
+    data, extended_options_count = get_option_tree(product_name, revision)
 
     yaml_file = Path(__file__).resolve().parent.parent / "phytec_eeprom_flashtool/configs" / \
                 f"{product_name}.yml"
 
     logging.info(yaml_file)
+    extended_options_key = "  extended_options:"
     optiontree_rev_key = "  optiontree_rev:"
     if not yaml_file.is_file():
         with open(yaml_file, 'w', encoding="utf-8") as file:
@@ -180,7 +160,7 @@ def write_option_tree(product_name):
             file.write("  i2c_bus: 0x0\n")
             file.write("  i2c_dev: 0x0\n")
             file.write("  api: 3\n")
-            file.write("  extended_options: 0\n")
+            file.write(f"{extended_options_key} {extended_options_count}\n")
             file.write("  max_image_size: 4096\n")
             file.write(f"{optiontree_rev_key} {revision}\n")
             file.write("\n")
@@ -195,6 +175,8 @@ def write_option_tree(product_name):
                 break
             if line.startswith(optiontree_rev_key):
                 file.write(f"{optiontree_rev_key} {revision}\n")
+            elif line.startswith(extended_options_key):
+                file.write(f"{extended_options_key} {extended_options_count}\n")
             else:
                 file.write(line)
         file.truncate()
