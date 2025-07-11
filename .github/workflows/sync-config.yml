@@ -3,6 +3,7 @@ name: Sync Product Configs
 on:
   schedule:
     - cron: "15 6 * * *"   # Run every day at an odd time
+  workflow_dispatch:
 
 jobs:
   build:
