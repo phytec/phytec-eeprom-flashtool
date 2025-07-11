@@ -55,6 +55,26 @@ def load_option_tree(product_name, revision = None):
         url = url + f"/revision/{revision}"
     return load_data(url + "/decode")
 
+
+def config_has_extended_option_keyword(product_name):
+    """Checks if "extended_configs" is in config file"""
+    yaml_file = Path(__file__).resolve().parent.parent / "phytec_eeprom_flashtool/configs" / \
+                f"{product_name}.yml"
+    if not yaml_file.is_file():
+        return True
+    with open(yaml_file, 'r', encoding="utf-8") as file:
+        try:
+            config = yaml.safe_load(file)
+            if not 'PHYTEC' in config:
+                return False
+            return 'extended_options' in config['PHYTEC']
+        except yaml.YAMLError as exc:
+            logging.error(str(exc))
+            print(f"Error: {exc}")
+            sys.exit(1)
+    return True
+
+
 def parse_option_tree(product_name, revision):
     """Parses the option tree from our webservice and prepare the structure."""
     response = load_option_tree(product_name, revision)
@@ -63,9 +83,14 @@ def parse_option_tree(product_name, revision):
     opt_index = 0
     bit_index = 0
     extended_options_count = 0
+    get_extended_options = config_has_extended_option_keyword(product_name)
     for entry in response:
         header = entry['header']
         option_name = header['FullName']
+        if not get_extended_options and header.get('Extended', False):
+            print(f"Found extended option but config does not have extended_option "
+                  f"entry: {option_name}. Skipping.")
+            continue
         if opt_index not in data:
             data[opt_index] = {'options': {}}
         if 'name' in data[opt_index] and not 'Reserved' == header['Name']:
@@ -129,6 +154,7 @@ def group_binary(options, index=0, result=None, old_key=0, old_value=""):
     if index == 0:
         return dict(sorted(result.items()))
     return result
+
 
 def print_option_tree(product_name):
     """Fetch the option tree for a product and print it afterwards."""

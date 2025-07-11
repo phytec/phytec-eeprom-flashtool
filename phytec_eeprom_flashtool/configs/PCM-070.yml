@@ -7,7 +7,6 @@ PHYTEC:
   eeprom_offset: 0x0
   i2c_bus: 0
   i2c_dev: 0x51
-  extended_options: 1
   optiontree_rev: 0
 
 Kit:
@@ -18,7 +17,6 @@ Kit:
   4: NOR-Flash
   5: Coating / RTC / Optional Connector / Ethernet
   6: Temperature
-  7: Temperature Sensor
 Processor:
   '0': Quad Core 1.6 GHz
   '1': Quad Core 1.8 GHz
@@ -88,6 +86,3 @@ Temperature:
   C: Consumer Temp
   I: Industrial Temp
   X: Extended Consumer Temp
-Temperature Sensor:
-  '0': '-'
-  '1': Temperature Sensor
