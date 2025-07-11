@@ -7,6 +7,7 @@ PHYTEC:
   eeprom_offset: 0x0
   i2c_bus: 0
   i2c_dev: 0x50
+  extended_options: 1
   optiontree_rev: 0
 
 Kit:
@@ -18,6 +19,7 @@ Kit:
   5: Ethernet
   6: Wi-Fi
   7: Temperature
+  8: Coating
 Processor:
   '0': Quad Core Lite (GPU, no VPU)
   '1': Dual Core (GPU, VPU, HDR10)
@@ -59,3 +61,6 @@ Wi-Fi:
 Temperature:
   C: Consumer Temp
   I: Industrial Temp
+Coating:
+  '0': '-'
+  L: Coated

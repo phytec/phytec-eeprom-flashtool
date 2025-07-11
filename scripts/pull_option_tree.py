@@ -66,8 +66,6 @@ def parse_option_tree(product_name, revision):
     for entry in response:
         header = entry['header']
         option_name = header['FullName']
-        if header.get('Extended', False) and extended_options_count == 0:
-            extended_options_count = opt_index
         if opt_index not in data:
             data[opt_index] = {'options': {}}
         if 'name' in data[opt_index] and not 'Reserved' == header['Name']:
@@ -80,6 +78,11 @@ def parse_option_tree(product_name, revision):
         for option in entry['options']:
             option_entry[option['Position']] = option['FullName']
 
+        # Increase extended option count
+        #Checking bit index to make sure that binary options are not counted multiple times
+        if header.get('Extended', True) and (bit_index == 0):
+            extended_options_count = extended_options_count + 1
+
         # Only increase option index when
         #   Type == Alphanumeric
         # or
@@ -89,8 +92,6 @@ def parse_option_tree(product_name, revision):
         else:
             bit_index = 0
             opt_index += 1
-    if extended_options_count > 0:
-        extended_options_count = opt_index - extended_options_count
     return data, extended_options_count
 
 
