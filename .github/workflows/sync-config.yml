@@ -18,6 +18,7 @@ jobs:
           - PCL-071
           - PCL-075
           - PCL-077
+          - PCL-082
           - PCM-057
           - PCM-070
           - PCM-071
