@@ -57,6 +57,7 @@ eMMC:
   '5': 64 GB (MLC)
   '6': 128 GB (MLC)
   '7': 256 GB (MLC)
+  '8': 64 GB (TLC)
 NOR-Flash:
   '0': '-'
   '1': 4 MB
