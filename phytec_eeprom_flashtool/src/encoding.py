@@ -13,8 +13,8 @@ from .blocks import EepromV3BlockInterface
 from .blocks import unpack_block
 
 MAX_KIT_OPTS = 17
-# 6 uchars, 17-len str, 2-len str, 1 uchar, 5-len pad, 1 uchar
-ENCODING_API2 = "<6B17s2sB5xB"
+# 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
+ENCODING_API2 = "<6B17s2s6xB"
 # 1 ushort, 2 uchars, 3 reserved, 1 uchar
 ENCODING_API3_DATA_HEADER = "<1H2B3x1B"
 
@@ -55,7 +55,6 @@ class EepromData:
     som_type: int
     base_article_number: int
     kit_opt: str
-    extended_opt: int
     bom_rev: str
     crc8: int
     ksp_number: int = 0
@@ -85,10 +84,10 @@ class EepromData:
         """Decodes the product full name from ep_data"""
         base_name = self.base_name()
         if self.som_type <= 1:
+            extended_opt = int(self.yml_parser['PHYTEC'].get('extended_options', 0))
             full_name = f"{base_name}"
-            if self.extended_opt:
-                full_name += f"-{self.kit_opt[:-self.extended_opt]}" \
-                    f"-{self.kit_opt[-self.extended_opt:]}"
+            if extended_opt:
+                full_name += f"-{self.kit_opt[:-extended_opt]}-{self.kit_opt[-extended_opt:]}"
             else:
                 full_name += f"-{self.kit_opt}"
         elif self.som_type <= 3:
@@ -133,7 +132,6 @@ def get_eeprom_data(args, yml_parser: YmlParser) -> EepromData:
             sys.exit('KSX-number out of bounce.')
     eeprom_data.bom_rev = args.bom
     eeprom_data.kit_opt = args.kit.replace('-', '')
-    eeprom_data.extended_opt = int(yml_parser['PHYTEC'].get('extended_options', 0))
 
     return eeprom_data
 
@@ -151,7 +149,6 @@ def eeprom_data_to_struct(eeprom_data: EepromData) -> bytes:
         eeprom_data.ksp_number,
         bytes(kit_opt_full, 'utf-8'),
         bytes(eeprom_data.bom_rev, 'utf-8'),
-        eeprom_data.extended_opt,
         0  # CRC8
     )
     eeprom_data.crc8 = crc8_checksum_calc(eeprom_struct[:-1])
@@ -205,8 +202,7 @@ def struct_to_eeprom_data(eeprom_struct: bytes, yml_parser: YmlParser) -> Eeprom
     if yml_parser is not None:
         #This will not be read when yml_parser is not set
         eeprom_data.bom_rev = unpacked[7].decode('utf-8')
-        eeprom_data.extended_opt = unpacked[8]
-        eeprom_data.crc8 = unpacked[9]
+        eeprom_data.crc8 = unpacked[8]
         eeprom_data.kit_opt = unpacked[6].decode('utf-8')[:len(yml_parser['Kit'])]
 
     eeprom_data.sub_revisions = format(eeprom_data.sub_revisions, '08b')
