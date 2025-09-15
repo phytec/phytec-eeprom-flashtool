@@ -87,7 +87,7 @@ class EepromData:
             extended_opt = int(self.yml_parser['PHYTEC'].get('extended_options', 0))
             full_name = f"{base_name}"
             if extended_opt:
-                full_name += f"-{self.kit_opt[:-extended_opt]}-{self.kit_opt[-extended_opt:]}"
+                full_name += f"-{self.kit_opt[:-extended_opt]}"
             else:
                 full_name += f"-{self.kit_opt}"
         elif self.som_type <= 3:
@@ -253,7 +253,7 @@ def print_eeprom_data(eeprom_data: EepromData):
 
     newline = '\n'
     kit_options_verbose = []
-    kit_opt_length = 16
+    kit_opt_length = 17
     for index, kit_opt in eeprom_data.yml_parser['Kit'].items():
         if (len(kit_opt) + 1) > kit_opt_length:
             kit_opt_length = len(kit_opt) + 1
@@ -262,26 +262,31 @@ def print_eeprom_data(eeprom_data: EepromData):
         kit_options_verbose.append(f"{kit_opt.ljust(kit_opt_length)}:  " \
                                    f"{eeprom_data.yml_parser[kit_opt][option]}")
 
+    extended_options = int(eeprom_data.yml_parser['PHYTEC'].get('extended_options', 0))
+    opts = eeprom_data.kit_opt[:-extended_options] if extended_options else eeprom_data.kit_opt
+    ext_opts = eeprom_data.kit_opt[-extended_options:] if extended_options else ""
+
     output = f"""EEPROM Content
 ##############
 
 Decoded Information
 *******************
-{"Full name":16s}:  {eeprom_data.full_name()}
-{"PCB revision":16s}:  {pcb_rev}
+{"Full name":17s}:  {eeprom_data.full_name()}
+{"PCB revision":17s}:  {pcb_rev}
 
 Raw Information
 ***************
-{"API version":16s}:  {eeprom_data.api_version}
-{"SOM PCB rev.":16s}:  {eeprom_data.pcb_revision}-{eeprom_data.pcb_sub_revision}
-{"Optiontree rev.":16s}:  {int(eeprom_data.opttree_revision, 2)}
-{"SOM type":16s}:  {get_som_type_name_by_value(eeprom_data.som_type)}
+{"API version":17s}:  {eeprom_data.api_version}
+{"SOM PCB rev.":17s}:  {eeprom_data.pcb_revision}-{eeprom_data.pcb_sub_revision}
+{"Optiontree rev.":17s}:  {int(eeprom_data.opttree_revision, 2)}
+{"SOM type":17s}:  {get_som_type_name_by_value(eeprom_data.som_type)}
 
 Base Article Number
 ===================
-{"Product number":16s}:  {eeprom_data.base_article_number}
-{"KSx number":16s}:  {eeprom_data.ksp_number  if eeprom_data.ksp_number else "-"}
-{"Options":16s}:  {eeprom_data.kit_opt}
+{"Product number":17s}:  {eeprom_data.base_article_number}
+{"KSx number":17s}:  {eeprom_data.ksp_number  if eeprom_data.ksp_number else "-"}
+{"Options":17s}:  {opts}
+{"Extended Options":17s}:  {ext_opts}
 
 Verbose Kit Options
 *******************
@@ -289,7 +294,7 @@ Verbose Kit Options
 
 Extras
 ******
-{"CRC-Checksum":16s}:  0x{eeprom_data.crc8:x}
+{"CRC-Checksum":17s}:  0x{eeprom_data.crc8:x}
 """
     print(output)
     if eeprom_data.api_version <= 2:
@@ -297,9 +302,9 @@ Extras
     output_v3 = f"""
 API v3 Content
 ##############
-{"API sub version":16s}:  {eeprom_data.v3_sub_version}
-{"Number of blocks":16s}:  {len(eeprom_data.blocks)}
-{"CRC-Checksum":16s}:  0x{eeprom_data.v3_header_crc8:x}
+{"API sub version":17s}:  {eeprom_data.v3_sub_version}
+{"Number of blocks":17s}:  {len(eeprom_data.blocks)}
+{"CRC-Checksum":17s}:  0x{eeprom_data.v3_header_crc8:x}
 """
     print(output_v3)
     for block in eeprom_data.blocks:
