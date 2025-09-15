@@ -1,41 +1,44 @@
 Output_strings:
- full_name: "Full name       :  {0}"
- pcb_revision: "PCB revision    :  {0}"
- api_version: "API version     :  {0}"
- optiontree_revision: "Optiontree rev. :  {0}"
- som_type: "SOM type        :  {0}"
- base_article_number: "Product number  :  {0}"
- ksp_number: "KSx number      :  {0}"
- option: "Options         :  {0}"
- crc: "CRC-Checksum    :  0x{0}"
+ full_name: "Full name        :  {0}"
+ pcb_revision: "PCB revision     :  {0}"
+ api_version: "API version      :  {0}"
+ optiontree_revision: "Optiontree rev.  :  {0}"
+ som_type: "SOM type         :  {0}"
+ base_article_number: "Product number   :  {0}"
+ ksp_number: "KSx number       :  {0}"
+ option: "Options          :  {0}"
+ ext_option: "Extended Options :  {0}"
+ crc: "CRC-Checksum     :  0x{0}"
 
 Test_data:
  -
   file_name: 'PCL-069-1011011I-0.A3_3a_0'
   data:
-   full_name: 'PCL-069-1011011I-0.A3'
+   full_name: 'PCL-069-1011011I.A3'
    pcb_revision: '3a'
    api_version: 2
    optiontree_revision: 0
    som_type: 'PCL'
    base_article_number: 69
    ksp_number: "-"
-   option: '1011011I0'
-   crc: "b9"
+   option: '1011011I'
+   ext_option: '0'
+   crc: "90"
   read_args: '-som PCL-069'
   create_args: '-som PCL-069 -kit 1011011I-0 -bom A3 -pcb 3a'
  -
   file_name: 'PCL-069-1011011I-0.A3_00_0'
   data:
-   full_name: 'PCL-069-1011011I-0.A3'
+   full_name: 'PCL-069-1011011I.A3'
    pcb_revision: '0'
    api_version: 2
    optiontree_revision: 0
    som_type: 'PCL'
    base_article_number: 69
    ksp_number: "-"
-   option: '1011011I0'
-   crc: "c6"
+   option: '1011011I'
+   ext_option: '0'
+   crc: "ef"
   read_args: '-som PCL-069'
   create_args: '-som PCL-069 -kit 1011011I-0 -bom A3 -pcb 0'
  -
@@ -48,8 +51,9 @@ Test_data:
    som_type: 'PCM-KSM'
    base_article_number: 71
    ksp_number: 59
-   option: '5432DE11I00'
-   crc: "11"
+   option: '5432DE11I'
+   ext_option: '00'
+   crc: "43"
   read_args: '-som PCM-071 -ksx KSM59'
   create_args: '-som PCM-071 -ksx KSM59 -kit 5432DE11I-00 -bom S9 -pcb 5d'
  -
@@ -62,8 +66,9 @@ Test_data:
    som_type: 'PCL-KSP'
    base_article_number: 66
    ksp_number: 59
-   option: '4054411I0'
-   crc: "83"
+   option: '4054411I'
+   ext_option: '0'
+   crc: "aa"
   read_args: '-som PCL-066 -ksx KSP59'
   create_args: '-som PCL-066 -ksx KSP59 -kit 4054411I-0 -bom B4 -pcb 15d'
  -
@@ -77,5 +82,6 @@ Test_data:
    base_article_number: 69
    ksp_number: "-"
    option: '2011011I'
+   ext_option: '0'
    crc: "c8"
   read_args: '-som PCL-069'
