@@ -66,6 +66,7 @@ NOR-Flash:
 Ethernet:
   '0': '-  (RGMII on connector)'
   '1': Gbit Ethernet Phy
+  '3': Gbit Ethernet Phy (ADIN)
 Display Option:
   '0': MIPI DSI
   '1': LVDS (TI Chip)
