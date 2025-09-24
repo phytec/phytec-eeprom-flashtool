@@ -24,6 +24,7 @@ jobs:
           - PCM-071
           - PCM-072
           - PCM-074
+          - PFL-G-03
 
     steps:
       - uses: actions/checkout@v3
