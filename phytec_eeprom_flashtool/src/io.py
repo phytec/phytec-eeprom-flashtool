@@ -44,15 +44,20 @@ def get_binary_path(args, eeprom_data: EepromData) -> Path:
     """Returns the path to a local binary file."""
     if "file" in args and args.file:
         return Path(args.file).resolve()
-    if eeprom_data.som_type <= 1:
+    if eeprom_data.som_type.is_phycore():
         # %s-%s.%s_%s%s_%d
         file_name_beginning = f"{args.som}"
-    elif eeprom_data.som_type <= 3:
+    elif eeprom_data.som_type.is_ksp():
         # %s-%s.%s_%s%s_%d
         file_name_beginning = f"{args.ksx}"
-    else:
+    elif eeprom_data.som_type.is_phycore_ksp():
         # %s-%s-%s.%s_%s%s_%d
         file_name_beginning = f"{args.som}-{args.ksx}"
+    elif eeprom_data.som_type.is_phyflex():
+        # %s-%s-%s.%s_%s%s_%d
+        file_name_beginning = f"{args.som}-{args.id}"
+    else:
+        raise SystemExit(f"Unknown component type 0x{eeprom_data.som_type:x}")
 
     file_name = f"{file_name_beginning}-{args.kit}.{eeprom_data.bom_rev}_" \
         f"{eeprom_data.pcb_revision}{eeprom_data.pcb_sub_revision}_" \

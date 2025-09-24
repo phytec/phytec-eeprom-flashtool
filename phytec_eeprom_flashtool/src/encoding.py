@@ -2,6 +2,7 @@
 #pylint: disable=import-error
 from typing import Dict
 from dataclasses import dataclass
+from enum import Enum
 import struct
 import sys
 
@@ -26,16 +27,50 @@ EEPROM_V3_DATA_PAYLOAD_START = 0
 
 YmlParser = Dict[str, Dict[str, str]]
 
-SOM = {
-    "PCM": 0x0,
-    "PCL": 0x1,
-    "KSP": 0x2,
-    "KSM": 0x3,
-    "PCM-KSP": 0x4,
-    "PCM-KSM": 0x5,
-    "PCL-KSP": 0x6,
-    "PCL-KSM": 0x7
+
+PFL_MAPPING = {
+    0: "PT",
+    1: "SP",
+    2: "KP",
+    3: "KM"
 }
+
+
+class ComponentType(Enum):
+    """All supported component types."""
+    PCM = 0
+    PCL = 1
+    KSP = 2
+    KSM = 3
+    PCM_KSP = 4
+    PCM_KSM = 5
+    PCL_KSP = 6
+    PCL_KSM = 7
+    PFL_G_PT = 8
+    PFL_G_SP = 9
+    PFL_G_KP = 10
+    PFL_G_KM = 11
+    INVALID = 0xFF
+
+    def is_phycore(self):
+        """Returns True if the component is a phyCORE (PCM or PCL)."""
+        return ComponentType.PCM.value <= self.value <= ComponentType.PCL.value
+
+    def is_ksp(self):
+        """Returns True if the component is KSP or KSM."""
+        return ComponentType.KSP.value <= self.value <= ComponentType.KSM.value
+
+    def is_phycore_ksp(self):
+        """Returns True if the component is a phyCORE KSP/KSM variant."""
+        return ComponentType.PCM_KSP.value <= self.value <= ComponentType.PCL_KSM.value
+
+    def is_phyflex(self):
+        """Returns True if the component is a phyFLEX (PFL)."""
+        return ComponentType.PFL_G_PT.value <= self.value <= ComponentType.PFL_G_KM.value
+
+    def get_phyflex_prefix(self):
+        """Returns the PFL prefix (e.g., 'PT' for PFL-G-PT)."""
+        return PFL_MAPPING[self.value - ComponentType.PFL_G_PT.value]
 
 
 #pylint: disable=too-many-instance-attributes
@@ -52,12 +87,13 @@ class EepromData:
     pcb_sub_revision: str
     opttree_revision: str
     sub_revisions: str
-    som_type: int
+    som_type: ComponentType
     base_article_number: int
     kit_opt: str
     bom_rev: str
     crc8: int
     ksp_number: int = 0
+    option_id: str = ""
     # API v3 content
     v3_sub_version: int = API_V3_SUB_VERSION
     v3_header_crc8: int = 0
@@ -72,29 +108,38 @@ class EepromData:
     def base_name(self) -> str:
         """Returns the product base name"""
         base_name = f"{get_som_type_name_by_value(self.som_type).split('-')[0]}-"
-        if self.som_type <= 1:
+        if self.som_type.is_phycore():
             base_name += f"{self.base_article_number:03}"
-        elif self.som_type <= 3:
+        elif self.som_type.is_ksp():
             base_name += f"{self.ksp_number << 16 + self.base_article_number:04}"
-        else:
+        elif self.som_type.is_phycore_ksp():
             base_name += f"{self.base_article_number:03}"
+        elif self.som_type.is_phyflex():
+            base_name += f"{get_som_type_name_by_value(self.som_type).split('-')[1]}-"
+            base_name += f"{self.base_article_number:02}"
+        else:
+            sys.exit(f"Unknown component type 0x{self.som_type:x}!")
         return base_name
 
     def full_name(self) -> str:
         """Decodes the product full name from ep_data"""
         base_name = self.base_name()
-        if self.som_type <= 1:
+        if self.som_type.is_phycore():
             extended_opt = int(self.yml_parser['PHYTEC'].get('extended_options', 0))
             full_name = f"{base_name}"
             if extended_opt:
                 full_name += f"-{self.kit_opt[:-extended_opt]}"
             else:
                 full_name += f"-{self.kit_opt}"
-        elif self.som_type <= 3:
+        elif self.som_type.is_ksp():
             full_name = base_name
-        else:
+        elif self.som_type.is_phycore_ksp():
             som_type = get_som_type_name_by_value(self.som_type).split('-')
             full_name = f"{base_name}-{som_type[1]}{self.ksp_number:02}"
+        elif self.som_type.is_phyflex():
+            full_name = f"{base_name}-{self.option_id}"
+        else:
+            sys.exit(f"Unknown component type 0x{self.som_type:x}!")
 
         return f"{full_name}.{self.bom_rev}"
 
@@ -113,9 +158,9 @@ def get_eeprom_data(args, yml_parser: YmlParser) -> EepromData:
     eeprom_data.sub_revisions = eeprom_data.opttree_revision + eeprom_data.pcb_sub_revision
     eeprom_data.pcb_sub_revision = sub_revision_to_str(eeprom_data.pcb_sub_revision)
     eeprom_data.som_type = get_som_type(args)
-    if eeprom_data.som_type <= 1:
+    if eeprom_data.som_type.is_phycore():
         eeprom_data.base_article_number = int(args.som[4:])
-    elif eeprom_data.som_type <= 3:
+    elif eeprom_data.som_type.is_ksp():
         if int(args.ksx[4:]) <= 255:
             eeprom_data.base_article_number = int(args.ksx[4:])
         else:
@@ -124,12 +169,18 @@ def get_eeprom_data(args, yml_parser: YmlParser) -> EepromData:
             ksp_higher_byte = int(ksp_bytes[:8])
             eeprom_data.base_article_number = int(ksp_lower_byte)
             eeprom_data.ksp_number = int(ksp_higher_byte)
-    else:
+    elif eeprom_data.som_type.is_phycore_ksp():
         eeprom_data.base_article_number = int(args.som[4:])
         if int(args.ksx[3:]) <= 255:
             eeprom_data.ksp_number = int(args.ksx[3:])
         else:
             sys.exit('KSX-number out of bounce.')
+    elif eeprom_data.som_type.is_phyflex():
+        eeprom_data.base_article_number = int(args.som[-2:])
+        eeprom_data.option_id = args.id
+        eeprom_data.ksp_number = int(args.id[2:])
+    else:
+        sys.exit(f"Unknown component type 0x{eeprom_data.som_type:x}!")
     eeprom_data.bom_rev = args.bom
     eeprom_data.kit_opt = args.kit.replace('-', '')
 
@@ -144,7 +195,7 @@ def eeprom_data_to_struct(eeprom_data: EepromData) -> bytes:
         eeprom_data.api_version,
         eeprom_data.pcb_revision,
         int(eeprom_data.sub_revisions, 2),
-        eeprom_data.som_type,
+        eeprom_data.som_type.value,
         eeprom_data.base_article_number,
         eeprom_data.ksp_number,
         bytes(kit_opt_full, 'utf-8'),
@@ -196,7 +247,7 @@ def struct_to_eeprom_data(eeprom_struct: bytes, yml_parser: YmlParser) -> Eeprom
     eeprom_data.api_version = unpacked[0]
     eeprom_data.pcb_revision = unpacked[1]
     eeprom_data.sub_revisions = unpacked[2]
-    eeprom_data.som_type = unpacked[3]
+    eeprom_data.som_type = ComponentType(unpacked[3])
     eeprom_data.base_article_number = unpacked[4]
     eeprom_data.ksp_number = unpacked[5]
     if yml_parser is not None:
@@ -209,6 +260,10 @@ def struct_to_eeprom_data(eeprom_struct: bytes, yml_parser: YmlParser) -> Eeprom
     eeprom_data.pcb_sub_revision = eeprom_data.sub_revisions[4:]
     eeprom_data.opttree_revision = format(int(eeprom_data.sub_revisions[:4], 2), '04b')
     eeprom_data.pcb_sub_revision = sub_revision_to_str(eeprom_data.pcb_sub_revision)
+
+    if eeprom_data.som_type.is_phyflex():
+        prefix = eeprom_data.som_type.get_phyflex_prefix()
+        eeprom_data.option_id = f"{prefix}{eeprom_data.ksp_number:03}"
 
     if eeprom_data.is_v3():
         eeprom_data = data_header_to_eeprom_data(eeprom_struct, eeprom_data)
@@ -318,18 +373,24 @@ def decode_base_name_from_raw(eeprom_raw):
     return eeprom_data.base_name()
 
 
-def get_som_type_name_by_value(som_value: int) -> str:
+def get_som_type_name_by_value(som_value: ComponentType) -> str:
     """Returns the som type name for the passed number value"""
-    return [k for k, v in SOM.items() if v == som_value][0]
+    return ComponentType(som_value).name.replace('_', '-')
 
 
-def get_som_type(args) -> int:
+def get_som_type(args) -> ComponentType:
     """Returns the som type according to command-line arguments."""
-    if args.ksx and args.som:
-        som_type = f"{args.som[:3]}-{args.ksx[:3]}"
-    elif args.ksx and not args.som:
-        som_type = args.ksx[:3]
+    if args.som.startswith('PFL-'):
+        som_type = f"{args.som[:-3]}-{args.id[:2]}"
     else:
-        som_type = args.som[:3]
+        if args.ksx and args.som:
+            som_type = f"{args.som[:3]}-{args.ksx[:3]}"
+        elif args.ksx and not args.som:
+            som_type = args.ksx[:3]
+        else:
+            som_type = args.som[:3]
 
-    return SOM.get(som_type, 0xf)
+    if som_type.replace('-', '_') not in ComponentType.__members__:
+        return ComponentType.INVALID
+
+    return ComponentType[som_type.replace('-', '_')]

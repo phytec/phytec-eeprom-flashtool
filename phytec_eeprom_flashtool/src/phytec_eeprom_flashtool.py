@@ -216,6 +216,7 @@ def add_mandatory_arguments(parser):
 def add_additional_arguments(parser):
     """Adds additional arguments to the parser. Options are -kit, -pcb and -bom."""
     parser.add_argument('-kit', dest='kit', help='Kitoptions from Optiontree')
+    parser.add_argument('-option-id', dest='id', help='phyFLEX option ID')
     parser.add_argument('-pcb', dest='pcb', nargs='?', type=str, help='PCB revision')
     parser.add_argument('-bom', dest='bom', nargs='?', type=str, help='BoM revision')
 
@@ -331,12 +332,16 @@ def main(args): # pylint: disable=too-many-statements, too-many-locals
             args.kit = "0"
             args.pcb = "00"
             args.bom = "00"
+            args.id = "SP000"
         # Check -kit, -pcb, and -bom are set.
         if args.func in (write_som_config, create_binary, display_som_config):
             arguments = [(args.kit, '-kit'), (args.pcb, '-pcb'), (args.bom, '-bom')]
-            for arg in arguments:
-                if arg[0] is None:
-                    parser.error(f"{arg[1]} argument is missing and mandatory for command " \
+            for (arg, arg_str) in arguments:
+                if arg is None:
+                    parser.error(f"{arg_str} argument is missing and mandatory for command " \
                                 f"'{args.command}'")
+            if args.som.startswith('PFL-') and args.id is None:
+                parser.error("Argument -option-id is required for phyFLEX products")
+
         return args.func(args, yml_parser)
     return None
