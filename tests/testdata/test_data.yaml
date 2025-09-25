@@ -85,3 +85,63 @@ Test_data:
    ext_option: '0'
    crc: "c8"
   read_args: '-som PCL-069'
+ -
+  file_name: 'PFL-G-03-PT005-21022110I-1.B2_1a_0'
+  data:
+   full_name: 'PFL-G-03-PT005.B2'
+   pcb_revision: '1a'
+   api_version: 3
+   optiontree_revision: 0
+   som_type: 'PFL-G-PT'
+   base_article_number: 03
+   ksp_number: 005
+   option: '21022110I'
+   ext_option: '1'
+   crc: "30"
+  read_args: '-som PFL-G-03'
+  create_args: '-som PFL-G-03 -kit 21022110I-1 -bom B2 -pcb 1a -option-id PT005'
+ -
+  file_name: 'PFL-G-03-SP005-21022110I-1.B2_1a_0'
+  data:
+   full_name: 'PFL-G-03-SP005.B2'
+   pcb_revision: '1a'
+   api_version: 3
+   optiontree_revision: 0
+   som_type: 'PFL-G-SP'
+   base_article_number: 03
+   ksp_number: 005
+   option: '21022110I'
+   ext_option: '1'
+   crc: "8a"
+  read_args: '-som PFL-G-03'
+  create_args: '-som PFL-G-03 -kit 21022110I-1 -bom B2 -pcb 1a -option-id SP005'
+ -
+  file_name: 'PFL-G-03-KP005-21022110I-1.B2_1a_0'
+  data:
+   full_name: 'PFL-G-03-KP005.B2'
+   pcb_revision: '1a'
+   api_version: 3
+   optiontree_revision: 0
+   som_type: 'PFL-G-KP'
+   base_article_number: 03
+   ksp_number: 005
+   option: '21022110I'
+   ext_option: '1'
+   crc: "43"
+  read_args: '-som PFL-G-03'
+  create_args: '-som PFL-G-03 -kit 21022110I-1 -bom B2 -pcb 1a -option-id KP005'
+ -
+  file_name: 'PFL-G-03-KM005-21022110I-1.B2_1a_0'
+  data:
+   full_name: 'PFL-G-03-KM005.B2'
+   pcb_revision: '1a'
+   api_version: 3
+   optiontree_revision: 0
+   som_type: 'PFL-G-KM'
+   base_article_number: 03
+   ksp_number: 005
+   option: '21022110I'
+   ext_option: '1'
+   crc: "f9"
+  read_args: '-som PFL-G-03'
+  create_args: '-som PFL-G-03 -kit 21022110I-1 -bom B2 -pcb 1a -option-id KM005'
