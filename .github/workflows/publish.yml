@@ -3,5 +3,5 @@ jobs:
   call_selective_push:
     uses: phytec/gh-action-tools/.github/workflows/selective-push.yml@main
     with:
-      BRANCHES: "main release/pcm-057_am57x_api_v0"
+      BRANCHES: "main release/pcm-057_am57x_api_v0 release/pcm-057_am57x_api_v1"
     secrets: inherit
