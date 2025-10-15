@@ -102,6 +102,19 @@ Hardware Types
    * - 0x04 to 0x07
      - Combined Types
      - Reserved / To be defined (e.g., PCM-KSP, PCM-KSM, etc.)
+   * - 0x08
+     - PFL-G-PT
+     - phyFLEX Module Feature Set Gamma Prototype
+   * - 0x09
+     - PFL-G-SP
+     - phyFLEX Module Feature Set Gamma Standard Product
+   * - 0x0A
+     - PFL-G-KP
+     - phyFLEX Module Feature Set Gamma KSP Customer Design
+   * - 0x0B
+     - PFL-G-KM
+     - phyFLEX Module Feature Set Gamma KSM Customer Variant
+
 
 Part Number and KSP Encoding
 ============================
