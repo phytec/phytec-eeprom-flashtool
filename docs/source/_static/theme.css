@@ -1,0 +1,16 @@
+.wy-nav-content {
+    max-width: none;
+}
+
+.wy-side-nav-search {
+    background-color: #006E73; /* Replace with your desired color */
+}
+
+.wy-nav-side .caption-text {
+    color: #006E73; /* Replace with your desired color */
+}
+
+img.padded-bootswitch-image {
+    padding: 20px;
+    height: 350px;
+}
