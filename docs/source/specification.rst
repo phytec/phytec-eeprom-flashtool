@@ -162,16 +162,15 @@ recalculate it and verify after EEPROM read.
 API Version 3
 *************
 
-To overcome size limitations in API v2, API v3 introduces an extensible format
-with linked block structures.
-
-Goals:
-
-- Maintain compatibility with v2 (first 32 bytes unchanged, except version field = 3)
-- Enable flexible extension via blocks with no fixed size limits
+API v3 is backwards compatible with API v2. The block specification for the
+first 32 bytes is unchanged. Just the revision is incremented. Additionally we
+introduced an extension format. A linked list with a block structure without
+fixed size is used to add customizable data fields to the EEPROM.
 
 .. note::
-   The minimum EEPROM image size for API v3 is **40 bytes** (32 bytes from API v2 + 8 bytes header).
+   The minimum EEPROM image size for API v3 is **40 bytes** (32 bytes from API
+   v2 + 8 bytes header). Products reserving only the ID-Page in the EEPROM
+   cannot be used with API v3.
 
 Structure:
 
