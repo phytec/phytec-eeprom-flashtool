@@ -7,18 +7,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-EEPROM Flashtool documentation
-==============================
+#####################################
+PHYTEC EEPROM Flashtool Documentation
+#####################################
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
-
+Documenation about the PHYTEC EEPROM Flashtool and corresponding hardware introspection data structures.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   project_definition
    installation
    usage
    specification
+   product_overview

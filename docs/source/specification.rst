@@ -5,17 +5,144 @@
 EEPROM Memory Layout Specification
 ##################################
 
-This document specifies the EEPROM memory layout for Flashtool API versions 2 and 3. It is intended as a reference for interpreting EEPROM data and **not** for the EEPROM Flashtool software implementation itself.
+This document specifies the EEPROM memory layout. It is intended as a reference for interpreting EEPROM data and **not** for the EEPROM Flashtool software implementation itself.
 
-API Version 1 (Deprecated)
-**************************
+API Version 0
+*************
 
-API v1 is deprecated and was only used on the phyCORE-AM57x (PCM-057). Due to significant structural changes, it was superseded by API v2 and is no longer compatible with modern tooling.
+API v0 has been the first implementation of introspection data and is not used on any product any more. EEPROM Tool support is available in the branch "release/pcm-057_am57x_api_v0"
+
+It introduces a fixed 32-byte data structure containing key product metadata. All fields are composed of unsigned characters or character arrays.
+
+.. list-table:: API v0 EEPROM Layout
+   :widths: 10 25 10 55
+   :header-rows: 1
+
+   * - Address
+     - Field
+     - Length
+     - Description
+   * - 0
+     - header
+     - 4
+     - PHYTEC EEPROM header identifier: 0x07052017
+   * - 4
+     - api_version
+     - 1
+     - EEPROM layout API version
+   * - 5
+     - mod_version
+     - 1
+     - Module Type (PCM/PFL/PCA)
+   * - 6
+     - som_pcb_rev
+     - 1
+     - SoM PCB revision
+   * - 7
+     - mac
+     - 6
+     - MAC address (6 bytes)
+   * - 13
+     - ksp
+     - 1
+     - custom module type: 1 = KSP, 2 = KSM
+   * - 14
+     - kspno
+     - 1
+     - Number/identifier for KSP/KSM module
+   * - 15
+     - kit_opt
+     - 11
+     - Option tree for variants
+   * - 26
+     - reserved
+     - 5
+     - Reserved bytes (not used)
+   * - 31
+     - bs
+     - 1
+     - Checksum/bits set in previous bytes
+
+bs - Checksum
+=============
+For AM57x The checksum has never be implemented in API v0 and can be ignored.
+
+For RK3288 the check is implemented in that way in u-boot:
+
+.. code-block:: c
+
+   int hw = 0;
+   while (p < e) {
+       hw += hweight8(*p);
+       p++;
+   }
+
+API Version 1
+*************
+
+API v1 is actively used only on the phyCORE-AM57x (PCM-057). EEPROM Tool support is available in the branch "release/pcm-057_am57x_api_v1"
+
+.. list-table:: API v1 EEPROM Layout
+   :widths: 10 15 10 55
+   :header-rows: 1
+
+   * - Address
+     - Field
+     - Byte Size
+     - Description
+   * - 0
+     - api_version
+     - 1
+     - EEPROM layout API version
+   * - 1
+     - som_pcb_rev
+     - 1
+     - SoM PCB revision
+   * - 2
+     - ksp
+     - 1
+     - custom module type: 1 = KSP, 2 = KSM
+   * - 3
+     - kspno
+     - 1
+     - Number/identifier for KSP/KSM module
+   * - 4
+     - kit_opt
+     - 11
+     - Option tree for variants
+   * - 15
+     - reserved
+     - 10
+     - Reserved bytes (not used)
+   * - 25
+     - mac
+     - 6
+     - MAC address (6 bytes)
+   * - 31
+     - hw8
+     - 1
+     - Checksum/bits set in previous bytes
+
+hw8 - Checksum
+==============
+
+The ``hw8`` field is a data integrity check field that contains the total count of
+bits set to '1' across all preceding data fields in the structure. It is usually
+called Hamming weight. Here is an example implementation for one byte:
+
+.. code-block:: c
+
+    u8 count = 0;
+    while (val) {
+        count += val & 1;
+        val >>= 1;
+    }
+    return count;
 
 API Version 2
 *************
 
-API v2 introduces a fixed 32-byte data structure containing key product metadata. All fields are composed of unsigned characters or character arrays.
+API v2 is a consolidation of previous versions. The main characteristics are still a fixed 32-byte data structure. All fields are unsigned characters or character arrays.
 
 .. list-table:: API v2 EEPROM Layout
    :widths: 10 25 10 55

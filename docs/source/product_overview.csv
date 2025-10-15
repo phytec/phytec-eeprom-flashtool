@@ -1,0 +1,20 @@
+﻿Product,HW Type,I2C Bus,I2C Address,User,API
+phyCORE-i.MX8M Mini,SoM,,0x51,phyEEPROM,v2
+phyCORE-i.MX8M Nano,SoM,,0x51,phyEEPROM,v2
+phyBOARD-Polis (Mini/Nano),phyBOARD,,-,-,
+phyCORE-i.MX8M Plus,SoM,,0x51,phyEEPROM,v2
+phyBOARD-Pollux (8M Plus),phyBOARD,,0x51,-,
+PEB-AV-10,PEB,,0x57,-,
+phyCORE-AM68x,SoM,I2C0,0x50,phyEEPROM,v3
+,,I2C0,0x51,Customer,
+phyBOARD-Izar (AM68x),phyBOARD,,0x52,-,
+phyCORE-i.MX 91/93,SoM,I2C3,0x50,phyEEPROM,v2
+,,,0x25,PMIC,
+phyCORE-AM64x,SoM,I2C0,0x50,phyEEPROM,v3
+phyCORE-AM62x,SoM,I2C0,0x50,phyEEPROM,v3
+phyCORE-AM62Ax,SoM,I2C0,0x50,phyEEPROM,v3
+phyCORE-AM62P,SoM,,,,v3
+phyCORE-AM67,SoM,I2C0,0x50,phyEEPROM,v3
+,,I2C0,0x51,Customer,
+phyCORE-AM57x,SoM,,,phyEEPROM,v1
+phyCORE-RK3288,SoM,,,phyEEPROM,v0
