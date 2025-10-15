@@ -28,47 +28,54 @@ API v2 introduces a fixed 32-byte data structure containing key product metadata
    * - 0
      - API Version
      - 1 byte
-     - Always `2` for API v2.
+     - Always `2` for API v2
    * - 1
      - PCB Revision
      - 1 byte
-     - Main PCB revision number.
+     - Main PCB revision number
    * - 2
      - PCB Sub-revision and Option Tree Version
      - 1 byte
-     - Upper nibble: Option Tree Version [7:4], Lower nibble: PCB sub-revision [3:0].
+     - See `PCB Sub-revision and Option Tree Version`_ section
    * - 3
      - Hardware Type
      - 1 byte
-     - See `Hardware Types`_ section.
+     - See `Hardware Types`_ section
    * - 4
      - Part Number / KSP Low
      - 1 byte
-     - Lower digits of the article number or KSP number.
+     - Lower digits of the article number or KSP number
    * - 5
      - KSP High
      - 1 byte
-     - Upper digits of the KSP number, if used.
+     - Upper digits of the KSP number, if used
    * - 6
      - Standard Options
      - 17 bytes
-     - Hardware option flags and product configuration details.
+     - Hardware option flags and product configuration details
    * - 23
      - BOM Revision
      - 2 bytes
-     - For example, "A0" for initial revision.
+     - For example, "A0" for initial revision
    * - 25
-     - Extended Options
+     - MAC Address
      - 6 bytes
-     - Number of extended options at the end of standard options.
-   * - 26
-     - Reserved
-     - 5 bytes
-     - Reserved for future use.
+     - 1 Ethernet MAC can be stored
    * - 31
      - Checksum
      - 1 byte
-     - CRC8 (ITU-T) over bytes 0–30 for integrity checking.
+     - CRC8 (ITU-T) over bytes 0–30 for integrity checking
+
+PCB Sub-revision and Option Tree Version
+========================================
+
+The lower nibble describes the PCB sub-revision Bit [3:0]. If there is no sub
+revision the value is 0x00. Sub revision starting with 0x01 represents an "A".
+
+The upper nibble describes the Option Tree version Bit [7:4]. Typically the
+value is 0x0. If the option tree layout changes during an active lifecycle of
+the product, the value will be increased. This is rarely the case and will be
+avoided under all circumstances.
 
 Hardware Types
 ==============
@@ -108,19 +115,42 @@ Field 4 and 5 usage depends on the hardware type:
 Standard Product Options
 ========================
 
-Up to 17 option bytes define specific product configurations (e.g., DDR size, RTC presence). These values are read by bootloaders like U-Boot to load appropriate hardware configurations.
+Up to 17 option bytes define specific product configurations (e.g., DDR size,
+RTC presence). These values are read by bootloaders like U-Boot to load
+appropriate hardware configurations.
 
-Option encoding may be direct (e.g., `0x01` for 1GB DDR) or bit-mapped where multiple settings share a single byte.
+Option encoding may be direct (e.g., `0x01` for 1GB DDR) or bit-mapped where
+multiple settings share a single byte. Valid Values are [ 0-9 ] and [ A-Z ] as
+defined in the option tree. Unused bytes are filled up with 0x00.
+
+BOM Revision
+============
+
+Bill of material lists (BOM) have a revisions with a fixed format:
+
+- Byte 17 letter [ A-Z ]
+- Byte 18  number [ 0-9 ]
+
+Examples: "A0" or "B3"
+
+MAC
+===
+
+An EUI-48 Mac address can be stored as hexadecimal value. If the MAC address is
+not written, the field will be filled with 0x0. In many products the MAC will be
+used as the serial number.
 
 Checksum
 ========
 
-Checksum in field 31 is CRC8 (ITU-T) calculated over bytes 0–30. Software should recalculate it and verify after EEPROM read.
+Checksum in field 31 is CRC8 (ITU-T) calculated over bytes 0–30. Software should
+recalculate it and verify after EEPROM read.
 
 API Version 3
 *************
 
-To overcome size limitations in API v2, API v3 introduces an extensible format with linked block structures.
+To overcome size limitations in API v2, API v3 introduces an extensible format
+with linked block structures.
 
 Goals:
 
