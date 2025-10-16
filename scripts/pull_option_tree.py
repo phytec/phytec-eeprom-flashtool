@@ -11,10 +11,17 @@ from datetime import datetime
 import logging
 from pathlib import Path
 import sys
+import os
 
 import requests
 import yaml
 
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, parent_dir)
+
+#pylint: disable=wrong-import-position
+from phytec_eeprom_flashtool.src.encoding import MAX_KIT_OPTS
+#pylint: enable=wrong-import-position
 
 # global definitions
 URL = "https://phytecphptool.phytec.de/api/v2/optiontree/"
@@ -117,6 +124,8 @@ def parse_option_tree(product_name, revision):
         else:
             bit_index = 0
             opt_index += 1
+    if len(data) > MAX_KIT_OPTS:
+        raise AssertionError(f"Number of options exceeds maximum of {MAX_KIT_OPTS}!" )
     return data, extended_options_count
 
 
