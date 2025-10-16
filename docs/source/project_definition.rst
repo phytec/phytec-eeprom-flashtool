@@ -36,15 +36,16 @@ after the ROM-loader. This runs out of the SRAM and can handle only minimal c
 code. So the whole system is not allowed to be complex. Typical solutions are
 gpio solder jumper, one-wire or i2c eeproms, which we choose.
 
-As a products matures to series production state, bootloaders will be deployed
-in the field and even might not be updatedable. At the least updating the
+As a product matures to series production status, bootloaders will be deployed
+in the field and even might not be updatedable. At the least, updating the
 boootloader is consider risky, mostly not power cut safe, so it is important to
-fix the API revision for a product, as soon it is in production.
+fixate the API revision for a product, as soon it is in production.
 
-If we have a MAC address written it needs to be used by the bootloader and the
-kernel. If we do not have a MAC address written, the bootloader should take the
-SoC MAC address from the vendor. If there is none, it should take the one stored
-in the PHY-Eeprom.
+If we have a MAC address written in the EEPROM, it needs to be used by the
+bootloader and the kernel as the device MAC address. If we do not have a MAC
+written, the bootloader should take the MAC provided from another product
+specific source. This could either be the SoC fuses, the Ethernet PHY's attached
+EEPROM or something else.
 
 Bootloader security consideration
 =================================
