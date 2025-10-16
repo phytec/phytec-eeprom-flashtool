@@ -41,6 +41,11 @@ in the field and even might not be updatedable. At the least updating the
 boootloader is consider risky, mostly not power cut safe, so it is important to
 fix the API revision for a product, as soon it is in production.
 
+If we have a MAC address written it needs to be used by the bootloader and the
+kernel. If we do not have a MAC address written, the bootloader should take the
+SoC MAC address from the vendor. If there is none, it should take the one stored
+in the PHY-Eeprom.
+
 Bootloader security consideration
 =================================
 
@@ -81,8 +86,12 @@ During manufacturing the blob will be read from the BOM-Database and flashed
 using JTAG before the first boot. As usually RAM detection is implemented, we do
 not need a special production bootloader with this process.
 
-If we need to program a serial number or a MAC address, this will be done in the
-last step and usually from within a booted system, either bootloader or linux.
+There are also rules regading the MAC address. Some products requring a MAC as a
+serial number, some products use the SoC Vendors MAC address, some require the
+customer to write custom MAC address ranges. If we need to program a serial
+number or a MAC address, this will be done in the last step and usually from
+within a booted system, either bootloader or linux. If we do not write a MAC, we
+write zeros.
 
 Working with the introspection data
 ===================================

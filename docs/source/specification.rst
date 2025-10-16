@@ -63,6 +63,13 @@ It introduces a fixed 32-byte data structure containing key product metadata. Al
      - 1
      - Checksum/bits set in previous bytes
 
+MAC address
+===========
+
+The MAC address is always optional. If none is written, we write zeros. If a
+product or a customer requires a MAC, we need to define this on a customer or
+product basis.
+
 bs - Checksum
 =============
 For AM57x The checksum has never be implemented in API v0 and can be ignored.
@@ -122,6 +129,13 @@ API v1 is actively used only on the phyCORE-AM57x (PCM-057). EEPROM Tool support
      - hw8
      - 1
      - Checksum/bits set in previous bytes
+
+MAC address
+===========
+
+The MAC address is always optional. If none is written, we write zeros. If a
+product or a customer requires a MAC, we need to define this on a customer or
+product basis.
 
 hw8 - Checksum
 ==============
