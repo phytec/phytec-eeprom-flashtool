@@ -12,7 +12,7 @@ API Version 0
 
 API v0 has been the first implementation of introspection data and is not used on any product any more. EEPROM Tool support is available in the branch "release/pcm-057_am57x_api_v0"
 
-It introduces a fixed 32-byte data structure containing key product metadata. All fields are composed of unsigned characters or character arrays.
+It introduces a fixed 32-byte data structure containing key product metadata. All fields are composed of unsigned characters or character arrays, byte ordered.
 
 .. list-table:: API v0 EEPROM Layout
    :widths: 10 25 10 55
@@ -25,11 +25,11 @@ It introduces a fixed 32-byte data structure containing key product metadata. Al
    * - 0
      - header
      - 4
-     - PHYTEC EEPROM header identifier: 0x07052017
+     - PHYTEC EEPROM header identifier
    * - 4
      - api_version
      - 1
-     - EEPROM layout API version
+     - EEPROM layout API version, always `0`
    * - 5
      - mod_version
      - 1
@@ -63,12 +63,19 @@ It introduces a fixed 32-byte data structure containing key product metadata. Al
      - 1
      - Checksum/bits set in previous bytes
 
+Header
+======
+
+As a header identifier, we write the integer date `0x07052017`. This is done
+in litte endian byte ording. This is the only exception to other byte ordered
+data.
+
 MAC address
 ===========
 
 The MAC address is always optional. If none is written, we write zeros. If a
 product or a customer requires a MAC, we need to define this on a customer or
-product basis.
+product basis. It is stored byte ordered.
 
 bs - Checksum
 =============
@@ -100,7 +107,7 @@ API v1 is actively used only on the phyCORE-AM57x (PCM-057). EEPROM Tool support
    * - 0
      - api_version
      - 1
-     - EEPROM layout API version
+     - EEPROM layout API version, always `1`
    * - 1
      - som_pcb_rev
      - 1
