@@ -251,11 +251,10 @@ def struct_to_eeprom_data(eeprom_struct: bytes, yml_parser: YmlParser) -> Eeprom
     eeprom_data.base_article_number = unpacked[4]
     eeprom_data.ksp_number = unpacked[5]
     if yml_parser is not None:
-        #This will not be read when yml_parser is not set
+        # This will not be read when yml_parser is not set
         eeprom_data.bom_rev = unpacked[7].decode('utf-8')
         eeprom_data.crc8 = unpacked[8]
         eeprom_data.kit_opt = unpacked[6].decode('utf-8')[:len(yml_parser['Kit'])]
-
     eeprom_data.sub_revisions = format(eeprom_data.sub_revisions, '08b')
     eeprom_data.pcb_sub_revision = eeprom_data.sub_revisions[4:]
     eeprom_data.opttree_revision = format(int(eeprom_data.sub_revisions[:4], 2), '04b')
@@ -314,12 +313,15 @@ def print_eeprom_data(eeprom_data: EepromData):
             kit_opt_length = len(kit_opt) + 1
     for index, kit_opt in eeprom_data.yml_parser['Kit'].items():
         option = eeprom_data.kit_opt[int(index)]
+        if option == '\x00':
+            option = "0"
         kit_options_verbose.append(f"{kit_opt.ljust(kit_opt_length)}:  " \
                                    f"{eeprom_data.yml_parser[kit_opt][option]}")
 
+    kit_opt_string = eeprom_data.kit_opt.replace('\x00','#')
     extended_options = int(eeprom_data.yml_parser['PHYTEC'].get('extended_options', 0))
-    opts = eeprom_data.kit_opt[:-extended_options] if extended_options else eeprom_data.kit_opt
-    ext_opts = eeprom_data.kit_opt[-extended_options:] if extended_options else ""
+    opts = kit_opt_string[:-extended_options] if extended_options else kit_opt_string
+    ext_opts = kit_opt_string[-extended_options:] if extended_options else ""
 
     output = f"""EEPROM Content
 ##############

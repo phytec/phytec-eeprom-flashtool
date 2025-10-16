@@ -6,3 +6,6 @@
 
 [TYPECHECK]
 ignored-modules=yaml,crc8
+
+[DESIGN]
+max-locals = 16
