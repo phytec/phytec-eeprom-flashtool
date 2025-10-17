@@ -9,17 +9,23 @@ import sys
 from .common import str_to_revision
 from .common import sub_revision_to_str
 from .common import crc8_checksum_calc
+from .common import hw8_checksum_calc
 from .blocks import API_V3_SUB_VERSION
 from .blocks import EepromV3BlockInterface
 from .blocks import unpack_block
 
 MAX_KIT_OPTS = 17
+# 1 uchar for the API version
+ENCODING_API_VERSION = "<1B"
+# 2 uchars, 2-len pad, 21-len str, 6-len pad, 1 uchar
+ENCODING_API1 = "<2B2x21s6xB"
 # 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
 ENCODING_API2 = "<6B17s2s6xB"
 # 1 ushort, 2 uchars, 3 reserved, 1 uchar
 ENCODING_API3_DATA_HEADER = "<1H2B3x1B"
 
 # All values in bytes
+EEPROM_V1_SIZE = 32
 EEPROM_V2_SIZE = 32
 EEPROM_V3_DATA_HEADER_SIZE = 8
 # Relative address inside the v3 data payload
@@ -92,6 +98,7 @@ class EepromData:
     kit_opt: str
     bom_rev: str
     crc8: int
+    hw8: int
     ksp_number: int = 0
     option_id: str = ""
     # API v3 content
@@ -100,6 +107,10 @@ class EepromData:
     v3_payload_length: int = 0
     v3_block_count: int = 0  # only required to unpack blocks. Use length of blocks.
     v3_next_block_address: int = EEPROM_V3_DATA_PAYLOAD_START
+
+    def is_v1(self) -> bool:
+        """Returns a boolean whether the EEPROM data are API v1 or not."""
+        return self.api_version == 1
 
     def is_v3(self) -> bool:
         """Returns a boolean whether the EEPROM data are API v3 or not."""
@@ -189,6 +200,27 @@ def get_eeprom_data(args, yml_parser: YmlParser) -> EepromData:
 
 def eeprom_data_to_struct(eeprom_data: EepromData) -> bytes:
     """Pack the EEPROM data into a string."""
+    if eeprom_data.is_v1():
+        if eeprom_data.som_type.is_ksp():
+            # KSP numbers require 4 integer digits but v1 has only one byte allocated.
+            # We don't have standalone KSM products.
+            sys.exit("This API v1 implementation does not support KSPs anymore!")
+
+        kit_opt_full = f"{eeprom_data.kit_opt}{eeprom_data.bom_rev}"
+        kit_opt_full = kit_opt_full + '\0' * (21 - len(kit_opt_full))
+        eeprom_struct = struct.pack(
+            ENCODING_API1,
+            eeprom_data.api_version,
+            eeprom_data.pcb_revision,
+            bytes(kit_opt_full, 'utf-8'),
+            0  # CRC8
+        )
+        eeprom_data.crc8 = crc8_checksum_calc(eeprom_struct[:-1])
+        eeprom_data.hw8 = hw8_checksum_calc(eeprom_struct[:-1])
+        eeprom_struct = eeprom_struct[:-1] + struct.pack('B', eeprom_data.hw8)
+
+        return eeprom_struct
+
     kit_opt_full = eeprom_data.kit_opt + '\0' * (MAX_KIT_OPTS - len(eeprom_data.kit_opt))
     if len(kit_opt_full) > MAX_KIT_OPTS:
         raise AssertionError(f"Number of options exceeds maximum of {MAX_KIT_OPTS}")
@@ -205,6 +237,7 @@ def eeprom_data_to_struct(eeprom_data: EepromData) -> bytes:
         0  # CRC8
     )
     eeprom_data.crc8 = crc8_checksum_calc(eeprom_struct[:-1])
+    eeprom_data.hw8 = 0
     eeprom_struct = eeprom_struct[:-1] + struct.pack('B', eeprom_data.crc8)
 
     if eeprom_data.is_v3():
@@ -240,10 +273,46 @@ def eeprom_data_to_blocks(eeprom_data: EepromData) -> bytes:
 
 def struct_to_eeprom_data(eeprom_struct: bytes, yml_parser: YmlParser) -> EepromData:
     """Unpack the EEPROM struct."""
-    unpacked = struct.unpack(ENCODING_API2, eeprom_struct[:EEPROM_V2_SIZE])
+    api_version = int(struct.unpack(ENCODING_API_VERSION, eeprom_struct[:1])[0])
+    if api_version >= 2:
+        return struct_to_eeprom_data_v2(eeprom_struct, yml_parser)
+    return struct_to_eeprom_data_v1(eeprom_struct, yml_parser)
 
+
+def struct_to_eeprom_data_v1(eeprom_struct: bytes, yml_parser: YmlParser) -> EepromData:
+    """Unpack the EEPROM struct with API v1. Only the PCM-057 uses v1."""
+    unpacked = struct.unpack(ENCODING_API1, eeprom_struct[:EEPROM_V1_SIZE])
+
+    if hw8_checksum_calc(eeprom_struct[:EEPROM_V2_SIZE - 1]) != int(unpacked[3]):
+        raise AssertionError("Checksum mismatch in the first 32 bytes!")
+
+    eeprom_data = EepromData(yml_parser)
+    eeprom_data.api_version = unpacked[0]
+    eeprom_data.pcb_revision = unpacked[1]
+    eeprom_data.som_type = ComponentType.PCM
+    # Only PCM-057 is using API v1
+    eeprom_data.base_article_number = 57
+    # No KSP support
+    eeprom_data.ksp_number = 0
+    if yml_parser is not None:
+        #This will not be read when yml_parser is not set
+        full_kit_opt = unpacked[2].decode('utf-8')
+        eeprom_data.bom_rev = full_kit_opt[len(yml_parser['Kit']):len(yml_parser['Kit'])+2]
+        eeprom_data.kit_opt = full_kit_opt[:len(yml_parser['Kit'])]
+        eeprom_data.crc8 = crc8_checksum_calc(eeprom_struct[:EEPROM_V2_SIZE - 1])
+        eeprom_data.hw8 = int(unpacked[3])
+
+    eeprom_data.pcb_sub_revision = "0"
+    eeprom_data.opttree_revision = "0"
+    return eeprom_data
+
+
+def struct_to_eeprom_data_v2(eeprom_struct: bytes, yml_parser: YmlParser) -> EepromData:
+    """Unpack the EEPROM struct with API v2 or higher layout."""
     if crc8_checksum_calc(eeprom_struct[:EEPROM_V2_SIZE]):
-        raise AssertionError("API v2 crc8 mismatch!")
+        raise AssertionError("Checksum mismatch in the first 32 bytes!")
+
+    unpacked = struct.unpack(ENCODING_API2, eeprom_struct[:EEPROM_V2_SIZE])
 
     eeprom_data = EepromData(yml_parser)
     eeprom_data.api_version = unpacked[0]
@@ -256,6 +325,7 @@ def struct_to_eeprom_data(eeprom_struct: bytes, yml_parser: YmlParser) -> Eeprom
         # This will not be read when yml_parser is not set
         eeprom_data.bom_rev = unpacked[7].decode('utf-8')
         eeprom_data.crc8 = unpacked[8]
+        eeprom_data.hw8 = 0
         eeprom_data.kit_opt = unpacked[6].decode('utf-8')[:len(yml_parser['Kit'])]
     eeprom_data.sub_revisions = format(eeprom_data.sub_revisions, '08b')
     eeprom_data.pcb_sub_revision = eeprom_data.sub_revisions[4:]
@@ -323,7 +393,7 @@ def print_eeprom_data(eeprom_data: EepromData):
     kit_opt_string = eeprom_data.kit_opt.replace('\x00','#')
     extended_options = int(eeprom_data.yml_parser['PHYTEC'].get('extended_options', 0))
     opts = kit_opt_string[:-extended_options] if extended_options else kit_opt_string
-    ext_opts = kit_opt_string[-extended_options:] if extended_options else ""
+    ext_opts = kit_opt_string[-extended_options:] if extended_options else "-"
 
     output = f"""EEPROM Content
 ##############

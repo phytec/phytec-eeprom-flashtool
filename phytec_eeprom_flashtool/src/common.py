@@ -37,3 +37,8 @@ def crc8_checksum_calc(eeprom_struct: bytes) -> int:
     hash_.update(eeprom_struct)
     crc8_sum = hash_.hexdigest()
     return int(crc8_sum, 16)
+
+
+def hw8_checksum_calc(eeprom_struct: bytes) -> int:
+    """Calculates the total number of bits set to 1 in the given EEPROM data."""
+    return sum(bin(field).count("1") for field in eeprom_struct)
