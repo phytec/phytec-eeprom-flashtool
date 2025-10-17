@@ -42,7 +42,7 @@ def read(test_data, command):
         assert result.returncode == 1
         output = result.stderr.decode('utf-8').split('\n')
         output = [s.strip() for s in output]
-        assert "AssertionError: API v2 crc8 mismatch!" in output
+        assert "AssertionError: Checksum mismatch in the first 32 bytes!" in output
     else:
         assert result.returncode == 0
         output = result.stdout.decode('utf-8').split('\n')

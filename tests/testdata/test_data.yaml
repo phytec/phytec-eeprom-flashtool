@@ -12,6 +12,21 @@ Output_strings:
 
 Test_data:
  -
+  file_name: 'PCM-057-40201111I.A1_50_0'
+  data:
+   full_name: 'PCM-057-40201111I.A1'
+   pcb_revision: '5'
+   api_version: 1
+   optiontree_revision: 0
+   som_type: 'PCM'
+   base_article_number: 57
+   ksp_number: "-"
+   option: '40201111I'
+   ext_option: '-'
+   crc: "e3"
+  read_args: '-som PCM-057'
+  create_args: '-som PCM-057 -kit 40201111I -bom A1 -pcb 5'
+ -
   file_name: 'PCL-069-1011011I-0.A3_3a_0'
   data:
    full_name: 'PCL-069-1011011I.A3'
