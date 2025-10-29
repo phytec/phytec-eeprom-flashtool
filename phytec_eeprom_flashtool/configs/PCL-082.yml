@@ -21,7 +21,7 @@ Kit:
   6: Ethernet
   7: Temperature Sensor / RTC
   8: Temperature
-  9: Additional Voltage Supply Feature (Monoflop) / eFuse
+  9: IO Voltage (VCC_IO) / Additional Voltage Supply Feature (Monoflop) / eFuse
 Processor:
   '1': Single Core
   '2': Dual Core
@@ -58,8 +58,12 @@ Temperature:
   A: Automotive Temp
   C: Consumer Temp
   I: Industrial Temp
-Additional Voltage Supply Feature (Monoflop) / eFuse:
-  '0': powercycle on reset / not programmable
-  '1': powercycle on reset / programmable in field
-  '2': no powercycle on reset / not programmable
-  '3': no powercycle on reset / programmable in field
+IO Voltage (VCC_IO) / Additional Voltage Supply Feature (Monoflop) / eFuse:
+  '0': 1.8 V / powercycle on reset / not programmable
+  '1': 1.8 V / powercycle on reset / programmable in field
+  '2': 1.8 V / no powercycle on reset / not programmable
+  '3': 1.8 V / no powercycle on reset / programmable in field
+  '4': 3.3 V / powercycle on reset / not programmable
+  '5': 3.3 V / powercycle on reset / programmable in field
+  '6': 3.3 V / no powercycle on reset / not programmable
+  '7': 3.3 V / no powercycle on reset / programmable in field
