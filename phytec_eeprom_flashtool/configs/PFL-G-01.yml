@@ -1,0 +1,79 @@
+---
+# PHYTEC EEPROM Flashtool Config File
+# product: PFL-G-01 / phyFLEX-i.MX8 MP FPSC
+# Copyright (C) 2025 PHYTEC
+
+PHYTEC:
+  eeprom_offset: 0x0
+  i2c_bus: 0x0
+  i2c_dev: 0x51
+  api: 3
+  extended_options: 2
+  max_image_size: 2048
+  optiontree_rev: 0
+
+Kit:
+  0: Processor
+  1: Frequency
+  2: CAN FD / VPU / ISP / NPU
+  3: DDR-Ram
+  4: eMMC
+  5: Ethernet
+  6: RTC
+  7: Temperature
+  8: IO Voltage / Temperature Sensor
+  9: EEPROM (User)
+Processor:
+  '0': Quad Core
+  '1': Dual Core
+Frequency:
+  '0': 1.6 GHz
+  '1': 1.8 GHz
+CAN FD / VPU / ISP / NPU:
+  '0': CAN / - / - / -
+  '1': CAN / - / - / NPU
+  '2': CAN / - / ISP / -
+  '3': CAN / - / ISP / NPU
+  '4': CAN / VPU / - / -
+  '5': CAN / VPU / - / NPU
+  '6': CAN / VPU / ISP / -
+  '7': CAN / VPU / ISP / NPU
+  '8': CAN-FD / - / - / -
+  '9': CAN-FD / - / - / NPU
+  A: CAN-FD / - / ISP / -
+  B: CAN-FD / - / ISP / NPU
+  C: CAN-FD / VPU / - / -
+  D: CAN-FD / VPU / - / NPU
+  E: CAN-FD / VPU / ISP / -
+  F: CAN-FD / VPU / ISP / NPU
+DDR-Ram:
+  '0': 1 GB
+  '1': 2 GB
+  '2': 4 GB
+  '3': 8 GB
+eMMC:
+  '0': 4 GB (MLC)
+  '1': 8 GB (MLC)
+  '2': 16 GB (MLC)
+  '3': 32 GB (TLC)
+  '4': 64 GB (TLC)
+  '5': 128 GB (TLC)
+  '6': 256 GB (TLC)
+Ethernet:
+  '0': '-'
+  '1': Gbit Ethernet Phy
+RTC:
+  '0': External RTC
+  '1': '-'
+Temperature:
+  C: Consumer Temp
+  I: Industrial Temp
+IO Voltage / Temperature Sensor:
+  '0': 1.8 V / -
+  '1': 1.8 V / Temperature Sensor
+  '2': 3.3 V / -
+  '3': 3.3 V / Temperature Sensor
+EEPROM (User):
+  '0': 4 kB
+  '1': '-'
+  '2': 32 kB
