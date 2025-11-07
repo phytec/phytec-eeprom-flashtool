@@ -1,0 +1,102 @@
+---
+# PHYTEC EEPROM Flashtool Config File
+# product: PFL-G-05 / phyFLEX-i.MX 93/91 FPSC
+# Copyright (C) 2025 PHYTEC
+
+PHYTEC:
+  eeprom_offset: 0x0
+  i2c_bus: 0x2
+  i2c_dev: 0x50
+  api: 3
+  extended_options: 4
+  max_image_size: 2048
+  optiontree_rev: 0
+
+Kit:
+  0: DDR-Ram
+  1: eMMC
+  2: Processor
+  3: Frequency
+  4: NPU
+  5: Ethernet
+  6: Temperature Sensor / Clock source (32 kHz) / RTC
+  7: Temperature
+  8: Boot Mode
+  9: IO Voltage
+  10: Flash High Speed Mode / EEPROM (Factory) / LED
+  11: EEPROM (User)
+DDR-Ram:
+  '0': 512 MB LPDDR4X
+  '1': 1 GB LPDDR4X
+  '2': 2 GB LPDDR4X
+  '3': 512 MB LPDDR4
+  '4': 1 GB LPDDR4
+  '5': 2 GB LPDDR4
+eMMC:
+  '0': '-'
+  '1': 8 GB (MLC)
+  '2': 16 GB (MLC)
+  '3': 32 GB (TLC)
+  '4': 64 GB (TLC)
+  '5': 128 GB (TLC)
+  '6': 256 GB (TLC)
+Processor:
+  '0': Single Core i.MX91
+  '1': Single Core i.MX93
+  '2': Dual Core i.MX93
+Frequency:
+  '0': 800 MHz
+  '1': 900 MHz
+  '2': 1.4 GHz
+  '3': 1.7 GHz
+NPU:
+  '0': '-'
+  '1': NPU
+  '2': reduced NPU
+Ethernet:
+  '0': '-'
+  '1': Gbit Ethernet Phy
+Temperature Sensor / Clock source (32 kHz) / RTC:
+  '0': '- / 32 kHz internal PMIC CLK / -'
+  '1': '- / 32 kHz internal PMIC CLK / External RTC'
+  '2': '- / 32.768 external crystal / -'
+  '3': '- / 32.768 external crystal / External RTC'
+  '4': Temperature Sensor / 32 kHz internal PMIC CLK / -
+  '5': Temperature Sensor / 32 kHz internal PMIC CLK / External RTC
+  '6': Temperature Sensor / 32.768 external crystal / -
+  '7': Temperature Sensor / 32.768 external crystal / External RTC
+Temperature:
+  C: Consumer Temp
+  E: Extended Industrial
+  I: Industrial Temp
+Boot Mode:
+  '0': eMMC (A55)
+  '1': Fuses (A55)
+  '2': Serial Downloader (A55)
+  '3': SD-Card (A55)
+  '4': Fuses (M33)
+  '5': Serial Downloader (M33)
+  '6': eMMC (M33)
+  '7': SD-Card (M33)
+IO Voltage:
+  '0': 1.8 V (WAKEUP:1.8V,AON:1.8V,GPIO:1.8V)
+  '1': Mixed (WAKEUP:1.8V,AON:1.8V,GPIO:3.3V)
+  '2': Mixed (WAKEUP:1.8V,AON:3.3V,GPIO:1.8V)
+  '3': Mixed (WAKEUP:1.8V,AON:3.3V,GPIO:3.3V)
+  '4': Mixed (WAKEUP:3.3V,AON:1.8V,GPIO:1.8V)
+  '5': Mixed (WAKEUP:3.3V,AON:1.8V,GPIO:3.3V)
+  '6': Mixed (WAKEUP:3.3V,AON:3.3V,GPIO:1.8V)
+  '7': 3.3 V (WAKEUP:3.3V,AON:3.3V,GPIO:3.3V)
+Flash High Speed Mode / EEPROM (Factory) / LED:
+  '0': SD1_STROBE -> EMMC / 4 kB / Green LED
+  '2': SD1_STROBE -> EMMC / 4 kB / -
+  '4': SD1_STROBE -> EMMC / - / Green LED
+  '6': SD1_STROBE -> EMMC / - / -
+  '8': SD1_STROBE -> QSPI / 4 kB / Green LED
+  A: SD1_STROBE -> QSPI / 4 kB / -
+  C: SD1_STROBE -> QSPI / - / Green LED
+  E: SD1_STROBE -> QSPI / - / -
+EEPROM (User):
+  '0': 4 kB
+  '1': '-'
+  '2': 32 kB
