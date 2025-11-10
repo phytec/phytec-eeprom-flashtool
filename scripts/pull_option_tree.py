@@ -11,17 +11,9 @@ from datetime import datetime
 import logging
 from pathlib import Path
 import sys
-import os
 
 import requests
 import yaml
-
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.insert(0, parent_dir)
-
-#pylint: disable=wrong-import-position
-from phytec_eeprom_flashtool.src.encoding import MAX_KIT_OPTS
-#pylint: enable=wrong-import-position
 
 # global definitions
 URL = "https://phytecphptool.phytec.de/api/v2/optiontree/"
@@ -29,6 +21,14 @@ URL = "https://phytecphptool.phytec.de/api/v2/optiontree/"
 #################################
 # Operations on the Option Tree #
 #################################
+
+def get_max_option_count() -> int:
+    """Returns the maximum allowed number of product options."""
+    config_path = Path(__file__).parent.parent / 'phytec_eeprom_flashtool/constants.yml'
+    with open(config_path, 'r', encoding='UTF-8') as config_file:
+        config = yaml.safe_load(config_file)
+        return config['MAX_OPTION_COUNT']
+
 
 def load_data(url):
     """Loads json data from url"""
@@ -50,10 +50,13 @@ def load_data(url):
         sys.exit(1)
 
     return resp_dict
+
+
 def load_option_tree_revision(product_name):
     """Gets the most recent revision form our webservice"""
     resp = load_data(URL + product_name + "/revisions")
     return int(resp["ActiveRevision"])
+
 
 def load_option_tree(product_name, revision = None):
     """Load the most recent option tree from our webservice, or if specified a specific revision."""
@@ -124,8 +127,9 @@ def parse_option_tree(product_name, revision):
         else:
             bit_index = 0
             opt_index += 1
-    if len(data) > MAX_KIT_OPTS:
-        raise AssertionError(f"Number of options exceeds maximum of {MAX_KIT_OPTS}!" )
+    max_kit_opts = get_max_option_count()
+    if len(data) > max_kit_opts:
+        raise AssertionError(f"Number of options exceeds maximum of {max_kit_opts}!" )
     return data, extended_options_count
 
 

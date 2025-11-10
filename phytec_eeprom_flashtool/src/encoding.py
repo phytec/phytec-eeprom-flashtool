@@ -10,11 +10,11 @@ from .common import str_to_revision
 from .common import sub_revision_to_str
 from .common import crc8_checksum_calc
 from .common import hw8_checksum_calc
+from .common import get_max_option_count
 from .blocks import API_V3_SUB_VERSION
 from .blocks import EepromV3BlockInterface
 from .blocks import unpack_block
 
-MAX_KIT_OPTS = 17
 # 1 uchar for the API version
 ENCODING_API_VERSION = "<1B"
 # 2 uchars, 2-len pad, 21-len str, 6-len pad, 1 uchar
@@ -221,9 +221,10 @@ def eeprom_data_to_struct(eeprom_data: EepromData) -> bytes:
 
         return eeprom_struct
 
-    kit_opt_full = eeprom_data.kit_opt + '\0' * (MAX_KIT_OPTS - len(eeprom_data.kit_opt))
-    if len(kit_opt_full) > MAX_KIT_OPTS:
-        raise AssertionError(f"Number of options exceeds maximum of {MAX_KIT_OPTS}")
+    max_kit_opts = get_max_option_count()
+    kit_opt_full = eeprom_data.kit_opt + '\0' * (max_kit_opts - len(eeprom_data.kit_opt))
+    if len(kit_opt_full) > max_kit_opts:
+        raise AssertionError(f"Number of options exceeds maximum of {max_kit_opts}")
     eeprom_struct = struct.pack(
         ENCODING_API2,
         eeprom_data.api_version,

@@ -1,7 +1,9 @@
 """Module with common functions."""
 import re
+from pathlib import Path
 from typing import Union, Tuple
 import crc8  # type: ignore
+import yaml
 
 REV_A_OFFSET = ord('a') - 1
 
@@ -42,3 +44,11 @@ def crc8_checksum_calc(eeprom_struct: bytes) -> int:
 def hw8_checksum_calc(eeprom_struct: bytes) -> int:
     """Calculates the total number of bits set to 1 in the given EEPROM data."""
     return sum(bin(field).count("1") for field in eeprom_struct)
+
+
+def get_max_option_count() -> int:
+    """Returns the maximum allowed number of product options."""
+    config_path = Path(__file__).parent.parent / 'constants.yml'
+    with open(config_path, 'r', encoding='UTF-8') as config_file:
+        config = yaml.safe_load(config_file)
+        return config['MAX_OPTION_COUNT']
