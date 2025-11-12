@@ -76,7 +76,7 @@ def eeprom_read(yml_parser: YmlParser, size: int, offset: int = 0) -> bytes:
         with open(eeprom_bus, 'rb') as eeprom_file:
             eeprom_file.seek(offset)
             eeprom_data = eeprom_file.read(size)
-    except IOError as err:
+    except OSError as err:
         sys.exit(str(err))
     return bytes(eeprom_data)
 
@@ -90,7 +90,7 @@ def eeprom_write(yml_parser: YmlParser, content: bytes, offset: int = 0):
             eeprom_file.seek(offset)
             eeprom_file.write(content)
             eeprom_file.flush()
-    except IOError as err:
+    except OSError as err:
         sys.exit(str(err))
 
 
@@ -100,7 +100,7 @@ def binary_read(binary_file: str, size: int, offset: int = 0) -> bytes:
         with open(Path(binary_file).resolve(), 'rb') as eeprom_file:
             eeprom_file.seek(offset)
             eeprom_data = eeprom_file.read(size)
-    except IOError as err:
+    except OSError as err:
         sys.exit(str(err))
     return bytes(eeprom_data)
 
@@ -115,7 +115,7 @@ def binary_write(args, eeprom_fake_data: EepromData, content: bytes, offset: int
         with open(binary_file, 'wb') as eeprom_file:
             eeprom_file.seek(offset)
             eeprom_file.write(content)
-    except IOError as err:
+    except OSError as err:
         sys.exit(str(err))
 
 
@@ -124,7 +124,7 @@ def get_product_name():
     if not PRODUCT_NAME_FILE.exists():
         return (False, "")
 
-    with open(PRODUCT_NAME_FILE, 'r', encoding='UTF-8') as f:
+    with open(PRODUCT_NAME_FILE, encoding='UTF-8') as f:
         product_name = f.read().rstrip('\x00')
 
     return (True, str(product_name))
@@ -152,8 +152,8 @@ def get_yml_parser(args) -> dict:
         yml_file = YML_DIR / f"{args.som}.yml"
 
     try:
-        with open(yml_file, 'r', encoding='UTF-8') as config_file:
+        with open(yml_file, encoding='UTF-8') as config_file:
             return yaml.safe_load(config_file)
-    except IOError as err:
+    except OSError as err:
         sys.exit(str(err))
     raise SystemExit(f"Unable to open {yml_path}")

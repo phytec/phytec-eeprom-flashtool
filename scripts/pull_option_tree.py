@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-
+#
 # SPDX-FileCopyrightText: 2025 PHYTEC
 #
 # SPDX-License-Identifier: MIT
-
-# -*- coding: utf-8 -*-
 
 """
 The programs pulls a product option tree from the business logic server and stores it as an
@@ -77,7 +75,7 @@ def config_has_extended_option_keyword(product_name):
                 f"{product_name}.yml"
     if not yaml_file.is_file():
         return True
-    with open(yaml_file, 'r', encoding="utf-8") as file:
+    with open(yaml_file, encoding="utf-8") as file:
         try:
             config = yaml.safe_load(file)
             if not 'PHYTEC' in config:
@@ -236,10 +234,8 @@ def write_option_tree(product_name):
 
 
 def main(): # pylint: disable=missing-function-docstring
-    # check if we run python >= 3.6
-    if sys.version_info < (3, 6):
-        print("Error: This script requires Python 3.6 or higher, as it relies on " \
-              "deterministic ordering of dict elements.")
+    if sys.version_info < (3, 10):  # noqa: UP036
+        print("Error: This script requires Python 3.10 or higher.")
         sys.exit(1)
 
     parser = argparse.ArgumentParser(description='Config Sync Tool')

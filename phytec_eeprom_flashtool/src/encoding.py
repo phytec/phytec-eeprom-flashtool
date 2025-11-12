@@ -4,7 +4,6 @@
 
 """Module to handle the en- and decoding of the EEPROM data."""
 #pylint: disable=import-error
-from typing import Dict
 from dataclasses import dataclass
 from enum import Enum
 import struct
@@ -35,7 +34,7 @@ EEPROM_V3_DATA_HEADER_SIZE = 8
 # Relative address inside the v3 data payload
 EEPROM_V3_DATA_PAYLOAD_START = 0
 
-YmlParser = Dict[str, Dict[str, str]]
+YmlParser = dict[str, dict[str, str]]
 
 
 PFL_MAPPING = {
@@ -277,7 +276,7 @@ def eeprom_data_to_data_header(eeprom_data: EepromData) -> bytes:
 
 def eeprom_data_to_blocks(eeprom_data: EepromData) -> bytes:
     """Pack all EEPROM blocks."""
-    eeprom_blocks = bytes()
+    eeprom_blocks = b""
     next_block_address = EEPROM_V3_DATA_PAYLOAD_START
     for block in eeprom_data.blocks:
         next_block_address += block.length

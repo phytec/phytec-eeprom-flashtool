@@ -24,7 +24,7 @@ def pytest_generate_tests(metafunc):
 def get_test_data(test_data):
     yml_file = os.path.join(TESTDATA_PATH, test_data)
 
-    with open(yml_file, 'r') as config_file:
+    with open(yml_file) as config_file:
         yml_parser = yaml.safe_load(config_file)
     pytest.OUTPUT_STRINGS = yml_parser['Output_strings']
     return yml_parser['Test_data']
@@ -41,7 +41,7 @@ def read(test_data, command):
     file = os.path.join(TESTDATA_PATH, test_data['file_name'])
     command = command + ['-file', file]
     print(command)
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result = subprocess.run(command, capture_output=True)
     if file.endswith("_bad_crc"):
         assert result.returncode == 1
         output = result.stderr.decode('utf-8').split('\n')

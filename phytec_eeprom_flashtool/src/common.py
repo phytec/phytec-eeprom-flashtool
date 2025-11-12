@@ -5,14 +5,13 @@
 """Module with common functions."""
 import re
 from pathlib import Path
-from typing import Union, Tuple
 import crc8  # type: ignore
 import yaml
 
 REV_A_OFFSET = ord('a') - 1
 
 
-def str_to_revision(revision_str: str) -> Tuple[int, str]:
+def str_to_revision(revision_str: str) -> tuple[int, str]:
     """Converts a string into a tuple of revision and sub revision."""
     rev_digits = len(revision_str)
     rev_digits_re = re.search(r'[^0-9]', revision_str)
@@ -27,7 +26,7 @@ def str_to_revision(revision_str: str) -> Tuple[int, str]:
     return revision, format(sub_revision, '04b')
 
 
-def sub_revision_to_str(sub_revision: Union[int, str]) -> str:
+def sub_revision_to_str(sub_revision: int | str) -> str:
     """Converts a sub revision into a string."""
     if int(sub_revision) <= 0:
         return "0"
