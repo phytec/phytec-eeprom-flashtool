@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+
 import pytest
 from phytec_eeprom_flashtool.src.common import str_to_revision
 from phytec_eeprom_flashtool.src.common import sub_revision_to_str

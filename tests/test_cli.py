@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+
 """Tests for the cli calls"""
 import subprocess
 

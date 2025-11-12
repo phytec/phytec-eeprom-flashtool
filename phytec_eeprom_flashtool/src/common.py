@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+
 """Module with common functions."""
 import re
 from pathlib import Path

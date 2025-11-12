@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+
 """Module to handle all blocks."""
 #pylint: disable=import-error
 from dataclasses import dataclass

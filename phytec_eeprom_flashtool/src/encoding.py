@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+
 """Module to handle the en- and decoding of the EEPROM data."""
 #pylint: disable=import-error
 from typing import Dict

@@ -1,7 +1,10 @@
 ---
-# PHYTEC EEPROM Flashtool Config File
-# product: PCL-069 / phyCORE-i.MX8 MM
 # Copyright (C) 2020-2025 PHYTEC
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+#
+# product: PCL-069 / phyCORE-i.MX8 MM
 
 PHYTEC:
   eeprom_offset: 0x0

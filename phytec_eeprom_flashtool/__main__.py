@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+
 """Main Wrapper"""
 import sys
 from .src.phytec_eeprom_flashtool import main

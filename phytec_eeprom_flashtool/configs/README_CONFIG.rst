@@ -1,3 +1,7 @@
+.. SPDX-FileCopyrightText: 2025 PHYTEC
+..
+.. SPDX-License-Identifier: MIT
+
 A configuration file contains:
 --------------------------------
 

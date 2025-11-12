@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+
 """Module to handle all EEPROM or local disk IO operations."""
 from pathlib import Path
 import sys

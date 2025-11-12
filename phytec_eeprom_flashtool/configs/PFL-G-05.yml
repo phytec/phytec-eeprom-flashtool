@@ -1,7 +1,10 @@
 ---
-# PHYTEC EEPROM Flashtool Config File
-# product: PFL-G-05 / phyFLEX-i.MX 93/91 FPSC
 # Copyright (C) 2025 PHYTEC
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+#
+# product: PFL-G-05 / phyFLEX-i.MX 93/91 FPSC
 
 PHYTEC:
   eeprom_offset: 0x0

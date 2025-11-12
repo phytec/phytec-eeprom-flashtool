@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
+
 # Copyright (C) 2017-2023 PHYTEC America, LLC
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
 """ PHYTEC-EEPROM-FLASHTOOL
 
     The tool is supposed to create, write, read and display the hardware introspection

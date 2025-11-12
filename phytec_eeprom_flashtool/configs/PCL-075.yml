@@ -1,7 +1,10 @@
 ---
-# PHYTEC EEPROM Flashtool Config File
-# product: PCL-075 / phyCORE-AM62Ax
 # Copyright (C) 2019-2025 PHYTEC
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+#
+# product: PCL-075 / phyCORE-AM62Ax
 
 PHYTEC:
   eeprom_offset: 0x0
