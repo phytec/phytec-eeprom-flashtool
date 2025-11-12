@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+
+# This workflow checks for missing license or copyright identifiers
+
+name: Project License Check
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    runs-on: self-hosted-ubuntu-22.04
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: syphar/restore-virtualenv@v1
+      - run: pip install --upgrade pip tox setuptools
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - name: Check Lincese
+        run: |
+          tox -e py-license

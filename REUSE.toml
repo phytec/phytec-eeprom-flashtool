@@ -1,0 +1,31 @@
+version = 1
+
+[[annotations]]
+path = ".gitignore"
+SPDX-FileCopyrightText = "2025 PHYTEC"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ".pylintrc"
+SPDX-FileCopyrightText = "2025 PHYTEC"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ".yamllint"
+SPDX-FileCopyrightText = "2025 PHYTEC"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "docs/*"
+SPDX-FileCopyrightText = "2025 PHYTEC"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "requirements*txt"
+SPDX-FileCopyrightText = "2025 PHYTEC"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "tests/testdata/*"
+SPDX-FileCopyrightText = "2025 PHYTEC"
+SPDX-License-Identifier = "MIT"

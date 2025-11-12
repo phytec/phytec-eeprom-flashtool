@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+# SPDX-FileCopyrightText: 2025 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+
 # -*- coding: utf-8 -*-
 
 """
@@ -191,9 +196,13 @@ def write_option_tree(product_name):
     if not yaml_file.is_file():
         with open(yaml_file, 'w', encoding="utf-8") as file:
             file.write("---\n")
-            file.write("# PHYTEC EEPROM Flashtool Config File\n")
-            file.write(f"# product: {product_name}\n")
             file.write(f"# Copyright (C) {datetime.today().strftime('%Y')} PHYTEC\n")
+            file.write(f"# SPDX-FileCopyrightText: {datetime.today().strftime('%Y')} PHYTEC\n")
+            file.write("#\n")
+            # Split string to prevent reuse detecting this line as license header.
+            file.write("# SPDX-" + "License-Identifier: MIT\n")
+            file.write("#\n")
+            file.write(f"# product: {product_name}\n")
             file.write("\n")
             file.write("PHYTEC:\n")
             file.write("  eeprom_offset: 0x0\n")
