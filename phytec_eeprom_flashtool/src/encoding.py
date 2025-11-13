@@ -304,6 +304,7 @@ def struct_to_eeprom_data_v1(eeprom_struct: bytes, yml_parser: YmlParser) -> Eep
 
     eeprom_data.pcb_sub_revision = "0"
     eeprom_data.opttree_revision = "0"
+    eeprom_data.sub_revisions = "0"
     return eeprom_data
 
 
