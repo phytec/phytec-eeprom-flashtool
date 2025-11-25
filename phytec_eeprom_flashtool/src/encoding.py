@@ -199,6 +199,15 @@ def get_eeprom_data(args, yml_parser: YmlParser) -> EepromData:
     eeprom_data.bom_rev = args.bom
     eeprom_data.kit_opt = args.kit.replace('-', '')
 
+    # Skip option count check when no options passed as argument.
+    if args.kit == "none":
+        return eeprom_data
+
+    if len(eeprom_data.kit_opt) != len(eeprom_data.yml_parser['Kit']):
+        opt_error = f"Passed kit options {eeprom_data.kit_opt} mismatch number of options for " \
+            f"this product: {len(eeprom_data.yml_parser['Kit'])}"
+        raise ValueError(opt_error)
+
     return eeprom_data
 
 
@@ -377,11 +386,6 @@ def print_eeprom_data(eeprom_data: EepromData):
     pcb_rev = str(eeprom_data.pcb_revision)
     if eeprom_data.pcb_sub_revision != "0":
         pcb_rev += eeprom_data.pcb_sub_revision
-
-    if len(eeprom_data.kit_opt) != len(eeprom_data.yml_parser['Kit']):
-        opt_error = f"Passed kit options {eeprom_data.kit_opt} mismatch number of options for " \
-            f"this product: {len(eeprom_data.yml_parser['Kit'])}"
-        raise ValueError(opt_error)
 
     newline = '\n'
     kit_options_verbose = []

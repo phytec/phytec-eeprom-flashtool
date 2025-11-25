@@ -333,7 +333,7 @@ def main(args): # pylint: disable=too-many-statements, too-many-locals
     if hasattr(args, 'func'):
         # Set default values for all subparser without additional arguments.
         if not args.func in (write_som_config, create_binary, display_som_config):
-            args.kit = "0"
+            args.kit = "none"
             args.pcb = "00"
             args.bom = "00"
             args.id = "SP000"
