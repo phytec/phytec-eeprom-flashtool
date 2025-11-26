@@ -36,4 +36,4 @@ jobs:
         tox -e py-test
     - name: Install eeprom-flashtool
       run: |
-        python setup.py install
+        pip install .
