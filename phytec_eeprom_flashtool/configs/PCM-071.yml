@@ -30,8 +30,8 @@ Kit:
   10: IO Voltage VDDSHV_CANUART (J14) / IO Voltage VDDSHV_MCU (J13) / IO Voltage VDDSHV6
     (J12)
 3D Graphics Engine:
-  '3': 'No'
-  '5': 'Yes'
+  '3': '-'
+  '5': GPU
 Processor:
   '1': Single Core
   '2': Dual Core
