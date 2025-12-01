@@ -3,12 +3,12 @@
 .. SPDX-License-Identifier: MIT
 
 Usage
-=====
+#####
 
 This tool provides five core operations along with extended support for managing block-based metadata inside EEPROM chips.
 
 Version
--------
+*******
 
 Print the current version of the tool:
 
@@ -18,7 +18,7 @@ Print the current version of the tool:
    phytec_eeprom_flashtool --version
 
 Read
-----
+****
 
 Reads the product configuration from an EEPROM chip or binary file and prints it to the console.
 
@@ -56,7 +56,7 @@ Reads the product configuration from an EEPROM chip or binary file and prints it
    phytec_eeprom_flashtool read -som PCL-075 -f output/PCL-075-7432CE11I.A0_10_0000
 
 Write
------
+*****
 
 Writes a product configuration to the EEPROM chip.
 
@@ -87,7 +87,7 @@ Writes a product configuration to the EEPROM chip.
    phytec_eeprom_flashtool write -som PCL-066 -ksx KSP24 -kit 3022210I -pcb 1 -bom A0
 
 Create
-------
+******
 
 Generates a binary file with the EEPROM content and prints its configuration. This binary can later be written using `dd` or JTAG.
 
@@ -107,7 +107,7 @@ Generates a binary file with the EEPROM content and prints its configuration. Th
    phytec_eeprom_flashtool create -som PCL-066 -kit 3022210I -pcb 1 -bom A0 -file eeprom.dat
 
 Display
--------
+*******
 
 Prints the product configuration to the console **without accessing the EEPROM**.
 
@@ -123,7 +123,7 @@ Supports all arguments used in the `create` and `write` modes. You can also disp
    phytec_eeprom_flashtool display -som PCL-066 -kit 3022210I -pcb 1 -bom A0 -file eeprom.dat
 
 Blocks
-======
+******
 
 Blocks allow extending EEPROM configurations with additional structured information (e.g., MAC addresses, serial numbers).
 
@@ -133,7 +133,7 @@ Each block operation supports `-som`, `-ksx`, or `-file` to identify the target.
    Writing a block reads the current EEPROM image, appends the block, and writes the updated content back. Removing a block is not supported.
 
 MAC Block
----------
+=========
 
 Adds a MAC address for a specific Ethernet interface.
 
@@ -157,7 +157,7 @@ Adds a MAC address for a specific Ethernet interface.
    phytec_eeprom_flashtool add-mac -som PCM-071 1 00:91:da:dc:1f:c6 -f output/binary_file
 
 Serial Block
-------------
+============
 
 Adds a serial number to the EEPROM configuration. Internally stored as a key-value pair with `serial` as the key.
 
@@ -183,7 +183,7 @@ Adds a serial number to the EEPROM configuration. Internally stored as a key-val
    phytec_eeprom_flashtool add-serial -som PCM-071 C0FFEE
 
 Key-Value Block
----------------
+===============
 
 Adds a generic UTF-8 encoded key-value pair to the EEPROM.
 
