@@ -18,7 +18,12 @@ SPDX-License-Identifier = "MIT"
 [[annotations]]
 path = "docs/*"
 SPDX-FileCopyrightText = "2025 PHYTEC"
-SPDX-License-Identifier = "MIT"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "docs/source/_static/*"
+SPDX-FileCopyrightText = "2025 PHYTEC"
+SPDX-License-Identifier = "LicenseRef-PHYTEC-Commercial-0.1"
 
 [[annotations]]
 path = "requirements*txt"

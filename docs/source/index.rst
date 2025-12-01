@@ -1,6 +1,5 @@
 .. SPDX-FileCopyrightText: 2025 PHYTEC
-..
-.. SPDX-License-Identifier: MIT
+.. SPDX-License-Identifier: CC-BY-4.0
 
 .. EEPROM Flashtool documentation master file, created by
    sphinx-quickstart on Thu Apr 10 10:43:01 2025.

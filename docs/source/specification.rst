@@ -1,6 +1,5 @@
 .. SPDX-FileCopyrightText: 2025 PHYTEC
-..
-.. SPDX-License-Identifier: MIT
+.. SPDX-License-Identifier: CC-BY-4.0
 
 EEPROM Memory Layout Specification
 ##################################

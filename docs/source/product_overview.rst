@@ -1,3 +1,6 @@
+.. SPDX-FileCopyrightText: 2025 PHYTEC
+.. SPDX-License-Identifier: CC-BY-4.0
+
 Product Overview Table
 ======================
 

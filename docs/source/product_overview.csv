@@ -1,4 +1,7 @@
-﻿Product,HW Type,I2C Bus,I2C Address,User,API
+﻿# SPDX-FileCopyrightText: 2025 PHYTEC
+# SPDX-License-Identifier: CC-BY-4.0
+
+Product,HW Type,I2C Bus,I2C Address,User,API
 phyCORE-i.MX8M Mini,SoM,,0x51,phyEEPROM,v2
 phyCORE-i.MX8M Nano,SoM,,0x51,phyEEPROM,v2
 phyBOARD-Polis (Mini/Nano),phyBOARD,,-,-,
