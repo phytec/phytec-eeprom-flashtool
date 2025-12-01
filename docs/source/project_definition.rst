@@ -1,5 +1,5 @@
 Hardware Introspection at PHYTEC
-********************************
+################################
 
 To be able to handle our high number of SoM variants, extension boards,
 development Kits and customer projects (KSP/KSM), we need to have a consolidated
@@ -28,7 +28,7 @@ implement a software variant handling for parts bought from PHYTEC. It is not
 intended as a user API tool.
 
 Bootloader implementation
-=========================
+*************************
 
 The bootloader implementation defines some of the main requirements. RAM
 detection is done in the secodary program loader (SPL), the first step
@@ -48,7 +48,7 @@ specific source. This could either be the SoC fuses, the Ethernet PHY's attached
 EEPROM or something else.
 
 Bootloader security consideration
-=================================
+*********************************
 
 For critical systems with physical access security all external data needs to be
 encrypted. This cannot be done in the SPL. In that case we need to remap all
@@ -61,7 +61,7 @@ one can provide signed or encrypted boot binaries without a dependency to
 external data structures.
 
 Hardware implementation
-=======================
+***********************
 
 Because every SoM has its specific design goals and set of requirements, the
 EEPROM implementation differs depending on the product. Some products write the
@@ -76,7 +76,7 @@ Further details can be found in the corresponding hardware manual of the
 product.
 
 Handling in product manufacturing
-=================================
+*********************************
 
 The EEPROM tool is used for coding the product information to the binary format
 for flashing. The tool is running on a server and provides the blob to be added
@@ -95,7 +95,7 @@ within a booted system, either bootloader or linux. If we do not write a MAC, we
 write zeros.
 
 Working with the introspection data
-===================================
+***********************************
 
 The idea for the customer is not to interfere with the introspection data. For
 every product there is a defined way to store product meta data without
