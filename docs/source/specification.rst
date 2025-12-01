@@ -396,7 +396,7 @@ Each block starts with a 4-byte header:
      - CRC8 (ITU-T) of this block’s header and payload.
 
 Block Types
-***********
+-----------
 
 .. list-table:: Block Type Identifiers
    :widths: 15 35 50
@@ -413,7 +413,7 @@ Block Types
      - Generic key-value pair in ASCII format.
 
 MAC Block
-*********
+---------
 
 Used to assign a MAC address to an Ethernet interface.
 
@@ -439,7 +439,7 @@ Used to assign a MAC address to an Ethernet interface.
      - CRC8 (ITU-T) over this block’s content.
 
 Key Value Block
-***************
+---------------
 
 Stores generic key-value metadata in ASCII.
 
