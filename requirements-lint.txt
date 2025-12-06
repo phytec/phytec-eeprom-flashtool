@@ -25,5 +25,5 @@ tomlkit==0.12.3
 types-PyYAML==6.0.12.12
 types-requests==2.32.0.20240914
 typing_extensions==4.8.0
-urllib3==2.5.0
+urllib3==2.6.0
 yamllint==1.33.0
