@@ -3,4 +3,4 @@
 # SPDX-License-Identifier: MIT
 
 # pylint: disable=missing-module-docstring
-__version__ = '3.3.0'
+__version__ = '3.4.0'
