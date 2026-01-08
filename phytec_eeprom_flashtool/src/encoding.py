@@ -418,8 +418,8 @@ def print_eeprom_data(eeprom_data: EepromData):
         option = eeprom_data.kit_opt[int(index)]
         if option == '\x00':
             option = "0"
-        kit_options_verbose.append(f"{kit_opt.ljust(kit_opt_length)}:  " \
-                                   f"{eeprom_data.yml_parser[kit_opt][option]}")
+        value = eeprom_data.yml_parser.get(kit_opt, {}).get(option, 'Unknown')
+        kit_options_verbose.append(f"{kit_opt.ljust(kit_opt_length)}: {value}")
 
     kit_opt_string = eeprom_data.kit_opt.replace('\x00','#')
     extended_options = int(eeprom_data.yml_parser['PHYTEC'].get('extended_options', 0))
