@@ -1,0 +1,98 @@
+---
+# Copyright (C) 2026 PHYTEC
+# SPDX-FileCopyrightText: 2026 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+#
+# product: PFL-G-02 / phyFLEX-i.MX 95 FPSC
+
+PHYTEC:
+  eeprom_offset: 0x0
+  i2c_bus: 0x1
+  i2c_dev: 0x51
+  api: 3
+  extended_options: 3
+  max_image_size: 2048
+  optiontree_rev: 0
+
+Kit:
+  0: Processor
+  1: Frequency
+  2: VPU / ISP / NPU
+  3: Display Option / 3D Graphics Engine
+  4: Reserved 4
+  5: DDR-Ram
+  6: eMMC
+  7: Ethernet
+  8: RTC / Ethernet (10 GbE)
+  9: Temperature
+  10: Package (Processor) / IO Voltage / Temperature Sensor
+  11: EEPROM (User)
+  12: Additional Processor Features SAF / Additional Processor Features (SDP)
+Processor:
+  '0': Dual Core
+  '1': Quad Core
+  '2': Hexa Core
+Frequency:
+  '0': 1.6 GHz
+  '1': 1.8 GHz
+  '2': 2 GHz
+VPU / ISP / NPU:
+  '0': '- / - / -'
+  '1': '- / - / NPU'
+  '2': '- / ISP / -'
+  '3': '- / ISP / NPU'
+  '4': VPU / - / -
+  '5': VPU / - / NPU
+  '6': VPU / ISP / -
+  '7': VPU / ISP / NPU
+Display Option / 3D Graphics Engine:
+  '0': '- / -'
+  '1': '- / GPU'
+  '4': MIPI DSI + LVDS / -
+  '5': MIPI DSI + LVDS / GPU
+Reserved 4:
+  '0': Always 0
+DDR-Ram:
+  '0': 1 GB
+  '1': 2 GB
+  '2': 4 GB
+  '3': 8 GB
+eMMC:
+  '0': 4 GB (MLC)
+  '1': 8 GB (MLC)
+  '2': 16 GB (MLC)
+  '3': 32 GB (TLC)
+  '4': 64 GB (TLC)
+  '5': 128 GB (TLC)
+  '6': 256 GB (TLC)
+Ethernet:
+  '0': '-'
+  '1': Gbit Ethernet Phy
+RTC / Ethernet (10 GbE):
+  '0': External RTC / -
+  '1': External RTC / 10 GbE clock generation (no PHY)
+  '4': '- / -'
+  '5': '- / 10 GbE clock generation (no PHY)'
+Temperature:
+  C: Consumer Temp
+  I: Industrial Temp
+  X: Extended Industrial
+Package (Processor) / IO Voltage / Temperature Sensor:
+  '0': no lid / 1.8 V / -
+  '1': no lid / 1.8 V / Temperature Sensor
+  '2': no lid / 3.3 V / -
+  '3': no lid / 3.3 V / Temperature Sensor
+  '4': lidded / 1.8 V / -
+  '5': lidded / 1.8 V / Temperature Sensor
+  '6': lidded / 3.3 V / -
+  '7': lidded / 3.3 V / Temperature Sensor
+EEPROM (User):
+  '0': 4 kB
+  '1': '-'
+  '2': 32 kB
+Additional Processor Features SAF / Additional Processor Features (SDP):
+  '0': '- / SDP USB1'
+  '1': '- / SDP USB2'
+  '2': SAF / SDP USB1
+  '3': SAF / SDP USB2
