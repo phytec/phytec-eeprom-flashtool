@@ -21,7 +21,7 @@ from .blocks import unpack_block
 # 1 uchar for the API version
 ENCODING_API_VERSION = "<1B"
 # 2 uchars, 2-len pad, 21-len str, 6-len pad, 1 uchar
-ENCODING_API1 = "<2B2x21s6xB"
+ENCODING_API1 = "<4B21s6xB"
 # 6 uchars, 17-len str, 2-len str, 6-len pad, 1 uchar
 ENCODING_API2 = "<6B17s2s6xB"
 # 1 ushort, 2 uchars, 3 reserved, 1 uchar
@@ -220,10 +220,22 @@ def eeprom_data_to_struct(eeprom_data: EepromData) -> bytes:
 
         kit_opt_full = f"{eeprom_data.kit_opt}{eeprom_data.bom_rev}"
         kit_opt_full = kit_opt_full + '\0' * (21 - len(kit_opt_full))
+        # API v1 only supports PCM-variants, so we have to check this before packing.
+        if eeprom_data.som_type not in (ComponentType.PCM, ComponentType.PCM_KSP, \
+                                        ComponentType.PCM_KSM):
+            raise AssertionError(f"Component type {eeprom_data.som_type} not supported in API v1!")
+        # API v1 is using other values for the component type, so we have to convert them here.
+        # PCM = 0, PCM_KSP = 1, PCM_KSM = 2
+        if eeprom_data.som_type == ComponentType.PCM:
+            som_type_v1 = eeprom_data.som_type.value
+        else:
+            som_type_v1 = eeprom_data.som_type.value - 3
         eeprom_struct = struct.pack(
             ENCODING_API1,
             eeprom_data.api_version,
             eeprom_data.pcb_revision,
+            som_type_v1,
+            eeprom_data.ksp_number,
             bytes(kit_opt_full, 'utf-8'),
             0  # CRC8
         )
@@ -296,20 +308,30 @@ def struct_to_eeprom_data_v1(eeprom_struct: bytes, yml_parser: YmlParser) -> Eep
     """Unpack the EEPROM struct with API v1. Only the PCM-057 uses v1."""
     unpacked = struct.unpack(ENCODING_API1, eeprom_struct[:EEPROM_V1_SIZE])
 
-    if hw8_checksum_calc(eeprom_struct[:EEPROM_V2_SIZE - 1]) != int(unpacked[3]):
+    if hw8_checksum_calc(eeprom_struct[:EEPROM_V2_SIZE - 1]) != int(unpacked[5]):
         raise AssertionError("Checksum mismatch in the first 32 bytes!")
 
     eeprom_data = EepromData(yml_parser)
     eeprom_data.api_version = unpacked[0]
     eeprom_data.pcb_revision = unpacked[1]
-    eeprom_data.som_type = ComponentType.PCM
     # Only PCM-057 is using API v1
     eeprom_data.base_article_number = 57
-    # No KSP support
-    eeprom_data.ksp_number = 0
+    eeprom_data.som_type = ComponentType(unpacked[2])
+    #API v1 is using other values for the component type, so we have to convert them here.
+    match eeprom_data.som_type.value:
+        case 0:
+            eeprom_data.som_type = ComponentType.PCM
+        case 1:
+            eeprom_data.som_type = ComponentType.PCM_KSP
+        case 2:
+            eeprom_data.som_type = ComponentType.PCM_KSM
+        case _:
+            raise AssertionError(f"Unknown component type 0x{eeprom_data.som_type:x} "\
+                                 "in API v1 data!")
+    eeprom_data.ksp_number = unpacked[3]
     if yml_parser is not None:
         #This will not be read when yml_parser is not set
-        full_kit_opt = unpacked[2].decode('utf-8')
+        full_kit_opt = unpacked[4].decode('utf-8')
         eeprom_data.bom_rev = full_kit_opt[len(yml_parser['Kit']):len(yml_parser['Kit'])+2]
         eeprom_data.kit_opt = full_kit_opt[:len(yml_parser['Kit'])]
         eeprom_data.crc8 = crc8_checksum_calc(eeprom_struct[:EEPROM_V2_SIZE - 1])

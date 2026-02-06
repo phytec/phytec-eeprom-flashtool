@@ -16,6 +16,36 @@ Output_strings:
 
 Test_data:
  -
+  file_name: 'PCM-057-KSP123-40301001I.A2_30_0'
+  data:
+   full_name: 'PCM-057-KSP123.A2'
+   pcb_revision: '3'
+   api_version: 1
+   optiontree_revision: 0
+   som_type: 'PCM-KSP'
+   base_article_number: 57
+   ksp_number: 123
+   option: '40301001I'
+   ext_option: '-'
+   crc: "e6"
+  read_args: '-som PCM-057'
+  create_args: '-som PCM-057 -ksx KSP123 -kit 40301001I -bom A2 -pcb 3'
+ -
+  file_name: 'PCM-057-KSM123-40301001I.A2_30_0'
+  data:
+   full_name: 'PCM-057-KSM123.A2'
+   pcb_revision: '3'
+   api_version: 1
+   optiontree_revision: 0
+   som_type: 'PCM-KSM'
+   base_article_number: 57
+   ksp_number: 123
+   option: '40301001I'
+   ext_option: '-'
+   crc: "97"
+  read_args: '-som PCM-057'
+  create_args: '-som PCM-057 -ksx KSM123 -kit 40301001I -bom A2 -pcb 3'
+ -
   file_name: 'PCM-057-40201111I.A1_50_0'
   data:
    full_name: 'PCM-057-40201111I.A1'
