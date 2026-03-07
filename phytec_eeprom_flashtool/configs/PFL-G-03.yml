@@ -43,9 +43,9 @@ eMMC:
   '1': 4 GB (MLC)
   '2': 8 GB (MLC)
   '3': 16 GB (MLC)
-  '4': 32 GB (MLC)
-  '5': 64 GB (MLC)
-  '6': 128 GB (MLC)
+  '4': 32 GB (TLC)
+  '5': 64 GB (TLC)
+  '6': 128 GB (TLC)
 Display Option (DSI0):
   '0': MIPI DSI
   '1': LVDS
