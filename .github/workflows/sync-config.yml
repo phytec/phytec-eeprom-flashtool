@@ -29,6 +29,7 @@ jobs:
           - PCM-072
           - PCM-074
           - PFL-G-01
+          - PFL-G-02
           - PFL-G-03
           - PFL-G-05
 
