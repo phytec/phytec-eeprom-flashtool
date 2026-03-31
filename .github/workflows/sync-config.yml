@@ -31,6 +31,7 @@ jobs:
           - PFL-G-01
           - PFL-G-02
           - PFL-G-03
+          - PFL-G-04
           - PFL-G-05
 
     steps:
