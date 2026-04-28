@@ -13,7 +13,7 @@ PHYTEC:
   api: 3
   extended_options: 1
   max_image_size: 1024
-  optiontree_rev: 0
+  optiontree_rev: 1
 Kit:
   0: Processor
   1: Frequency A53
@@ -24,7 +24,8 @@ Kit:
   6: Ethernet
   7: Temperature Sensor / RTC
   8: Temperature
-  9: IO Voltage (VCC_IO) / Additional Voltage Supply Feature (Monoflop) / eFuse
+  9: Watchdog / IO Voltage (VCC_IO) / Additional Voltage Supply Feature (Monoflop)
+    / eFuse
 Processor:
   '1': Single Core
   '2': Dual Core
@@ -61,12 +62,20 @@ Temperature:
   A: Automotive Temp
   C: Consumer Temp
   I: Industrial Temp
-IO Voltage (VCC_IO) / Additional Voltage Supply Feature (Monoflop) / eFuse:
-  '0': 1.8 V / powercycle on reset / not programmable
-  '1': 1.8 V / powercycle on reset / programmable in field
-  '2': 1.8 V / no powercycle on reset / not programmable
-  '3': 1.8 V / no powercycle on reset / programmable in field
-  '4': 3.3 V / powercycle on reset / not programmable
-  '5': 3.3 V / powercycle on reset / programmable in field
-  '6': 3.3 V / no powercycle on reset / not programmable
-  '7': 3.3 V / no powercycle on reset / programmable in field
+Watchdog / IO Voltage (VCC_IO) / Additional Voltage Supply Feature (Monoflop) / eFuse:
+  '0': '- / 1.8 V / powercycle on reset / not programmable'
+  '1': '- / 1.8 V / powercycle on reset / programmable in field'
+  '2': '- / 1.8 V / no powercycle on reset / not programmable'
+  '3': '- / 1.8 V / no powercycle on reset / programmable in field'
+  '4': '- / 3.3 V / powercycle on reset / not programmable'
+  '5': '- / 3.3 V / powercycle on reset / programmable in field'
+  '6': '- / 3.3 V / no powercycle on reset / not programmable'
+  '7': '- / 3.3 V / no powercycle on reset / programmable in field'
+  '8': external / 1.8 V / powercycle on reset / not programmable
+  '9': external / 1.8 V / powercycle on reset / programmable in field
+  A: external / 1.8 V / no powercycle on reset / not programmable
+  B: external / 1.8 V / no powercycle on reset / programmable in field
+  C: external / 3.3 V / powercycle on reset / not programmable
+  D: external / 3.3 V / powercycle on reset / programmable in field
+  E: external / 3.3 V / no powercycle on reset / not programmable
+  F: external / 3.3 V / no powercycle on reset / programmable in field
