@@ -5,7 +5,7 @@ crc8==0.2.0
 dill==0.3.7
 docutils==0.21.2
 flake8==6.1.0
-idna==3.10
+idna==3.15
 isort==5.12.0
 mccabe==0.7.0
 mypy==1.7.1
