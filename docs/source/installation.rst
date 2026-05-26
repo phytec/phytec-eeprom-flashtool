@@ -34,7 +34,9 @@ To get started on a Linux system:
    .. code-block:: bash
 
       pip install .
-      pip install -r requirements.txt
+
+   All runtime dependencies are declared in ``pyproject.toml`` and installed
+   automatically by pip.
 
 To deactivate the virtual environment, simply run:
 
@@ -74,7 +76,6 @@ To install the tool on Windows using PowerShell:
    .. code-block:: powershell
 
       pip install .
-      pip install -r requirements-windows.txt
 
 Without Virtual Environment (Not Recommended)
 ---------------------------------------------
@@ -88,14 +89,14 @@ While using a virtual environment is strongly recommended, the tool can also be 
       git clone git@github.com:phytec/phytec-eeprom-flashtool.git
       cd phytec-eeprom-flashtool
 
-#. **Install dependencies globally:**
+#. **Install the tool globally:**
 
    .. code-block:: bash
 
-      pip install -r requirements.txt
+      pip install .
 
-#. **Run the tool from the repository root:**
+#. **Run the tool:**
 
    .. code-block:: bash
 
-      python -m phytec_eeprom_flashtool
+      phytec_eeprom_flashtool

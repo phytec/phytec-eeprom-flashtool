@@ -1,3 +1,0 @@
-restructuredtext-lint
-sphinx
-sphinx-rtd-theme

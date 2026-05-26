@@ -32,7 +32,6 @@ Installation (Linux)
 - Install this package and all dependencies::
 
         pip install .
-        pip install -r requirements.txt
 
 You can leave the virtualenv by running ``deactivate`` in the bash. Do not
 forget to source the virtualenv again next time you want to use it.
@@ -59,7 +58,6 @@ This guide is written for PowerShell.
 - Install this package and all dependencies::
 
         pip install .
-        pip install -r requirements-windows.txt
 
 Installation Without Virtualenv
 ###############################
@@ -72,11 +70,11 @@ recommended to use a virtual environment to not overwrite dependencies of other 
         git clone git@github.com:phytec/phytec-eeprom-flashtool.git
         cd phytec-eeprom-flashtool
 
-- Install all dependencies::
+- Install the tool::
 
-        pip install -r requirements.txt
+        pip install .
 
-- You can run the tool with the following command (you have to be in the root directory)::
+- You can run the tool with the following command::
 
         python -m phytec_eeprom_flashtool
 

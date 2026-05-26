@@ -31,6 +31,28 @@ dependencies = [
     "crc8",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+lint = [
+    "flake8",
+    "pylint",
+    "yamllint",
+    "mypy",
+    "restructuredtext-lint",
+    "Pygments",
+    "requests",
+    "types-PyYAML",
+    "types-requests",
+]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+    "restructuredtext-lint",
+]
+
 [project.scripts]
 phytec_eeprom_flashtool = "phytec_eeprom_flashtool.__main__:cmd_main"
 
