@@ -69,18 +69,22 @@ def write_content(args, eeprom_data: EepromData, eeprom_struct: bytes) -> bool:
     return True
 
 
-def read_eeprom_data(args, yml_parser: YmlParser, error: str) -> EepromData:
+def read_eeprom_data(args, yml_parser: YmlParser, subject: str) -> EepromData:
     """Helper to read either from a binary file or EEPROM chip and convert it into the eeprom
        data format."""
     eeprom_data = get_eeprom_data(args, yml_parser)
     if not eeprom_data.is_v3():
-        raise ValueError(error)
+        raise ValueError(f"{subject} are only supported with API v3. This product is "
+                         f"configured for API v{eeprom_data.api_version}.")
     eeprom_size = EEPROM_V2_SIZE + EEPROM_V3_DATA_HEADER_SIZE
     eeprom_struct = read_content(args, eeprom_data, eeprom_size)
     eeprom_data = struct_to_eeprom_data(eeprom_struct, yml_parser)
-    if eeprom_data.is_v3():
-        eeprom_blocks = read_content(args, eeprom_data, eeprom_data.v3_payload_length, eeprom_size)
-        eeprom_data = blocks_to_eeprom_data(eeprom_data, eeprom_blocks)
+    if not eeprom_data.is_v3():
+        raise ValueError(f"{subject} are only supported with API v3, but the EEPROM data is in "
+                         f"API v{eeprom_data.api_version} format. Please migrate the data to "
+                         "API v3 first with the 'write' command.")
+    eeprom_blocks = read_content(args, eeprom_data, eeprom_data.v3_payload_length, eeprom_size)
+    eeprom_data = blocks_to_eeprom_data(eeprom_data, eeprom_blocks)
     return eeprom_data
 
 
@@ -149,7 +153,7 @@ def display_som_config(args, yml_parser: YmlParser):
 
 def write_mac_block(args, yml_parser: YmlParser):
     """Adds a MAC block to an existing binary file or updates an EEPROM device."""
-    eeprom_data = read_eeprom_data(args, yml_parser, "MAC blocks are only supported with API v3")
+    eeprom_data = read_eeprom_data(args, yml_parser, "MAC blocks")
     add_mac_block(eeprom_data, args.interface, args.mac)
     write_eeprom_data(args, eeprom_data)
     return eeprom_data
@@ -157,7 +161,7 @@ def write_mac_block(args, yml_parser: YmlParser):
 
 def read_mac_block(args, yml_parser: YmlParser):
     """Prints a MAC block for a given Ethernet interface number."""
-    eeprom_data = read_eeprom_data(args, yml_parser, "MAC blocks are only supported with API v3")
+    eeprom_data = read_eeprom_data(args, yml_parser, "MAC blocks")
     for block in [elm for elm in eeprom_data.blocks if isinstance(elm, EepromDataMACBlock)]:
         if block.interface == args.interface:
             print(block)
@@ -169,8 +173,7 @@ def write_serial_block(args, yml_parser: YmlParser):
     """Adds a serial block to an existing binary file or updates an EEPROM device.
     This is basically a key-value block with serial as hard-coded key.
     """
-    eeprom_data = read_eeprom_data(args, yml_parser,
-                                   "Serial block are only supported with API v3")
+    eeprom_data = read_eeprom_data(args, yml_parser, "Serial blocks")
     add_key_value_block(eeprom_data, "serial", args.serial)
     write_eeprom_data(args, eeprom_data)
     return eeprom_data
@@ -178,8 +181,7 @@ def write_serial_block(args, yml_parser: YmlParser):
 
 def read_serial_block(args, yml_parser: YmlParser):
     """Print a serial block."""
-    eeprom_data = read_eeprom_data(args, yml_parser,
-                                   "Serial block are only supported with API v3")
+    eeprom_data = read_eeprom_data(args, yml_parser, "Serial blocks")
     for block in [elm for elm in eeprom_data.blocks if isinstance(elm, EepromDataKeyValueBlock)]:
         if block.key == "serial":
             print(block)
@@ -191,8 +193,7 @@ def write_key_value_block(args, yml_parser: YmlParser):
     """Adds a key-value block to an existing binary file or updates an EEPROM device."""
     if args.key.lower() == "serial":
         raise ValueError("Please use --add-serial sub-command.")
-    eeprom_data = read_eeprom_data(args, yml_parser,
-                                   "Key Value blocks are only supported with API v3")
+    eeprom_data = read_eeprom_data(args, yml_parser, "Key-value blocks")
     add_key_value_block(eeprom_data, args.key, args.value)
     write_eeprom_data(args, eeprom_data)
     return eeprom_data
@@ -202,8 +203,7 @@ def read_key_value_block(args, yml_parser: YmlParser):
     """Prints a key-value block for a given key."""
     if args.key.lower() == "serial":
         raise ValueError("Please use --read-serial sub-command.")
-    eeprom_data = read_eeprom_data(args, yml_parser,
-                                   "Key Value blocks are only supported with API v3")
+    eeprom_data = read_eeprom_data(args, yml_parser, "Key-value blocks")
     for block in [elm for elm in eeprom_data.blocks if isinstance(elm, EepromDataKeyValueBlock)]:
         if block.key == args.key:
             print(block)

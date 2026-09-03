@@ -194,3 +194,17 @@ Test_data:
    crc: "7"
   read_args: '-som PFL-G-03'
   create_args: '-som PFL-G-03 -kit 21022110I-1 -bom B2 -pcb 1a -option-id KM005'
+ -
+  file_name: 'PCM-072-11I011010.A1_30_0'
+  data:
+   full_name: 'PCM-072-11I011010.A1'
+   pcb_revision: '3'
+   api_version: 2
+   optiontree_revision: 0
+   som_type: 'PCM'
+   base_article_number: 72
+   ksp_number: "-"
+   option: '11I011010'
+   ext_option: '-'
+   crc: "42"
+  read_args: '-som PCM-072'
