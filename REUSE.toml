@@ -21,6 +21,11 @@ SPDX-FileCopyrightText = "2025 PHYTEC"
 SPDX-License-Identifier = "CC-BY-4.0"
 
 [[annotations]]
+path = "docs/source/*.csv"
+SPDX-FileCopyrightText = "2025 PHYTEC"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
 path = "docs/source/_static/*"
 SPDX-FileCopyrightText = "2025 PHYTEC"
 SPDX-License-Identifier = "LicenseRef-PHYTEC-Commercial-0.1"

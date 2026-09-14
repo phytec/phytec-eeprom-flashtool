@@ -67,6 +67,21 @@ latex_elements = {
         \usepackage{charter}
         \usepackage[defaultsans]{lato}
         \usepackage{inconsolata}
+
+        % Keep product names like "phyBOARD-Polis" and words like
+        % "Customer" on one line in tables: disable hyphenation and
+        % break-after-hyphen inside Sphinx table environments only.
+        \usepackage{etoolbox}
+        \AtBeginEnvironment{tabulary}{%
+            \hyphenpenalty=10000
+            \exhyphenpenalty=10000
+            \protected\def\sphinxhyphen#1{\mbox{-}}%
+        }
+        \AtBeginEnvironment{longtable}{%
+            \hyphenpenalty=10000
+            \exhyphenpenalty=10000
+            \protected\def\sphinxhyphen#1{\mbox{-}}%
+        }
     ''',
 
     # Figure alignment

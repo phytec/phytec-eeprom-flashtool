@@ -10,5 +10,11 @@ For our SoMs, we have a set of common base boards and extension boards. To be ab
 
 Secondly, as we will fixate the API revision as soon as a product is release for mass market, we need to log the revision.
 
+.. note::
+   A `-` denotes that a field is not applicable. Products carrying more than
+   one EEPROM list the bus, address and user of each device separated by `/`.
+
 .. csv-table:: Products and API Revision
+   :header-rows: 1
+   :widths: 35 16 8 17 17 7
    :file: product_overview.csv
