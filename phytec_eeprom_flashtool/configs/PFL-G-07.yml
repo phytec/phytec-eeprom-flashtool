@@ -1,0 +1,135 @@
+---
+# Copyright (C) 2026 PHYTEC
+# SPDX-FileCopyrightText: 2026 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+#
+# product: PFL-G-07 / phyFLEX-SL2610 FPSC-Gamma
+
+PHYTEC:
+  eeprom_offset: 0x0
+  i2c_bus: 0x1
+  i2c_dev: 0x50
+  api: 3
+  extended_options: 2
+  max_image_size: 4096
+  optiontree_rev: 0
+
+Kit:
+  0: Processor
+  1: Frequency
+  2: DDR-Ram
+  3: eMMC
+  4: Reserved
+  5: Display Option (MIPI) / Display Option (LVDS) / Camera / Watchdog
+  6: 3D Graphics Engine / NPU / CAN / TPM
+  7: Temperature Sensor / RTC / Ethernet (RGMII) / Ethernet (SoM)
+  8: EEPROM
+  9: Temperature
+  10: Boot Mode
+  11: LED / EEPROM (Factory) / Misc SD3.0 Levelshifter
+Processor:
+  '0': Dual Core SL2619 (Type 1B3F)
+  '1': Dual Core SL2617 (Type 1A2F)
+  '2': Dual Core SL2617 (Type 1A07)
+  '3': Dual Core SL2615 (Type 0A19)
+  '4': Dual Core SL2615 (Type 1A0B)
+  '5': Dual Core SL2615 (Type 0A03)
+  '6': Dual Core SL2615 (Type 1A03)
+  '7': Single Core SL2613 (Type 1A0F)
+  '8': Single Core SL2613 (Type 1A07)
+  '9': Single Core SL2611 (Type 0A09)
+  A: Single Core SL2611 (Type 0A01)
+Frequency:
+  '0': 2 GHz
+DDR-Ram:
+  '0': 512 MB DDR4
+  '1': 1 GB DDR4
+  '2': 2 GB DDR4
+  '3': 4 GB DDR4
+  '4': 256 MB DDR3
+  '5': 512 MB DDR3
+  '6': 1 GB DDR3
+eMMC:
+  '0': '-'
+  '1': 4 GB (MLC)
+  '2': 8 GB (TLC)
+  '3': 16 GB (TLC)
+  '4': 32 GB (TLC)
+  '5': 64 GB (TLC)
+  '6': 128 GB (TLC)
+  '7': 256 GB (TLC)
+Reserved:
+  '0': Always 0
+Display Option (MIPI) / Display Option (LVDS) / Camera / Watchdog:
+  '0': '- / - / - / -'
+  '1': '- / - / - / external'
+  '2': '- / - / MIPI-CSI2 / -'
+  '3': '- / - / MIPI-CSI2 / external'
+  '4': '- / LVDS / - / -'
+  '5': '- / LVDS / - / external'
+  '6': '- / LVDS / MIPI-CSI2 / -'
+  '7': '- / LVDS / MIPI-CSI2 / external'
+  '8': MIPI DSI / - / - / -
+  '9': MIPI DSI / - / - / external
+  A: MIPI DSI / - / MIPI-CSI2 / -
+  B: MIPI DSI / - / MIPI-CSI2 / external
+  C: MIPI DSI / LVDS / - / -
+  D: MIPI DSI / LVDS / - / external
+  E: MIPI DSI / LVDS / MIPI-CSI2 / -
+  F: MIPI DSI / LVDS / MIPI-CSI2 / external
+3D Graphics Engine / NPU / CAN / TPM:
+  '0': '- / - / - / -'
+  '1': '- / - / - / TPM'
+  '2': '- / - / CAN-FD / -'
+  '3': '- / - / CAN-FD / TPM'
+  '4': '- / NPU / - / -'
+  '5': '- / NPU / - / TPM'
+  '6': '- / NPU / CAN-FD / -'
+  '7': '- / NPU / CAN-FD / TPM'
+  '8': GPU / - / - / -
+  '9': GPU / - / - / TPM
+  A: GPU / - / CAN-FD / -
+  B: GPU / - / CAN-FD / TPM
+  C: GPU / NPU / - / -
+  D: GPU / NPU / - / TPM
+  E: GPU / NPU / CAN-FD / -
+  F: GPU / NPU / CAN-FD / TPM
+Temperature Sensor / RTC / Ethernet (RGMII) / Ethernet (SoM):
+  '0': '- / - / - / -'
+  '1': '- / - / - / Gbit Ethernet Phy'
+  '2': '- / - / RGMII / -'
+  '3': '- / - / RGMII / Gbit Ethernet Phy'
+  '4': '- / External RTC / - / -'
+  '5': '- / External RTC / - / Gbit Ethernet Phy'
+  '6': '- / External RTC / RGMII / -'
+  '7': '- / External RTC / RGMII / Gbit Ethernet Phy'
+  '8': Temperature Sensor / - / - / -
+  '9': Temperature Sensor / - / - / Gbit Ethernet Phy
+  A: Temperature Sensor / - / RGMII / -
+  B: Temperature Sensor / - / RGMII / Gbit Ethernet Phy
+  C: Temperature Sensor / External RTC / - / -
+  D: Temperature Sensor / External RTC / - / Gbit Ethernet Phy
+  E: Temperature Sensor / External RTC / RGMII / -
+  F: Temperature Sensor / External RTC / RGMII / Gbit Ethernet Phy
+EEPROM:
+  '0': 4 kB
+  '1': 32 kB
+  '2': '-'
+Temperature:
+  C: Consumer Temp
+  I: Industrial Temp
+Boot Mode:
+  '0': eMMC
+  '1': Fuses
+  '2': Serial Downloader
+  '3': SD-Card
+LED / EEPROM (Factory) / Misc SD3.0 Levelshifter:
+  '0': Green LED / 4 kB / SD3.0 Levelshifter
+  '2': Green LED / 4 kB / -
+  '4': Green LED / - / SD3.0 Levelshifter
+  '6': Green LED / - / -
+  '8': '- / 4 kB / SD3.0 Levelshifter'
+  A: '- / 4 kB / -'
+  C: '- / - / SD3.0 Levelshifter'
+  E: '- / - / -'
