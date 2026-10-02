@@ -8,7 +8,7 @@
 
 PHYTEC:
   eeprom_offset: 0x0
-  i2c_bus: 0x2
+  i2c_bus: 0x1
   i2c_dev: 0x50
   api: 3
   extended_options: 4
