@@ -41,6 +41,7 @@ eMMC:
   '4': 64 GB (TLC)
   '5': 128 GB (TLC)
   '6': 256 GB (TLC)
+  '7': 4 GB (MLC)
 Processor:
   '0': Single Core i.MX 91
   '1': Single Core i.MX 93
