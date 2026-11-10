@@ -1,0 +1,97 @@
+---
+# Copyright (C) 2026 PHYTEC
+# SPDX-FileCopyrightText: 2026 PHYTEC
+#
+# SPDX-License-Identifier: MIT
+#
+# product: PCM-080
+
+PHYTEC:
+  eeprom_offset: 0x0
+  i2c_bus: 0x0
+  i2c_dev: 0x50
+  api: 3
+  extended_options: 3
+  max_image_size: 4096
+  optiontree_rev: 0
+
+Kit:
+  0: DSP / 3D Graphics Engine
+  1: DDR-Ram
+  2: eMMC
+  3: NOR-Flash
+  4: Ethernet
+  5: RTC
+  6: Temperature
+  7: IO Voltage VDDSHV5 default (R9, R12) / IO Voltage VDDSHV3 (J12) / IO Voltage
+    VDDSHV2 (J11) / IO Voltage VDDSHV0 (J10)
+  8: IO Voltage VDDSHV_MCU (J8) / IO Voltage VDDSHV_CANUART (J7) / IO Voltage VDDSHV6
+    (J6)
+  9: Misc VDDSHV_SDIO GPIO Control GPMC0_CSn1 / Misc VDDSHV_SDIO GPIO Control GPMC0_CLK
+DSP / 3D Graphics Engine:
+  '0': '- / -'
+  '1': '- / GPU'
+  '2': DSP / -
+  '3': DSP / GPU
+DDR-Ram:
+  '1': 1 GB
+  '2': 2 GB
+  '4': 4 GB
+  '8': 8 GB
+eMMC:
+  A: 4 GB (MLC)
+  B: 8 GB (MLC)
+  C: 16 GB (MLC)
+  D: 32 GB (TLC)
+  E: 64 GB (TLC)
+  F: 128 GB (TLC)
+  X: '-'
+NOR-Flash:
+  A: 16 MB (Quad)
+  B: 32 MB (Quad)
+  C: 64 MB (Quad)
+  D: 32 MB (Octal)
+  E: 64 MB (Octal)
+  F: 128 MB (Octal)
+  X: '-'
+Ethernet:
+  '0': '-'
+  '1': Gbit Ethernet Phy
+  A: 10/100 Mbit
+RTC:
+  '0': '-'
+  '1': External RTC
+Temperature:
+  C: Consumer Temp
+  I: Industrial Temp
+IO Voltage VDDSHV5 default (R9, R12) / IO Voltage VDDSHV3 (J12) / IO Voltage VDDSHV2 (J11) / IO Voltage VDDSHV0 (J10):
+  '0': 3.3 V / 3.3 V / 3.3 V / 3.3 V
+  '1': 3.3 V / 3.3 V / 3.3 V / 1.8 V
+  '2': 3.3 V / 3.3 V / 1.8 V / 3.3 V
+  '3': 3.3 V / 3.3 V / 1.8 V / 1.8 V
+  '4': 3.3 V / 1.8 V / 3.3 V / 3.3 V
+  '5': 3.3 V / 1.8 V / 3.3 V / 1.8 V
+  '6': 3.3 V / 1.8 V / 1.8 V / 3.3 V
+  '7': 3.3 V / 1.8 V / 1.8 V / 1.8 V
+  '8': 1.8 V / 3.3 V / 3.3 V / 3.3 V
+  '9': 1.8 V / 3.3 V / 3.3 V / 1.8 V
+  A: 1.8 V / 3.3 V / 1.8 V / 3.3 V
+  B: 1.8 V / 3.3 V / 1.8 V / 1.8 V
+  C: 1.8 V / 1.8 V / 3.3 V / 3.3 V
+  D: 1.8 V / 1.8 V / 3.3 V / 1.8 V
+  E: 1.8 V / 1.8 V / 1.8 V / 3.3 V
+  F: 1.8 V / 1.8 V / 1.8 V / 1.8 V
+IO Voltage VDDSHV_MCU (J8) / IO Voltage VDDSHV_CANUART (J7) / IO Voltage VDDSHV6 (J6):
+  '0': 3.3 V / 3.3 V / 3.3 V
+  '1': 3.3 V / 3.3 V / 1.8 V
+  '2': 3.3 V / 1.8 V / 3.3 V
+  '3': 3.3 V / 1.8 V / 1.8 V
+  '4': 1.8 V / 3.3 V / 3.3 V
+  '5': 1.8 V / 3.3 V / 1.8 V
+  '6': 1.8 V / 1.8 V / 3.3 V
+  '7': 1.8 V / 1.8 V / 1.8 V
+Misc VDDSHV_SDIO GPIO Control GPMC0_CSn1 / Misc VDDSHV_SDIO GPIO Control GPMC0_CLK:
+  '0': Disabled / Disabled
+  '1': Disabled / Enabled
+  '2': Enabled / Disabled
+  '3': Enabled / Enabled
